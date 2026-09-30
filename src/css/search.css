@@ -1,0 +1,322 @@
+
+.date-picker-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+  
+  .date-picker-modal {
+    background: white;
+    border-radius: 8px;
+    width: 800px;
+    max-width: 95vw;
+    max-height: 90vh;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .date-picker-header {
+    padding: 1rem;
+    border-bottom: 1px solid #dee2e6;
+    background: #f8f9fa;
+    border-radius: 8px 8px 0 0;
+  }
+  
+  .date-picker-header h6 {
+    margin: 0;
+    color: #333;
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+  
+  .date-picker-body {
+    padding: 0;
+    flex: 1;
+    overflow: hidden;
+  }
+  
+  .date-picker-layout {
+    display: flex;
+    height: 100%;
+  }
+  
+  .quick-range-section {
+    width: 200px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .quick-range-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+  }
+  
+  .quick-range-btn {
+    padding: 5px;
+    background: #f5f5f5;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    text-align: left;
+    transition: all 0.2s;
+    color: #08c;
+    border: none;
+  }
+  
+  .quick-range-btn:hover {
+    background: #08c;
+    color: white;
+  }
+  
+  .quick-range-btn.active {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+  }
+  
+.custom-range-label {
+    margin-top: auto;
+    padding-top: 1rem;
+  }
+  
+  .custom-range-label span {
+    font-weight: 600;
+    color: #333;
+  } 
+  
+  .calendar-section {
+    flex: 1;
+    padding: 1rem;
+  }
+  
+  .dual-calendar-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    height: 100%;
+  }
+  
+  .calendar-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    margin-bottom: 0.5rem;
+  }
+  
+  .calendar-header button {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    color: #007bff;
+  }
+  
+  .calendar-header span {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  
+  .selected-date-time {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 4px;
+  }
+  
+  .date-display {
+    font-family: monospace;
+    font-size: 0.875rem;
+    color: #333;
+    min-width: 85px;
+  }
+  
+  .time-select {
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 0.25rem;
+    font-size: 0.875rem;
+    background: white;
+  }
+  
+  .calendar {
+    flex: 1;
+  }
+  
+  .week-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    margin-bottom: 0.5rem;
+
+  }
+  
+  .week-day {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.5rem 0;
+    font-weight: bold;
+    color: black;
+  }
+  
+  .calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+  
+  .calendar-day {
+    text-align: center;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .calendar-day:hover {
+    background: #e9ecef;
+  }
+  
+  .calendar-day.other-month {
+    color: #ccc;
+  }
+  
+  .calendar-day.selected-start {
+    background: #007bff;
+    color: white;
+  }
+  
+  .calendar-day.selected-end {
+    background: #007bff;
+    color: white;
+  }
+  
+  .date-picker-footer {
+    padding: 1rem;
+    border-top: 1px solid #dee2e6;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+  
+  .date-input {
+    cursor: pointer;
+  }
+  
+  .date-input:hover {
+    background: #f8f9fa;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .date-picker-layout {
+      flex-direction: column;
+    }
+    
+    .quick-range-section {
+      width: 100%;
+      border-right: none;
+      border-bottom: 1px solid #dee2e6;
+    }
+    
+    .quick-range-options {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+    
+    .quick-range-btn {
+      flex: 1;
+      min-width: 120px;
+    }
+    
+    .dual-calendar-container {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    
+    .date-picker-modal {
+      width: 95vw;
+      height: 95vh;
+    }
+  }
+
+
+
+  .time-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .clock-icon {
+    margin-right: 4px;
+    font-size: 16px;
+  }
+  
+  .time-select {
+    padding: 2px 6px;
+  }
+  
+.calender-input {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+  
+  .calender-input input {
+    width: 100%;
+    padding: 6px 35px 6px 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    box-shadow: none;
+    background-color: #fff;
+    color: #333;
+    height: 34px;
+    line-height: 1.42857143;
+    margin-bottom: 10px;
+  }
+  
+  .calender-input input:focus {
+    border-color: #3c8dbc;
+
+  }
+  
+  .calender-input::after {
+    content: "\1F4C5";
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: #555;
+    pointer-events: none;
+  }
+  

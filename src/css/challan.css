@@ -1,0 +1,261 @@
+.challan-modal-header {
+    border-bottom: 2px solid #000;
+    background-color: #f8f9fa;
+  }
+  
+  .challan-modal-body {
+    padding: 0;
+  }
+  
+  .challan-container {
+    font-family: 'Arial, sans-serif';
+    padding: 20px;
+    background-color: white;
+  }
+
+  .challan-header {
+    text-align: center;
+    /* margin-bottom: 20px; */
+    border: 2px solid #000;
+    padding: 10px;
+    background-color: #f5f5f5;
+  }
+  
+  .company-name {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+    font-weight: bold;
+    color: #000;
+    padding: 5px 0;
+    border-bottom: 1px solid #000;
+  }
+  
+  .branch-name {
+    margin: 10px 0 0 0;
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+    padding: 5px 0;
+  }
+
+  .challan-details-table {
+    width: 100%;
+    margin-bottom: 20px;
+    border-collapse: collapse;
+    border: 2px solid #000; 
+  }
+  
+  .challan-details-table .table-row {
+    border-bottom: 1px solid #000;
+  }
+  
+  .challan-details-table .table-row:last-child {
+    border-bottom: none;
+  }
+  
+  .details-label {
+    width: 25%;
+    padding: 8px 5px;
+    font-weight: bold;
+    vertical-align: top;
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+  }
+  
+  .details-value {
+    width: 25%;
+    padding: 8px 5px;
+    vertical-align: top;
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+  }
+  
+  .details-label:last-child,
+  .details-value:last-child {
+    border-right: none;
+  }
+  
+  .challan-details-table .table-row:last-child .details-label,
+  .challan-details-table .table-row:last-child .details-value {
+    border-bottom: none;
+  }
+
+  .products-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    border: 2px solid #000;
+  }
+  
+  .table-header-row {
+    background-color: #f5f5f5;
+    border-bottom: 2px solid #000;
+  }
+  
+  .product-header,
+  .quantity-header,
+  .serial-header {
+    border: 1px solid #000;
+    padding: 10px 8px;
+    text-align: left;
+    font-weight: bold;
+  }
+  
+  .product-header {
+    width: 50%;
+  }
+  
+  .quantity-header {
+    width: 25%;
+    text-align: center;
+  }
+  
+  .serial-header {
+    width: 25%;
+  }
+  
+  .product-row {
+    border-bottom: 1px solid #000;
+  }
+  
+  .product-row:last-child {
+    border-bottom: none;
+  }
+  
+  .product-cell,
+  .quantity-cell,
+  .serial-cell {
+    border: 1px solid #000;
+    padding: 8px;
+    vertical-align: top;
+  }
+  
+  .quantity-cell {
+    text-align: center;
+  }
+
+  .additional-items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    border: 2px solid #000;
+  }
+  
+  .signatures-section {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    padding-top: 20px;
+  }
+  
+  .signature-box {
+    text-align: center;
+  }
+  
+  .signature-line {
+    border-top: 1px solid #000;
+    width: 200px;
+    margin-bottom: 5px;
+    padding-top: 5px;
+  }
+  
+  .print-button-container {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+  }
+
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+    
+    .challan-modal .modal-content,
+    .challan-modal .modal-content * {
+      visibility: visible;
+    }
+    
+    .challan-modal {
+      position: absolute;
+      left: 0;
+      top: 0;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      width: 100%;
+    }
+    
+    .challan-modal-header,
+    .print-button-container {
+      display: none !important;
+    }
+    
+    .challan-modal-body {
+      padding: 20px;
+      border: none;
+      box-shadow: none;
+    }
+    
+    .challan-container {
+      padding: 0;
+    }
+
+    .challan-header {
+      margin-bottom: 30px;
+    }
+    
+    .products-table {
+      page-break-inside: avoid;
+    }
+    
+    .signatures-section {
+      margin-top: 60px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .challan-container {
+      padding: 15px;
+    }
+    
+    .company-name {
+      font-size: 20px;
+    }
+    
+    .branch-name {
+      font-size: 16px;
+    }
+    
+    .challan-details-table {
+      border: 1px solid #000;
+    }
+    
+    .details-label,
+    .details-value {
+      width: 50%;
+      display: block;
+      border-right: none;
+      border-bottom: 1px solid #000;
+    }
+    
+    .challan-details-table .table-row {
+      display: block;
+      margin-bottom: 0;
+    }
+    
+    .challan-details-table .table-row:last-child .details-label:last-child,
+    .challan-details-table .table-row:last-child .details-value:last-child {
+      border-bottom: none;
+    }
+    
+    .signatures-section {
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+    }
+    
+    .signature-line {
+      width: 150px;
+    }
+  }

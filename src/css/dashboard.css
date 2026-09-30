@@ -1,0 +1,87 @@
+
+.dashboard-root {
+    position: relative;
+    /* background-color: #ECF0F5; */
+    min-height: 100vh;
+  }
+  
+  .overlay-container {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    padding-top: 2rem;
+  }
+  
+  .overlay-background {
+    position: absolute;
+    inset: 0;
+    background-color: black;
+    opacity: 0.6;
+  }
+
+  .notice-box {
+    position: relative;
+    background-color: #3DC1DA;
+    color: white;
+    width: 600px;
+    height: 460px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: transform 0.5s, opacity 0.5s;
+  }
+  
+  .notice-box.animate {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .notice-header {
+    background-color: #2759A2;
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid #776C56;
+  }
+  
+  .notice-header h2 {
+    font-size: 18px;
+    color: white;
+    margin: 0;
+  }
+
+  .notice-content {
+    padding: 2.25rem 1rem 0 1rem;
+  }
+  
+  .notice-content p {
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .clickable-text {
+    font-size: 1.5rem;
+    color: #3c8dbc;
+    line-height: 1.5rem;
+    margin-bottom: 2.5rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+  }
+  
+  .clickable-text:hover {
+    opacity: 0.2;
+  }
+  .close-button {
+    position: absolute;
+    top: 0.5rem;
+    right: 1rem;
+    font-size: 1.25rem;
+    color: black;
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+  

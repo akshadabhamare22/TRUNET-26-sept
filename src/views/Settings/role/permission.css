@@ -1,0 +1,99 @@
+.permission-section table {
+    width: 100%;
+    border-collapse: collapse;
+    /* font-size: 14px; */
+  }
+  
+  .permission-section th, 
+  .permission-section td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  .permission-section .table-warning {
+    background-color: #fff8e1 !important;
+  }
+  
+  .permission-section input[type='checkbox'] {
+    transform: scale(1.2);
+  }
+ 
+
+  /***************** add new style to fixed header   *********************/
+
+
+.permission-section .table-fixed-header-container {
+  max-height: 500px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  position: relative;
+}
+
+.permission-section table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 0 !important;
+}
+
+.permission-section thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #f8f9fa;
+}
+
+.permission-section thead th {
+  position: sticky;
+  top: 0;
+  background-color: #f8f9fa;
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+  border-bottom: 2px solid #dee2e6;
+  padding: 10px;
+  z-index: 10;
+}
+
+.permission-section .table-warning td {
+  position: sticky;
+  top: 0;
+  background-color: #fff8e1 !important;
+  z-index: 5;
+}
+.permission-section tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.permission-section input[type='checkbox'] {
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+.permission-section tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.permission-section .table-warning td {
+  background-color: #fff8e1 !important;
+  font-weight: 500;
+}
+
+.permission-section .table-fixed-header-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.permission-section .table-fixed-header-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.permission-section .table-fixed-header-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.permission-section .table-fixed-header-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
