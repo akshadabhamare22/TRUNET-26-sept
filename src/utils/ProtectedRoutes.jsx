@@ -1,24 +1,40 @@
-import React from 'react'
-import { Navigate } from 'react-router-dom'
-import PropTypes from 'prop-types'
+// import React from 'react'
+// import { Navigate } from 'react-router-dom'
+// import PropTypes from 'prop-types'
 
-const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem('token')
+// const ProtectedRoute = ({ children }) => {
+//   const token = localStorage.getItem('token')
+
+//   if (!token) {
+//     return (
+//       <Navigate
+//         to="/login"
+//         replace
+//       />
+//     )
+//   }
+
+//   return children
+// }
+
+// ProtectedRoute.propTypes = {
+//   children: PropTypes.node.isRequired,
+// }
+
+// export default ProtectedRoute
+
+
+import React from "react";
+import { Navigate, Outlet } from "react-router-dom";
+
+const ProtectedRoute = () => {
+  const token = localStorage.getItem("token");
 
   if (!token) {
-    return (
-      <Navigate
-        to="/login"
-        replace
-      />
-    )
+    return <Navigate to="/login" replace />;
   }
 
-  return children
-}
+  return <Outlet />;
+};
 
-ProtectedRoute.propTypes = {
-  children: PropTypes.node.isRequired,
-}
-
-export default ProtectedRoute
+export default ProtectedRoute;

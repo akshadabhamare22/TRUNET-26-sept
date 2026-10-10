@@ -3397,6 +3397,2060 @@
 // export default IndentDetailProfile;
 
 
+// import React, { useEffect, useState } from "react";
+// import { useNavigate, useParams } from "react-router-dom";
+// import {
+//   AlertCircle,
+//   ArrowLeft,
+//   Ban,
+//   CheckCircle2,
+//   FileText,
+//   PackageCheck,
+//   Printer,
+//   RefreshCw,
+//   Send,
+//   Truck,
+//   X,
+// } from "lucide-react";
+// import RejectionReasonModal from "./RejectionReasonModal";
+// import axiosInstance from "../../axiosInstance";
+// import companyLogo from "../../assets/images/logo.png";
+// import ShipGoodsModal from "./ShipGoodsModal";
+// import IncompleteRemarkModal from "./IncompleteRemarkModal";
+// import { formatDate, formatDateTime } from "../../utils/FormatDateTime";
+// import SerialNumbers from "./SerialNumbers";
+// import ReceivedSerialNumbers from "./ReceivedSerialNumbers";
+// import usePermission from "../../utils/usePermission";
+// import ChallanModal from "./ChallanModal";
+// import Swal from "sweetalert2";
+
+// const IndentDetailProfile = () => {
+//   const { id } = useParams();
+//   const navigate = useNavigate();
+//   const [data, setData] = useState(null);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState(null);
+
+//   const [approvedProducts, setApprovedProducts] = useState([]);
+//   const [alert, setAlert] = useState({ type: '', message: '', visible: false });
+//   const [shipmentModal, setShipmentModal] = useState(false)
+//   const [errors, setErrors] = useState({});
+//   const [currentShipmentAction, setCurrentShipmentAction] = useState(null);
+//   const [incompleteModal, setIncompleteModal] = useState(false);
+
+//   const [productReceipts, setProductReceipts] = useState([]);
+//   const [serialModalVisible, setSerialModalVisible] = useState(false);
+//   const [selectedProduct, setSelectedProduct] = useState(null);
+//   const [assignedSerials, setAssignedSerials] = useState({});
+//   const [challanModal, setChallanModal] = useState(false);
+//   const [rejectionModal, setRejectionModal] = useState(false);
+//   const [receivedSerialModal, setReceivedSerialModal] = useState(false);
+//   const [selectedReceivedProduct, setSelectedReceivedProduct] = useState(null);
+  
+//   const user = JSON.parse(localStorage.getItem('user')) || {};
+//   // Update this section around line 80-82
+// const userRole = (user?.role?.roleTitle || '').toLowerCase();
+// const userCenter = JSON.parse(localStorage.getItem('userCenter')) || {};
+// const userCenterType = (userCenter.centerType || 'Outlet').toLowerCase();
+
+// const userCenterId = userCenter._id;
+// const isCenter = data?.center?._id === userCenterId;
+// const isWarehouse = data?.warehouse?._id === userCenterId;
+
+// // Hide stock qty and reseller qty for center users only
+// const shouldShowExtraColumns = userCenterType !== 'center';
+
+//   const showStockQty = userRole === 'admin' || 'superadmin';
+
+//   const [shipmentData, setShipmentData] = useState({
+//     shippedDate: '',
+//     expectedDeliveryDate: '',
+//     shipmentDetails: '',
+//     shipmentRemark: '',
+//     documents: []
+//   });
+  
+//   const { hasPermission, hasAnyPermission } = usePermission();
+  
+//   const handleOpenSerialModal = (product) => {
+//     setSelectedProduct(product);
+//     setSerialModalVisible(true);
+//   };
+  
+//   const handleOpenReceivedSerialModal = (product) => {
+//     setSelectedReceivedProduct(product);
+//     setReceivedSerialModal(true);
+//   };
+   
+//   const handleSerialNumbersUpdate = (productId, serialsArray) => {
+//     setAssignedSerials(prev => ({
+//       ...prev,
+//       [productId]: serialsArray
+//     }));
+//   };
+  
+//   const openRejectionModal = () => {
+//     setRejectionModal(true);
+//   };
+
+//   // ***** ADDED: navigate to Stock Request list filtered by center + product *****
+//   // Used by the clickable "Center Stock" cell so the user can see every indent
+//   // where that product's stock at this center has been used/consumed.
+//   const handleCenterStockClick = (centerId, productId) => {
+//     if (!centerId || !productId) return;
+//     navigate(`/stock-request?center=${centerId}&product=${productId}`);
+//   };
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         setLoading(true);
+//         console.log('Fetching stock request data for ID:', id);
+//         const response = await axiosInstance.get(`/stockrequest/${id}`);
+//         if (response.data.success) {
+//           const stockData = response.data.data;
+//           console.log('Fetched stock data:', stockData);
+//           console.log('Products in stock data:', stockData.products);
+          
+//           // Log received quantities from API
+//           stockData.products.forEach((item, index) => {
+//             console.log(`Product ${index + 1}: ${item.product?.productTitle}`, {
+//               receivedQuantity: item.receivedQuantity,
+//               approvedQuantity: item.approvedQuantity,
+//               status: item.status
+//             });
+//           });
+          
+//           setData(stockData);
+
+//           const initialApproved = stockData.products.map(item => ({
+//             _id: item._id,
+//             productId: item.product?._id,
+//             approvedQty:
+//               item.approvedQuantity !== undefined && item.approvedQuantity !== null
+//                 ? item.approvedQuantity
+//                 : item.quantity || '',
+//             approvedRemark: item.approvedRemark || ''
+//           }));
+//           setApprovedProducts(initialApproved);
+  
+//           const initialSerials = {};
+//           stockData.products.forEach(item => {
+//             if (item.product?.trackSerialNumber === "Yes" && item.approvedSerials?.length > 0) {
+//               initialSerials[item.product._id] = item.approvedSerials.map(sn => ({ serialNumber: sn }));
+//             }
+//           });
+//           setAssignedSerials(initialSerials);
+  
+//         } else {
+//           throw new Error('Failed to fetch data');
+//         }
+//       } catch (err) {
+//         setError(err.message);
+//         console.error('Error fetching data:', err);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+  
+//     if (id) fetchData();
+//   }, [id]);
+
+//   const handleShipGoods = async (shipmentData) => {
+//     try {
+//       const response = await axiosInstance.post(`/stockrequest/${id}/ship`, shipmentData)
+//       if (response.data.success) {
+//         setAlert({ type: 'success', message: 'Shipment created successfully', visible: true })
+//         setShipmentModal(false)
+//         try {
+//           await axiosInstance.patch(`/stockrequest/${id}/warehouse-challan-approval`, { 
+//             warehouseChallanApproval: 'approved' 
+//           });
+//           console.log('Challan auto-approved after shipment');
+//         } catch (challanError) {
+//           console.error('Failed to auto-approve challan:', challanError);
+//         }
+        
+//         setTimeout(() => window.location.reload(), 1000)
+//       } else {
+//         setAlert({ type: 'danger', message: 'Failed to create shipment', visible: true })
+//       }
+//     } catch (err) {
+//       console.error(err)
+//       setAlert({ type: 'danger', message: 'Error creating shipment', visible: true })
+//     }
+//   }
+
+//   const handleBack = () => navigate('/indent-detail');
+
+//   // Updated useEffect for productReceipts with console logs
+//   useEffect(() => {
+//     if (data?.products) {
+//       console.log('Initializing productReceipts from data.products');
+//       console.log('Current data.products:', data.products);
+      
+//       const initialReceipts = data.products.map(item => {
+//         const receivedQty = item.receivedQuantity !== undefined && item.receivedQuantity !== null 
+//           ? item.receivedQuantity 
+//           : '';
+        
+//         console.log(`Product: ${item.product?.productTitle}`, {
+//           originalReceivedQuantity: item.receivedQuantity,
+//           approvedQuantity: item.approvedQuantity,
+//           setReceivedQuantity: receivedQty,
+//           receivedRemark: item.receivedRemark || ''
+//         });
+        
+//         return {
+//           productId: item.product?._id,
+//           productTitle: item.product?.productTitle,
+//           receivedQuantity: receivedQty,
+//           receivedRemark: item.receivedRemark || '',
+//         };
+//       });
+      
+//       console.log('Initial productReceipts state:', initialReceipts);
+//       setProductReceipts(initialReceipts);
+//     }
+//   }, [data]);
+
+//   // Auto-fill received quantity with approved quantity for center users
+//   useEffect(() => {
+//     // Only auto-fill when:
+//     // 1. Data is loaded
+//     // 2. Status is Shipped
+//     // 3. User is center
+//     // 4. User is viewing their own center
+//     // 5. Product receipts are initialized
+//     if (data?.status === 'Shipped' && userCenterType === 'center' && isCenter && data?.products && productReceipts.length > 0) {
+//       let needsUpdate = false;
+//       const updatedReceipts = productReceipts.map(receipt => {
+//         const product = data.products.find(p => p.product?._id === receipt.productId);
+//         // If received quantity is empty or 0, and approved quantity exists, auto-fill
+//         if (product && 
+//             (receipt.receivedQuantity === undefined || 
+//              receipt.receivedQuantity === null || 
+//              receipt.receivedQuantity === '' || 
+//              receipt.receivedQuantity === 0) && 
+//             product.approvedQuantity && 
+//             product.approvedQuantity > 0) {
+//           needsUpdate = true;
+//           console.log(`Auto-filling ${product.product?.productTitle} with approved quantity: ${product.approvedQuantity}`);
+//           return {
+//             ...receipt,
+//             receivedQuantity: product.approvedQuantity
+//           };
+//         }
+//         return receipt;
+//       });
+      
+//       if (needsUpdate) {
+//         console.log('Auto-filling received quantities with approved quantities:', updatedReceipts);
+//         setProductReceipts(updatedReceipts);
+//       }
+//     }
+//   }, [data, userCenterType, isCenter, productReceipts.length]);
+  
+//   const handleReceiptChange = (productId, field, value) => {
+//     console.log(`Updating receipt for product ${productId}:`, { field, value });
+//     setProductReceipts(prev =>
+//       prev.map(p => {
+//         if (p.productId === productId) {
+//           console.log(`Updated product receipt:`, { ...p, [field]: value });
+//           return { ...p, [field]: value };
+//         }
+//         return p;
+//       })
+//     );
+//   };
+
+//   const handleApprovedChange = (productId, field, value) => {
+//     if (field === 'approvedQty') {
+//       if (value === '' || /^\d+$/.test(value)) {
+//         setErrors(prev => ({ ...prev, [productId]: undefined }));
+//       } else {
+//         setErrors(prev => ({ ...prev, [productId]: 'The input value was not a correct number' }));
+//       }
+//     }
+  
+//     setApprovedProducts(prev =>
+//       prev.map(p =>
+//         p._id === productId ? { ...p, [field]: value } : p
+//       )
+//     );
+//   };  
+
+// const handleApprove = async () => {
+//   let hasError = false;
+
+//   const payload = approvedProducts.map(p => {
+//     if (p.approvedQty === '' || !/^\d+$/.test(p.approvedQty)) {
+//       setErrors(prev => ({ ...prev, [p._id]: 'The input value was not a correct number' }));
+//       hasError = true;
+//     }
+//     const productSerials = assignedSerials[p.productId] || [];
+//     const limitedSerials = productSerials.slice(0, Number(p.approvedQty));
+
+//     return {
+//       productId: p.productId,
+//       approvedQuantity: Number(p.approvedQty),
+//       approvedRemark: p.approvedRemark || '',
+//       approvedSerials: limitedSerials.map(s => s.serialNumber),
+//     };
+//   });
+
+//   if (hasError) return;
+
+//   try {
+//     const response = await axiosInstance.post(`/stockrequest/${id}/approve`, {
+//       productApprovals: payload,
+//     });
+//     if (!response.data.success) {
+//       setAlert({
+//         type: 'danger',
+//         message: response.data.message || 'Failed to approve request',
+//         visible: true,
+//       });
+//       return;
+//     }
+//     setAlert({
+//       type: 'success',
+//       message: 'Stock request approved successfully',
+//       visible: true,
+//     });
+//     setTimeout(() => window.location.reload(), 1000);
+//   } catch (err) {
+//     console.error(err);
+
+//     const errorMessage =
+//       err.response?.data?.message ||
+//       err.message || 
+//       'An unexpected error occurred';
+
+//     setAlert({
+//       type: 'danger',
+//       message: errorMessage,
+//       visible: true,
+//     });
+//   }
+// };
+
+// const handleReject = async (rejectionReason) => {
+//   try {
+//     const response = await axiosInstance.put(`/stockrequest/${id}`, { 
+//       status: 'Rejected', 
+//       rejectionReason: rejectionReason 
+//     });
+//     if (response.data.success) {
+//       setAlert({ type: 'success', message: 'Stock request rejected successfully', visible: true });
+//       setTimeout(() => window.location.reload(), 1000);
+//     } else {
+//       setAlert({ type: 'danger', message: 'Failed to reject request', visible: true });
+//     }
+//   } catch (err) {
+//     console.error(err);
+//     const errorMessage = err.response?.data?.message || 'Error rejecting stock request';
+//     setAlert({ type: 'danger', message: errorMessage, visible: true });
+//   }
+// };
+
+// const handleSubmitRequest = async () => {
+//   try {
+//     const response = await axiosInstance.put(`/stockrequest/${id}`, { status: 'Submitted' });
+//     if (response.data.success) {
+//       setAlert({ type: 'success', message: 'Data submitted successfully', visible: true });
+//       setTimeout(() => window.location.reload(), 1000);
+//     } else {
+//       setAlert({ type: 'danger', message: 'Failed to submit', visible: true });
+//     }
+//   } catch (err) {
+//     console.error(err);
+//     setAlert({ type: 'danger', message: 'Error to submit data', visible: true });
+//   }
+// };
+
+// const handleChangeApprovedQty = async () => {
+//   let hasError = false;
+//   const payload = approvedProducts.map(p => {
+//     if (p.approvedQty === '' || !/^\d+$/.test(p.approvedQty)) {
+//       setErrors(prev => ({
+//         ...prev,
+//         [p._id]: 'The input value was not a correct number',
+//       }));
+//       hasError = true;
+//     }
+//     return {
+//       productId: p.productId,
+//       approvedQuantity: Number(p.approvedQty),
+//       approvedRemark: p.approvedRemark || '',
+//       approvedSerials: (assignedSerials[p.productId] || []).map(s => s.serialNumber),
+//     };
+//   });
+
+//   if (hasError) return;
+//   console.log("Final payload sent to API:", payload); 
+//   try {
+//     const response = await axiosInstance.patch(
+//       `/stockrequest/${id}/approved-quantities`,
+//       { productApprovals: payload }
+//     );
+
+//     if (response.data.success) {
+//       setAlert({
+//         type: 'success',
+//         message: 'Approved quantities updated successfully',
+//         visible: true,
+//       });
+//       setTimeout(() => window.location.reload(), 1000);
+//     } else {
+//       setAlert({
+//         type: 'danger',
+//         message: response.data.message || 'Failed to update approved quantities',
+//         visible: true,
+//       });
+//     }
+//   } catch (err) {
+//     console.error(err);
+//     const backendMessage =
+//       err.response?.data?.message || 'Error updating approved quantities';
+
+//     setAlert({
+//       type: 'danger',
+//       message: backendMessage,
+//       visible: true,
+//     });
+//   }
+// };
+
+// const handleCancelShipment = async () => {
+//   try {
+//     const response = await axiosInstance.post(`/stockrequest/${id}/reject-shipment`);
+//     if (response.data.success) {
+//       setAlert({ type: 'success', message: 'Shipment canceled successfully', visible: true });
+//       setTimeout(() => window.location.reload(), 1000);
+//     } else {
+//       setAlert({ type: 'danger', message: 'Failed to cancel shipment', visible: true });
+//     }
+//   } catch (err) {
+//     console.error(err);
+//     setAlert({ type: 'danger', message: 'Error canceling shipment', visible: true });
+//   }
+// };
+
+// const handleCompleteIndent = async () => {
+//   try {
+//     console.log('Completing indent with productReceipts:', productReceipts);
+    
+//     if (userCenterType === 'center' && isCenter) {
+//       const missingReceipts = productReceipts.filter(item => 
+//         item.receivedQuantity === undefined || 
+//         item.receivedQuantity === null || 
+//         item.receivedQuantity === '' ||
+//         isNaN(Number(item.receivedQuantity))
+//       );
+
+//       if (missingReceipts.length > 0) {
+//         console.log('Missing receipts:', missingReceipts);
+//         setAlert({
+//           type: 'danger',
+//           message: 'Please enter received quantity for all products before completing the indent',
+//           visible: true,
+//         });
+//         return;
+//       }
+//     }
+
+//     let payload = [];
+
+//     if (isCenter) {
+//       payload = productReceipts.map(item => ({
+//         productId: item.productId,
+//         receivedQuantity: Number(item.receivedQuantity) || 0,
+//         receivedRemark: item.receivedRemark || '',
+//       }));
+//     } else {
+//       payload = data.products.map(item => ({
+//         productId: item.product?._id,
+//         receivedQuantity: item.approvedQuantity || item.receivedQuantity || 0,
+//         receivedRemark: item.receivedRemark || '',
+//       }));
+//     }
+
+//     console.log('Complete indent payload:', payload);
+    
+//     const response = await axiosInstance.post(`/stockrequest/${id}/complete`, {
+//       productReceipts: payload,
+//     });
+    
+//     if (!response.data.success) {
+//       setAlert({
+//         type: 'danger',
+//         message: response.data.message || 'Failed to complete indent',
+//         visible: true,
+//       });
+//       return;
+//     }
+    
+//     setAlert({
+//       type: 'success',
+//       message: 'Indent completed successfully',
+//       visible: true,
+//     });
+
+//     setTimeout(() => window.location.reload(), 1000);
+//   } catch (err) {
+//     console.error('Error in handleCompleteIndent:', err);
+
+//     const errorMessage =
+//       err.response?.data?.message ||
+//       err.message ||
+//       'An unexpected error occurred while completing the indent';
+
+//     setAlert({
+//       type: 'danger',
+//       message: errorMessage,
+//       visible: true,
+//     });
+//   }
+// };
+
+// const handleCompleteIndentWithChallan = async () => {
+//   const result = await Swal.fire({
+//     title: 'Are you sure?',
+//     text: 'Do you want to complete this indent and approve the challan?',
+//     icon: 'question',
+//     showCancelButton: true,
+//     confirmButtonColor: '#dc3545',
+//     cancelButtonColor: '#6c757d',
+//     confirmButtonText: 'Yes, complete it!',
+//     cancelButtonText: 'Cancel'
+//   });
+
+//   if (!result.isConfirmed) {
+//     return;
+//   }
+
+//   try {
+//     await handleCompleteIndent();
+//     const response = await axiosInstance.patch(`/stockrequest/${id}/center-challan-approval`, { 
+//       centerChallanApproval: 'approved' 
+//     });
+    
+//     if (response.data.success) {
+//       console.log('Challan auto-approved after completion');
+//     }
+    
+//   } catch (err) {
+//     console.error('Error in complete process:', err);
+//   }
+// };
+
+// const handleOpenUpdateShipment = () => {
+//   if (data.shippingInfo) {
+//     setShipmentData({
+//       shippedDate: data.shippingInfo.shippedDate?.split('T')[0] || '',
+//       expectedDeliveryDate: data.shippingInfo.expectedDeliveryDate?.split('T')[0] || '',
+//       shipmentDetails: data.shippingInfo.shipmentDetails || '',
+//       shipmentRemark: data.shippingInfo.shipmentRemark || '',
+//       documents: data.shippingInfo.documents || []
+//     });
+//   }
+//   setCurrentShipmentAction(() => handleUpdateShipment);
+//   setShipmentModal(true);
+// };
+
+// const handleUpdateShipment = async (shipmentData) => {
+//   try {
+//     const response = await axiosInstance.patch(`/stockrequest/${id}/shipping-info`, shipmentData);
+//     if (response.data.success) {
+//       setAlert({ type: 'success', message: 'Shipment updated successfully', visible: true });
+//       setShipmentModal(false);
+//       setTimeout(() => window.location.reload(), 1000);
+//     } else {
+//       setAlert({ type: 'danger', message: 'Failed to update shipment', visible: true });
+//     }
+//   } catch (err) {
+//     console.error(err);
+//     setAlert({ type: 'danger', message: 'Error updating shipment', visible: true });
+//   }
+// };
+
+// const handleMarkIncomplete = async (remark) => {
+//   try {
+//     console.log('Marking as incomplete with productReceipts:', productReceipts);
+    
+//     if (userCenterType === 'center' && isCenter) {
+//       const missingReceipts = productReceipts.filter(item => 
+//         item.receivedQuantity === undefined || 
+//         item.receivedQuantity === null || 
+//         item.receivedQuantity === '' ||
+//         isNaN(Number(item.receivedQuantity))
+//       );
+
+//       if (missingReceipts.length > 0) {
+//         console.log('Missing receipts:', missingReceipts);
+//         setAlert({
+//           type: 'danger',
+//           message: 'Please enter received quantity for all products before marking as incomplete',
+//           visible: true,
+//         });
+//         return;
+//       }
+//     }
+    
+//     const receivedProducts = productReceipts.map(item => ({
+//       productId: item.productId,
+//       receivedQuantity: Number(item.receivedQuantity) || 0,
+//       receivedRemark: item.receivedRemark || '',
+//     }));
+    
+//     const payload = {
+//       incompleteRemark: remark,
+//       receivedProducts,
+//     };
+    
+//     console.log('Incomplete Payload:', payload);
+//     const response = await axiosInstance.post(
+//       `/stockrequest/${id}/mark-incomplete`,
+//       payload
+//     );
+
+//     if (response.data.success) {
+//       setAlert({
+//         type: 'success',
+//         message: 'Stock request marked as incomplete',
+//         visible: true,
+//       });
+//       setIncompleteModal(false);
+//       setTimeout(() => window.location.reload(), 1000);
+//     } else {
+//       setAlert({
+//         type: 'danger',
+//         message: 'Failed to mark incomplete',
+//         visible: true,
+//       });
+//     }
+//   } catch (err) {
+//     console.error(err);
+//     setAlert({
+//       type: 'danger',
+//       message: 'Error marking incomplete',
+//       visible: true,
+//     });
+//   }
+// };
+
+// const handleIncomplete = async () => {
+//   try {
+//     const approvalsPayload = approvedProducts.map(p => {
+//       const product = data.products.find(prod => prod.product?._id === p.productId);
+//       const isSerialized = product?.product?.trackSerialNumber === "Yes";
+      
+//       const currentSerials = assignedSerials[p.productId] || [];
+      
+//       return {
+//         productId: p.productId,
+//         approvedQuantity: Number(p.approvedQty) || 0,
+//         approvedRemark: p.approvedRemark || '',
+//         ...(isSerialized && {
+//           approvedSerials: currentSerials.map(s => s.serialNumber).slice(0, Number(p.approvedQty))
+//         })
+//       };
+//     });
+
+//     const receiptsPayload = productReceipts.map(r => ({
+//       productId: r.productId,
+//       receivedQuantity: Number(r.receivedQuantity) || 0,
+//       receivedRemark: r.receivedRemark || '',
+//     }));
+
+//     console.log('Final Incomplete Payload:', {
+//       productApprovals: approvalsPayload,
+//       productReceipts: receiptsPayload,
+//     });
+
+//     const response = await axiosInstance.patch(
+//       `/stockrequest/${id}/complete-incomplete`,
+//       {
+//         productApprovals: approvalsPayload,
+//         productReceipts: receiptsPayload,
+//       }
+//     );
+//     if (!response.data.success) {
+//       setAlert({
+//         type: 'danger',
+//         message: response.data.message || 'Failed to complete indent',
+//         visible: true,
+//       });
+//       return;
+//     }
+//     setAlert({
+//       type: 'success',
+//       message: 'Indent completed successfully',
+//       visible: true,
+//     });
+
+//     setTimeout(() => window.location.reload(), 1000);
+//   } catch (err) {
+//     console.error('Error in handleIncomplete:', err);
+//     const errorMessage =
+//       err.response?.data?.message ||
+//       err.message ||
+//       'An unexpected error occurred while completing the indent';
+
+//     setAlert({
+//       type: 'danger',
+//       message: errorMessage,
+//       visible: true,
+//     });
+//   }
+// };
+
+// const handleApprovedBlur = (productId, value) => {
+//     if (value === '' || !/^\d+$/.test(value)) {
+//       setErrors(prev => ({ ...prev, [productId]: 'The input value was not a correct number' }));
+//     }
+// };
+
+// const handlePrintIndent = () => {
+//   const printWindow = window.open('', '_blank');
+//   const logoPath = companyLogo; 
+//   const currentDate = new Date().toLocaleDateString('en-US', {
+//     year: 'numeric',
+//     month: 'long',
+//     day: 'numeric'
+//   });
+
+//   let subtotal = 0;
+//   const gstRate = 18;
+  
+//   const productsWithTotals = data.products.map(item => {
+//     const approvedQty = item.quantity || 0;
+//     const salePrice = item.product?.salePrice || 0;
+//     const total = approvedQty * salePrice;
+//     const gstAmount = (total * gstRate) / 100;
+//     const amountWithGst = total + gstAmount;
+    
+//     subtotal += total;
+    
+//     return {
+//       ...item,
+//       approvedQty,
+//       salePrice,
+//       total,
+//       gstAmount,
+//       amountWithGst
+//     };
+//   });
+
+//   const totalGst = (subtotal * gstRate) / 100;
+//   const grandTotal = subtotal + totalGst;
+//   const indentDate = data.date ? new Date(data.date).toLocaleDateString('en-US', {
+//     year: 'numeric',
+//     month: 'long',
+//     day: 'numeric'
+//   }) : '';
+
+//   const formatDate = (dateString) => {
+//     if (!dateString) return '';
+//     return new Date(dateString).toLocaleDateString('en-US', {
+//       year: 'numeric',
+//       month: 'long',
+//       day: 'numeric'
+//     });
+//   };
+
+//   const formatDateTime = (dateString) => {
+//     if (!dateString) return '';
+//     return new Date(dateString).toLocaleDateString('en-US', {
+//       year: 'numeric',
+//       month: 'long',
+//       day: 'numeric'
+//     });
+//   };
+
+//   const printContent = `
+//     <!DOCTYPE html>
+//     <html>
+//     <head>
+//       <title>Indent Invoice - ${data.orderNumber || ''}</title>
+//       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+//       <style>
+//         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+//         :root {
+//           --ink:        #0f1117;
+//           --ink-mid:    #3a3f4b;
+//           --ink-light:  #6b7280;
+//           --rule:       #d1d5db;
+//           --rule-light: #e5e8ec;
+//           --accent:     #1a56db;
+//           --accent-bg:  #eff4ff;
+//           --surface:    #f8f9fb;
+//           --white:      #ffffff;
+//           --status-bg:  #e8f5e9;
+//           --status-txt: #2e7d32;
+//         }
+
+//         body {
+//           font-family: 'DM Sans', sans-serif;
+//           background: #edf0f4;
+//           color: var(--ink);
+//           font-size: 13px;
+//           line-height: 1.5;
+//           padding: 32px 0 48px;
+//         }
+
+//         /* ── Page shell ─────────────────────────────────────── */
+//         .page {
+//           width: 900px;
+//           margin: 0 auto;
+//           background: var(--white);
+//           border: 1px solid var(--rule);
+//           border-radius: 6px;
+//           overflow: hidden;
+//           box-shadow: 0 4px 24px rgba(0,0,0,.08);
+//         }
+
+//         /* ── Top accent stripe ──────────────────────────────── */
+//         .stripe {
+//           height: 5px;
+//           background: linear-gradient(90deg, var(--accent) 0%, #3b82f6 60%, #60a5fa 100%);
+//         }
+
+//         /* ── Header ─────────────────────────────────────────── */
+//         .header {
+//           display: flex;
+//           align-items: flex-start;
+//           justify-content: space-between;
+//           padding: 28px 36px 22px;
+//           border-bottom: 1px solid var(--rule-light);
+//         }
+//         .logo-wrap {
+//           width: 160px;
+//           height: 80px;
+//           display: flex;
+//           align-items: center;
+//         }
+//         .logo-wrap img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+//         .company-block { text-align: right; }
+//         .company-name {
+//           font-size: 16px;
+//           font-weight: 700;
+//           color: var(--ink);
+//           line-height: 1.3;
+//           margin-bottom: 6px;
+//         }
+//         .company-block p {
+//           font-size: 12px;
+//           color: var(--ink-mid);
+//           line-height: 1.6;
+//         }
+
+//         /* ── Title band ─────────────────────────────────────── */
+//         .title-band {
+//           background: var(--ink);
+//           padding: 12px 36px;
+//           display: flex;
+//           align-items: center;
+//           justify-content: space-between;
+//         }
+//         .title-band .doc-title {
+//           font-size: 15px;
+//           font-weight: 700;
+//           letter-spacing: .08em;
+//           text-transform: uppercase;
+//           color: #fff;
+//         }
+//         .status-pill {
+//           display: inline-flex;
+//           align-items: center;
+//           gap: 6px;
+//           background: var(--status-bg);
+//           color: var(--status-txt);
+//           font-size: 11px;
+//           font-weight: 600;
+//           letter-spacing: .06em;
+//           text-transform: uppercase;
+//           padding: 4px 12px;
+//           border-radius: 20px;
+//         }
+//         .status-pill::before {
+//           content: '';
+//           width: 7px; height: 7px;
+//           border-radius: 50%;
+//           background: var(--status-txt);
+//           flex-shrink: 0;
+//         }
+
+//         /* ── Meta row (Indent No / Date) ────────────────────── */
+//         .meta-row {
+//           display: flex;
+//           gap: 0;
+//           border-bottom: 1px solid var(--rule-light);
+//         }
+//         .meta-cell {
+//           flex: 1;
+//           padding: 14px 36px;
+//           border-right: 1px solid var(--rule-light);
+//         }
+//         .meta-cell:last-child { border-right: none; }
+//         .meta-label {
+//           font-size: 10px;
+//           font-weight: 600;
+//           letter-spacing: .08em;
+//           text-transform: uppercase;
+//           color: var(--ink-light);
+//           margin-bottom: 3px;
+//         }
+//         .meta-value {
+//           font-family: 'DM Mono', monospace;
+//           font-size: 14px;
+//           font-weight: 500;
+//           color: var(--ink);
+//         }
+
+//         /* ── Address section ────────────────────────────────── */
+//         .address-row {
+//           display: grid;
+//           grid-template-columns: 1fr 1px 1fr;
+//           border-bottom: 1px solid var(--rule-light);
+//         }
+//         .address-divider { background: var(--rule-light); }
+//         .address-cell { padding: 20px 36px; }
+//         .address-cell .section-label {
+//           font-size: 10px;
+//           font-weight: 700;
+//           letter-spacing: .1em;
+//           text-transform: uppercase;
+//           color: var(--accent);
+//           border-bottom: 2px solid var(--accent-bg);
+//           padding-bottom: 5px;
+//           margin-bottom: 10px;
+//         }
+//         .address-name {
+//           font-size: 13px;
+//           font-weight: 700;
+//           color: var(--ink);
+//           margin-bottom: 4px;
+//         }
+//         .address-cell p {
+//           font-size: 12px;
+//           color: var(--ink-mid);
+//           line-height: 1.65;
+//         }
+
+//         /* ── Products table ─────────────────────────────────── */
+//         .table-wrap { padding: 0 36px 28px; margin-top: 24px; }
+//         .table-heading {
+//           font-size: 10px;
+//           font-weight: 700;
+//           letter-spacing: .1em;
+//           text-transform: uppercase;
+//           color: var(--ink-light);
+//           margin-bottom: 10px;
+//         }
+
+//         .products-table {
+//           width: 100%;
+//           border-collapse: collapse;
+//           font-size: 12.5px;
+//         }
+//         .products-table thead tr {
+//           background: var(--ink);
+//         }
+//         .products-table th {
+//           padding: 10px 12px;
+//           text-align: left;
+//           color: #fff;
+//           font-weight: 600;
+//           font-size: 11px;
+//           letter-spacing: .05em;
+//           text-transform: uppercase;
+//           white-space: nowrap;
+//         }
+//         .products-table th:not(:first-child) { text-align: right; }
+//         .products-table td {
+//           padding: 9px 12px;
+//           border-bottom: 1px solid var(--rule-light);
+//           color: var(--ink-mid);
+//           vertical-align: top;
+//         }
+//         .products-table td:not(:first-child):not(:nth-child(2)) { text-align: right; font-family: 'DM Mono', monospace; font-size: 12px; }
+//         .products-table td:nth-child(2) { color: var(--ink); font-weight: 500; }
+//         .products-table tbody tr:nth-child(even) td { background: var(--surface); }
+//         .products-table tbody tr:last-child td { border-bottom: none; }
+//         .products-table .amount-col { font-weight: 700; color: var(--ink); }
+
+//         /* Totals footer */
+//         .totals-row {
+//           display: flex;
+//           justify-content: flex-end;
+//           padding: 0 36px 24px;
+//         }
+//         .totals-box {
+//           width: 280px;
+//           border: 1px solid var(--rule);
+//           border-radius: 6px;
+//           overflow: hidden;
+//         }
+//         .totals-line {
+//           display: flex;
+//           justify-content: space-between;
+//           align-items: center;
+//           padding: 8px 16px;
+//           border-bottom: 1px solid var(--rule-light);
+//           font-size: 12.5px;
+//         }
+//         .totals-line:last-child { border-bottom: none; }
+//         .totals-line .t-label { color: var(--ink-mid); }
+//         .totals-line .t-val { font-family: 'DM Mono', monospace; color: var(--ink); font-weight: 500; }
+//         .totals-line.grand {
+//           background: var(--ink);
+//           color: #fff;
+//         }
+//         .totals-line.grand .t-label { color: #c8d0de; font-weight: 600; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; }
+//         .totals-line.grand .t-val { color: #fff; font-size: 15px; font-weight: 700; }
+
+//         /* ── Info grid ──────────────────────────────────────── */
+//         .info-section { padding: 0 36px 28px; }
+//         .info-grid {
+//           width: 100%;
+//           border-collapse: collapse;
+//           border: 1px solid var(--rule);
+//           border-radius: 6px;
+//           overflow: hidden;
+//           font-size: 12.5px;
+//         }
+//         .info-grid td {
+//           padding: 9px 14px;
+//           border: 1px solid var(--rule-light);
+//           vertical-align: top;
+//         }
+//         .info-grid .lbl {
+//           font-size: 10px;
+//           font-weight: 700;
+//           letter-spacing: .07em;
+//           text-transform: uppercase;
+//           color: var(--ink-light);
+//           background: var(--surface);
+//           white-space: nowrap;
+//           width: 14%;
+//         }
+//         .info-grid .val {
+//           color: var(--ink-mid);
+//           width: 36%;
+//         }
+//         .info-grid .val strong { color: var(--ink); }
+
+//         /* ── Footer / signature ─────────────────────────────── */
+//         .sig-row {
+//           border-top: 1px solid var(--rule-light);
+//           padding: 24px 36px 28px;
+//           display: flex;
+//           justify-content: space-between;
+//           align-items: flex-end;
+//         }
+//         .sig-note {
+//           font-size: 11px;
+//           color: var(--ink-light);
+//           max-width: 360px;
+//           line-height: 1.7;
+//         }
+//         .sig-block { text-align: center; width: 180px; }
+//         .sig-line {
+//           border-top: 1.5px solid var(--ink-mid);
+//           padding-top: 8px;
+//           margin-top: 44px;
+//           font-size: 11.5px;
+//           font-weight: 600;
+//           color: var(--ink-mid);
+//           letter-spacing: .04em;
+//           text-transform: uppercase;
+//         }
+
+//         /* ── Print buttons (screen only) ────────────────────── */
+//         .btn-row {
+//           text-align: center;
+//           padding: 20px 0 8px;
+//           display: flex;
+//           gap: 12px;
+//           justify-content: center;
+//         }
+//         .btn {
+//           padding: 10px 28px;
+//           font-family: 'DM Sans', sans-serif;
+//           font-size: 13px;
+//           font-weight: 600;
+//           border: none;
+//           border-radius: 5px;
+//           cursor: pointer;
+//           letter-spacing: .02em;
+//           transition: opacity .15s;
+//         }
+//         .btn:hover { opacity: .85; }
+//         .btn-primary { background: var(--accent); color: #fff; }
+//         .btn-ghost { background: var(--surface); color: var(--ink-mid); border: 1px solid var(--rule); }
+
+//         /* ── Print media ────────────────────────────────────── */
+//         @media print {
+//           body { background: #fff; padding: 0; font-size: 11.5px; }
+//           .page { width: 100%; box-shadow: none; border: none; border-radius: 0; }
+//           .btn-row { display: none; }
+//           .products-table thead tr { background: var(--ink) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+//           .title-band { background: var(--ink) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+//           .info-grid .lbl { background: var(--surface) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+//           .totals-line.grand { background: var(--ink) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+//           .stripe { background: var(--accent) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+//         }
+//       </style>
+//     </head>
+//     <body>
+//       <div class="page">
+//         <div class="stripe"></div>
+
+//         <!-- ── HEADER ───────────────────────────────────────── -->
+//         <div class="header">
+//           <div class="logo-wrap">
+//             <img src="${logoPath}" alt="Company Logo">
+//           </div>
+//           <div class="company-block">
+//             <div class="company-name">Sancfil Technologies Internet Services Pvt Ltd</div>
+//             <p>A1, 1st Floor, Landmark Co-operative Housing Society</p>
+//             <p>Sector 14, Vashi, Navi Mumbai – 400 709</p>
+//             <p>Tel: +91 8097578100 / 8097578176</p>
+//             <p>stock@trunet.co.in</p>
+//           </div>
+//         </div>
+
+//         <!-- ── TITLE BAND ────────────────────────────────────── -->
+//         <div class="title-band">
+//           <span class="doc-title">Stock Indent</span>
+//           <span class="status-pill">${data.status || 'Pending'}</span>
+//         </div>
+
+//         <!-- ── META ROW ──────────────────────────────────────── -->
+//         <div class="meta-row">
+//           <div class="meta-cell">
+//             <div class="meta-label">Indent Number</div>
+//             <div class="meta-value">${data.orderNumber || '—'}</div>
+//           </div>
+//           <div class="meta-cell">
+//             <div class="meta-label">Indent Date</div>
+//             <div class="meta-value">${indentDate || '—'}</div>
+//           </div>
+//           <div class="meta-cell">
+//             <div class="meta-label">Print Date</div>
+//             <div class="meta-value">${currentDate}</div>
+//           </div>
+//         </div>
+
+//         <!-- ── ADDRESSES ─────────────────────────────────────── -->
+//         <div class="address-row">
+//           <div class="address-cell">
+//             <div class="section-label">From — Center Details</div>
+//             <div class="address-name">${data.center?.centerName || ''}</div>
+//             <p>${data.center?.addressLine1 || ''} ${data.center?.addressLine2 || ''}</p>
+//             <p>${data.center?.city || ''}${data.center?.city && data.center?.state ? ', ' : ''}${data.center?.state || ''}</p>
+//             <p>${data.center?.email || ''}</p>
+//           </div>
+//           <div class="address-divider"></div>
+//           <div class="address-cell">
+//             <div class="section-label">To — Warehouse Details</div>
+//             <div class="address-name">${data.warehouse?.centerName || ''}</div>
+//             <p>${data.warehouse?.addressLine1 || ''} ${data.warehouse?.addressLine2 || ''}</p>
+//             <p>${data.warehouse?.city || ''}${data.warehouse?.city && data.warehouse?.state ? ', ' : ''}${data.warehouse?.state || ''}</p>
+//             <p>${data.warehouse?.email || ''}</p>
+//           </div>
+//         </div>
+
+//         <!-- ── PRODUCTS TABLE ────────────────────────────────── -->
+//         <div class="table-wrap">
+//           <div class="table-heading">Products &amp; Pricing</div>
+//           <table class="products-table">
+//             <thead>
+//               <tr>
+//                 <th style="width:36px">#</th>
+//                 <th>Product</th>
+//                 <th>Qty</th>
+//                 <th>Rate (₹)</th>
+//                 <th>Total (₹)</th>
+//                 <th>GST @${gstRate}%&nbsp;(₹)</th>
+//                 <th>Amount (₹)</th>
+//               </tr>
+//             </thead>
+//             <tbody>
+//               ${productsWithTotals.map((item, index) => `
+//                 <tr>
+//                   <td style="color:var(--ink-light);font-size:11px">${index + 1}</td>
+//                   <td>${item.product?.productTitle || ''}</td>
+//                   <td>${item.quantity || 0}</td>
+//                   <td>${item.salePrice.toFixed(2)}</td>
+//                   <td>${item.total.toFixed(2)}</td>
+//                   <td>${item.gstAmount.toFixed(2)}</td>
+//                   <td class="amount-col">${item.amountWithGst.toFixed(2)}</td>
+//                 </tr>
+//               `).join('')}
+//             </tbody>
+//           </table>
+//         </div>
+
+//         <!-- ── TOTALS ────────────────────────────────────────── -->
+//         <div class="totals-row">
+//           <div class="totals-box">
+//             <div class="totals-line">
+//               <span class="t-label">Subtotal</span>
+//               <span class="t-val">₹ ${subtotal.toFixed(2)}</span>
+//             </div>
+//             <div class="totals-line">
+//               <span class="t-label">GST @ ${gstRate}%</span>
+//               <span class="t-val">₹ ${totalGst.toFixed(2)}</span>
+//             </div>
+//             <div class="totals-line grand">
+//               <span class="t-label">Grand Total</span>
+//               <span class="t-val">₹ ${grandTotal.toFixed(2)}</span>
+//             </div>
+//           </div>
+//         </div>
+
+//         <!-- ── INFO GRID ─────────────────────────────────────── -->
+//         <div class="info-section">
+//           <div class="table-heading" style="margin-bottom:10px">Shipment &amp; Additional Info</div>
+//           <table class="info-grid">
+//             <tr>
+//               <td class="lbl">Approved On</td>
+//               <td class="val">${formatDateTime(data.approvalInfo?.approvedAt) || 'March 6, 2026'}</td>
+//               <td class="lbl">Shipment Date</td>
+//               <td class="val">${formatDate(data.shippingInfo?.shippedDate) || 'March 6, 2026'}</td>
+//             </tr>
+//             <tr>
+//               <td class="lbl">Expected Delivery</td>
+//               <td class="val">${formatDate(data.shippingInfo?.expectedDeliveryDate) || formatDate(data.shippingInfo?.shippedDate) || 'March 6, 2026'}</td>
+//               <td class="lbl">Completed On</td>
+//               <td class="val">${formatDateTime(data.completedOn) || '07 Mar 2026'}</td>
+//             </tr>
+//             <tr>
+//               <td class="lbl">Shipment Detail</td>
+//               <td class="val">${data.shippingInfo?.shipmentDetail || '—'}</td>
+//               <td class="lbl">Shipment Remark</td>
+//               <td class="val">${data.shippingInfo?.shipmentRemark || '—'}</td>
+//             </tr>
+//             <tr>
+//               <td class="lbl">Remark</td>
+//               <td class="val" colspan="3">${data.remark || '—'}</td>
+//             </tr>
+//           </table>
+//         </div>
+
+//         <!-- ── SIGNATURE ─────────────────────────────────────── -->
+//         <div class="sig-row">
+//           <p class="sig-note">
+//             This is a computer-generated indent document.<br>
+//             Please verify all details before processing. For queries contact stock@trunet.co.in
+//           </p>
+//           <div class="sig-block">
+//             <div class="sig-line">Authorized Signatory</div>
+//           </div>
+//         </div>
+
+//       </div><!-- /.page -->
+
+//       <!-- ── PRINT BUTTONS (screen only) ──────────────────────── -->
+//       <div class="btn-row">
+//         <button class="btn btn-primary" onclick="window.print()">🖨 Print Indent</button>
+//         <button class="btn btn-ghost" onclick="window.close()">✕ Close</button>
+//       </div>
+
+//     </body>
+//     </html>
+//   `;
+  
+//   printWindow.document.write(printContent);
+//   printWindow.document.close();
+// };
+
+//   if (loading) {
+//     return (
+//       <div className="flex min-h-[50vh] items-center justify-center">
+//         <div
+//           className="h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-blue-600"
+//           role="status"
+//           aria-label="Loading"
+//         />
+//       </div>
+//     );
+//   }
+
+//   if (error) {
+//     return (
+//       <div className="mx-auto w-full max-w-7xl px-4 py-6">
+//         <div className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+//           <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
+//           <span>{error}</span>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   if (!data) {
+//     return (
+//       <div className="mx-auto w-full max-w-7xl px-4 py-6">
+//         <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+//           Stock Request not found
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   const statusClasses = {
+//     Draft: "bg-slate-100 text-slate-700 border-slate-200",
+//     Submitted: "bg-blue-50 text-blue-700 border-blue-200",
+//     Confirmed: "bg-emerald-50 text-emerald-700 border-emerald-200",
+//     Shipped: "bg-indigo-50 text-indigo-700 border-indigo-200",
+//     Completed: "bg-green-50 text-green-700 border-green-200",
+//     Incompleted: "bg-amber-50 text-amber-700 border-amber-200",
+//     Rejected: "bg-red-50 text-red-700 border-red-200",
+//   };
+
+//   const statusClass =
+//     statusClasses[data.status] ||
+//     "bg-slate-100 text-slate-700 border-slate-200";
+
+//   const buttonBase =
+//     "inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50";
+//   const primaryButton = `${buttonBase} bg-blue-600 text-white hover:bg-blue-700`;
+//   const successButton = `${buttonBase} bg-emerald-600 text-white hover:bg-emerald-700`;
+//   const dangerButton = `${buttonBase} bg-red-600 text-white hover:bg-red-700`;
+//   const warningButton = `${buttonBase} bg-amber-500 text-white hover:bg-amber-600`;
+//   const secondaryButton = `${buttonBase} border border-slate-300 bg-white text-slate-700 hover:bg-slate-50`;
+//   const tableLabel =
+//     "whitespace-nowrap bg-slate-50 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500";
+//   const tableValue = "px-4 py-3 text-sm text-slate-700";
+
+//   return (
+//     <div className="min-h-full w-full bg-slate-50 px-3 py-5 sm:px-4 lg:px-6">
+//       <div className="mx-auto w-full max-w-[1600px] space-y-5">
+//         {alert.visible && (
+//           <div
+//             className={`flex items-start justify-between gap-4 rounded-lg border px-4 py-3 text-sm shadow-sm ${
+//               alert.type === "success"
+//                 ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+//                 : "border-red-200 bg-red-50 text-red-700"
+//             }`}
+//             role="alert"
+//           >
+//             <div className="flex items-start gap-2">
+//               {alert.type === "success" ? (
+//                 <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" />
+//               ) : (
+//                 <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
+//               )}
+//               <span>{alert.message}</span>
+//             </div>
+//             <button
+//               type="button"
+//               onClick={() => setAlert({ ...alert, visible: false })}
+//               className="rounded p-1 hover:bg-black/5"
+//               aria-label="Close alert"
+//             >
+//               <X className="h-4 w-4" />
+//             </button>
+//           </div>
+//         )}
+
+//         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+//           <div className="flex items-center gap-3">
+//             <button
+//               type="button"
+//               onClick={handleBack}
+//               className={secondaryButton}
+//             >
+//               <ArrowLeft className="h-4 w-4" />
+//               Back
+//             </button>
+//             <div>
+//               <h1 className="text-xl font-semibold text-slate-900">
+//                 Indent Detail
+//               </h1>
+//               <p className="mt-0.5 text-sm text-slate-500">
+//                 Stock request details and product processing
+//               </p>
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* Indent summary */}
+//         <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+//           <div className="flex flex-col gap-3 border-b border-slate-200 px-4 py-4 lg:flex-row lg:items-center lg:justify-between">
+//             <div className="flex flex-wrap items-center gap-3">
+//               <div>
+//                 <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+//                   Indent
+//                 </p>
+//                 <h2 className="text-lg font-semibold text-slate-900">
+//                   {data.orderNumber || ""}
+//                 </h2>
+//               </div>
+//               {data.status && (
+//                 <span
+//                   className={`rounded-full border px-3 py-1 text-xs font-semibold ${statusClass}`}
+//                 >
+//                   {data.status}
+//                 </span>
+//               )}
+//             </div>
+
+//             <div className="flex flex-wrap items-center gap-2">
+//               {data.status === "Shipped" &&
+//                 hasPermission("Indent", "complete_indent") && (
+//                   <button
+//                     type="button"
+//                     className={warningButton}
+//                     onClick={handleCompleteIndentWithChallan}
+//                   >
+//                     <PackageCheck className="h-4 w-4" />
+//                     Complete The Indent
+//                   </button>
+//                 )}
+
+//               <button
+//                 type="button"
+//                 className={secondaryButton}
+//                 onClick={handlePrintIndent}
+//               >
+//                 <Printer className="h-4 w-4" />
+//                 Print Indent
+//               </button>
+//             </div>
+//           </div>
+
+//           <div className="overflow-x-auto">
+//             <table className="min-w-[1000px] w-full border-collapse">
+//               <tbody>
+//                 <tr className="border-b border-slate-200">
+//                   <td className={tableLabel}>Center/Center Code</td>
+//                   <td className={tableValue}>{data.orderNumber || ""}</td>
+//                   <td className={tableLabel}>Shipment Date</td>
+//                   <td className={tableValue}>
+//                     {formatDate(data.shippingInfo?.shippedDate || "")}
+//                   </td>
+//                   <td className={tableLabel}>Completed on</td>
+//                   <td className={tableValue}>
+//                     {formatDateTime(data.completionInfo?.completedOn || "")}
+//                   </td>
+//                 </tr>
+
+//                 <tr className="border-b border-slate-200">
+//                   <td className={tableLabel}>Indent Date</td>
+//                   <td className={tableValue}>{data.date || ""}</td>
+//                   <td className={tableLabel}>Expected Delivery</td>
+//                   <td className={tableValue}>
+//                     {formatDate(data.shippingInfo?.expectedDeliveryDate || "")}
+//                   </td>
+//                   <td className={tableLabel}>Completed by</td>
+//                   <td className={tableValue}>
+//                     {data.completionInfo?.completedBy?.fullName || ""}
+//                   </td>
+//                 </tr>
+
+//                 <tr className="border-b border-slate-200">
+//                   <td className={tableLabel}>Remark</td>
+//                   <td className={tableValue}>{data.remark || ""}</td>
+//                   <td className={tableLabel}>Shipment Detail</td>
+//                   <td className={tableValue}>
+//                     {data.shippingInfo?.shipmentDetails || ""}
+//                   </td>
+//                   <td className={tableLabel}>Incomplete on</td>
+//                   <td className={tableValue}>
+//                     {formatDateTime(data.incompleteInfo?.incompleteOn || "")}
+//                   </td>
+//                 </tr>
+
+//                 <tr className="border-b border-slate-200">
+//                   <td className={tableLabel}>Created at</td>
+//                   <td className={tableValue}>
+//                     {formatDateTime(data.createdAt)}
+//                   </td>
+//                   <td className={tableLabel}>Shipment Remark</td>
+//                   <td className={tableValue}>
+//                     {data.shippingInfo?.shipmentRemark || ""}
+//                   </td>
+//                   <td className={tableLabel}>Incomplete by</td>
+//                   <td className={tableValue}>
+//                     {data.incompleteInfo?.incompleteBy?.fullName || ""}
+//                   </td>
+//                 </tr>
+
+//                 <tr className="border-b border-slate-200">
+//                   <td className={tableLabel}>Created by</td>
+//                   <td className={tableValue}>
+//                     {data.createdBy?.fullName || ""}
+//                   </td>
+//                   <td className={tableLabel}>Document</td>
+//                   <td className={tableValue}>{data.document || ""}</td>
+//                   <td className={tableLabel}>Incomplete Remark</td>
+//                   <td className={tableValue}>
+//                     {data.incompleteInfo?.incompleteRemark || ""}
+//                   </td>
+//                 </tr>
+
+//                 <tr className="border-b border-slate-200">
+//                   <td className={tableLabel}>Approved at</td>
+//                   <td className={tableValue}>
+//                     {formatDateTime(data.approvalInfo?.approvedAt || "")}
+//                   </td>
+//                   <td className={tableLabel}>Shipped at</td>
+//                   <td className={tableValue}>
+//                     {formatDateTime(data.shippingInfo?.shippedAt || "")}
+//                   </td>
+//                   <td className={tableLabel}>
+//                     {data.status === "Completed" && "Received at:"}
+//                     {data.status === "Rejected" && "Rejected at:"}
+//                   </td>
+//                   <td className={tableValue}>
+//                     {data.status === "Completed" &&
+//                       formatDateTime(data.receivingInfo?.receivedAt || "")}
+//                     {data.status === "Rejected" &&
+//                       formatDateTime(data.rejectionInfo?.rejectedAt || "")}
+//                   </td>
+//                 </tr>
+
+//                 <tr className="border-b border-slate-200">
+//                   <td className={tableLabel}>Approved by</td>
+//                   <td className={tableValue}>
+//                     {data.approvalInfo?.approvedBy?.fullName || ""}
+//                   </td>
+//                   <td className={tableLabel}>Shipped by</td>
+//                   <td className={tableValue}>
+//                     {data.shippingInfo?.shippedBy?.fullName || ""}
+//                   </td>
+//                   <td className={tableLabel}>
+//                     {data.status === "Completed" && "Received by:"}
+//                     {data.status === "Rejected" && "Rejected by:"}
+//                   </td>
+//                   <td className={tableValue}>
+//                     {data.status === "Completed" &&
+//                       (data.receivingInfo?.receivedBy?.fullName || "")}
+//                     {data.status === "Rejected" &&
+//                       (data.rejectionInfo?.rejectedBy?.fullName || "")}
+//                   </td>
+//                 </tr>
+
+//                 <tr>
+//                   <td />
+//                   <td />
+//                   <td />
+//                   <td />
+//                   <td className={tableLabel}>
+//                     {data.status === "Rejected" && "Rejected Remark:"}
+//                   </td>
+//                   <td className={tableValue}>
+//                     {data.status === "Rejected" &&
+//                       (data.rejectionInfo?.rejectionReason || "")}
+//                   </td>
+//                 </tr>
+//               </tbody>
+//             </table>
+//           </div>
+//         </section>
+
+//         {/* Product details */}
+//         <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+//           <div className="flex flex-col gap-3 border-b border-slate-200 px-4 py-4 lg:flex-row lg:items-center lg:justify-between">
+//             <div>
+//               <h2 className="text-lg font-semibold text-slate-900">
+//                 Product Details
+//               </h2>
+//               <p className="text-sm text-slate-500">
+//                 Requested, approved and received stock
+//               </p>
+//             </div>
+
+//             <div className="flex flex-wrap items-center gap-2">
+//               {data.status === "Draft" && (
+//                 <button
+//                   type="button"
+//                   className={primaryButton}
+//                   onClick={handleSubmitRequest}
+//                 >
+//                   <Send className="h-4 w-4" />
+//                   Submit
+//                 </button>
+//               )}
+
+//               {data.status === "Confirmed" &&
+//                 userCenterType === "outlet" &&
+//                 (userRole === "admin" || userRole === "superadmin") &&
+//                 isWarehouse && (
+//                   <>
+//                     <button
+//                       type="button"
+//                       className={primaryButton}
+//                       onClick={handleChangeApprovedQty}
+//                     >
+//                       <RefreshCw className="h-4 w-4" />
+//                       Change Approved Qty
+//                     </button>
+//                     <button
+//                       type="button"
+//                       className={successButton}
+//                       onClick={() => {
+//                         setCurrentShipmentAction(() => handleShipGoods);
+//                         setShipmentModal(true);
+//                       }}
+//                     >
+//                       <Truck className="h-4 w-4" />
+//                       Ship the Goods
+//                     </button>
+//                     <button
+//                       type="button"
+//                       className={dangerButton}
+//                       onClick={openRejectionModal}
+//                     >
+//                       <Ban className="h-4 w-4" />
+//                       Reject Request
+//                     </button>
+//                   </>
+//                 )}
+
+//               {(data.status === "Confirmed" ||
+//                 data.status === "Shipped" ||
+//                 data.status === "Incompleted" ||
+//                 data.status === "Completed") &&
+//                 isWarehouse && (
+//                   <button
+//                     type="button"
+//                     className={secondaryButton}
+//                     onClick={() => setChallanModal(true)}
+//                   >
+//                     <FileText className="h-4 w-4" />
+//                     View Challan
+//                   </button>
+//                 )}
+
+//               {(data.status === "Shipped" || data.status === "Completed") &&
+//                 isCenter && (
+//                   <button
+//                     type="button"
+//                     className={secondaryButton}
+//                     onClick={() => setChallanModal(true)}
+//                   >
+//                     <FileText className="h-4 w-4" />
+//                     View Challan
+//                   </button>
+//                 )}
+
+//               {data.status === "Shipped" &&
+//                 userCenterType === "outlet" &&
+//                 (userRole === "admin" || userRole === "superadmin") &&
+//                 isWarehouse && (
+//                   <>
+//                     <button
+//                       type="button"
+//                       className={primaryButton}
+//                       onClick={handleOpenUpdateShipment}
+//                     >
+//                       <Truck className="h-4 w-4" />
+//                       Update Shipment
+//                     </button>
+//                     <button
+//                       type="button"
+//                       className={dangerButton}
+//                       onClick={handleCancelShipment}
+//                     >
+//                       <Ban className="h-4 w-4" />
+//                       Cancel Shipment
+//                     </button>
+//                     <button
+//                       type="button"
+//                       className={dangerButton}
+//                       onClick={openRejectionModal}
+//                     >
+//                       <Ban className="h-4 w-4" />
+//                       Reject Request
+//                     </button>
+//                   </>
+//                 )}
+
+//               {data.status === "Shipped" &&
+//                 userCenterType === "center" &&
+//                 isCenter && (
+//                   <button
+//                     type="button"
+//                     className={warningButton}
+//                     onClick={() => setIncompleteModal(true)}
+//                   >
+//                     <AlertCircle className="h-4 w-4" />
+//                     Incomplete
+//                   </button>
+//                 )}
+
+//               {data.status === "Submitted" &&
+//                 hasPermission(
+//                   "Indent",
+//                   "stock_transfer_approve_from_outlet",
+//                 ) &&
+//                 isWarehouse && (
+//                   <>
+//                     <button
+//                       type="button"
+//                       className={successButton}
+//                       onClick={handleApprove}
+//                     >
+//                       <CheckCircle2 className="h-4 w-4" />
+//                       Submit &amp; Approve Request
+//                     </button>
+//                     <button
+//                       type="button"
+//                       className={dangerButton}
+//                       onClick={openRejectionModal}
+//                     >
+//                       <Ban className="h-4 w-4" />
+//                       Submit &amp; Reject Request
+//                     </button>
+//                   </>
+//                 )}
+
+//               {data.status === "Incompleted" &&
+//                 userCenterType === "outlet" &&
+//                 (userRole === "admin" || userRole === "superadmin") &&
+//                 isWarehouse && (
+//                   <button
+//                     type="button"
+//                     className={warningButton}
+//                     onClick={handleIncomplete}
+//                   >
+//                     <PackageCheck className="h-4 w-4" />
+//                     Change Qty And Complete Request
+//                   </button>
+//                 )}
+//             </div>
+//           </div>
+
+//           <div className="overflow-x-auto">
+//             <table className="min-w-[1250px] w-full border-collapse text-sm">
+//               <thead>
+//                 <tr className="bg-slate-900 text-left text-xs font-semibold uppercase tracking-wide text-white">
+//                   <th className="px-3 py-3">Product</th>
+//                   <th className="px-3 py-3">Center Stock</th>
+//                   <th className="px-3 py-3">Requested Qty</th>
+//                   {shouldShowExtraColumns && (
+//                     <th className="px-3 py-3">Stock Qty</th>
+//                   )}
+//                   {shouldShowExtraColumns && (
+//                     <th className="px-3 py-3">Reseller Qty</th>
+//                   )}
+//                   <th className="px-3 py-3">Product Remark</th>
+//                   <th className="px-3 py-3">Approved Qty</th>
+//                   <th className="px-3 py-3">Approved Remark</th>
+//                   <th className="px-3 py-3">Received Qty</th>
+//                   <th className="px-3 py-3">Received Remark</th>
+//                 </tr>
+//               </thead>
+
+//               <tbody>
+//                 {data.products?.length > 0 ? (
+//                   data.products.map((item) => {
+//                     const approvedItem =
+//                       approvedProducts.find((p) => p._id === item._id) || {};
+
+//                     const currentReceipt = productReceipts.find(
+//                       (p) => p.productId === item.product?._id,
+//                     );
+
+//                     const receivedQtyValue =
+//                       currentReceipt?.receivedQuantity !== undefined &&
+//                       currentReceipt?.receivedQuantity !== ""
+//                         ? currentReceipt.receivedQuantity
+//                         : "";
+
+//                     const receivedRemarkValue =
+//                       currentReceipt?.receivedRemark !== undefined
+//                         ? currentReceipt.receivedRemark
+//                         : item.receivedRemark || "";
+
+//                     const approvedQty =
+//                       approvedItem.approvedQty ||
+//                       item.approvedQuantity ||
+//                       0;
+
+//                     const shouldShowMismatch =
+//                       data.status === "Incompleted" ||
+//                       data.status === "Completed";
+
+//                     const isQuantityMismatch =
+//                       shouldShowMismatch &&
+//                       Number(receivedQtyValue) !== Number(approvedQty);
+
+//                     return (
+//                       <tr
+//                         key={item._id}
+//                         className={`border-b border-slate-200 transition ${
+//                           isQuantityMismatch
+//                             ? "bg-red-50"
+//                             : "hover:bg-slate-50"
+//                         }`}
+//                       >
+//                         <td className="px-3 py-3 font-medium text-slate-900">
+//                           {item.product?.productTitle || ""}
+//                         </td>
+
+//                         <td className="px-3 py-3">
+//                           <button
+//                             type="button"
+//                             onClick={() =>
+//                               handleCenterStockClick(
+//                                 data.center?._id,
+//                                 item.product?._id,
+//                               )
+//                             }
+//                             title="View all indents where this stock is used"
+//                             className="font-medium text-blue-600 underline decoration-blue-300 underline-offset-2 hover:text-blue-800"
+//                           >
+//                             {item.centerStockQuantity || 0}
+//                           </button>
+//                         </td>
+
+//                         <td className="px-3 py-3 text-slate-700">
+//                           {item.quantity || 0}
+//                         </td>
+
+//                         {shouldShowExtraColumns && (
+//                           <td className="px-3 py-3 text-slate-700">
+//                             {item.outletStock?.availableQuantity || 0}
+//                           </td>
+//                         )}
+
+//                         {shouldShowExtraColumns && (
+//                           <td className="px-3 py-3 text-slate-700">
+//                             {item.resellerStock?.availableQuantity || 0}
+//                           </td>
+//                         )}
+
+//                         <td className="max-w-[220px] px-3 py-3 text-slate-700">
+//                           {item.productRemark || ""}
+//                         </td>
+
+//                         <td className="px-3 py-3">
+//                           <div className="flex items-center gap-2">
+//                             {isWarehouse ? (
+//                               <>
+//                                 <input
+//                                   type="text"
+//                                   value={approvedItem.approvedQty ?? ""}
+//                                   onChange={(e) =>
+//                                     handleApprovedChange(
+//                                       item._id,
+//                                       "approvedQty",
+//                                       e.target.value,
+//                                     )
+//                                   }
+//                                   onBlur={(e) =>
+//                                     handleApprovedBlur(
+//                                       item._id,
+//                                       e.target.value,
+//                                     )
+//                                   }
+//                                   className={`w-24 rounded-md border px-2.5 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 ${
+//                                     errors[item._id]
+//                                       ? "border-red-400 bg-red-50"
+//                                       : "border-slate-300 bg-white"
+//                                   }`}
+//                                 />
+
+//                                 {item.product?.trackSerialNumber === "Yes" && (
+//                                   <button
+//                                     type="button"
+//                                     onClick={() =>
+//                                       handleOpenSerialModal(item)
+//                                     }
+//                                     title="Add Serial Numbers"
+//                                     className="rounded-md border border-blue-200 bg-blue-50 px-2 py-1.5 text-blue-700 hover:bg-blue-100"
+//                                   >
+//                                     <FileText className="h-4 w-4" />
+//                                   </button>
+//                                 )}
+//                               </>
+//                             ) : (
+//                               <span className="text-slate-700">
+//                                 {approvedItem.approvedQty || 0}
+//                               </span>
+//                             )}
+//                           </div>
+
+//                           {errors[item._id] && (
+//                             <p className="mt-1 text-xs text-red-600">
+//                               {errors[item._id]}
+//                             </p>
+//                           )}
+//                         </td>
+
+//                         <td className="px-3 py-3">
+//                           {isWarehouse ? (
+//                             <input
+//                               type="text"
+//                               value={approvedItem.approvedRemark || ""}
+//                               onChange={(e) =>
+//                                 handleApprovedChange(
+//                                   item._id,
+//                                   "approvedRemark",
+//                                   e.target.value,
+//                                 )
+//                               }
+//                               className="w-full min-w-[160px] rounded-md border border-slate-300 px-2.5 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+//                             />
+//                           ) : (
+//                             <span className="text-slate-700">
+//                               {item.approvedRemark || ""}
+//                             </span>
+//                           )}
+//                         </td>
+
+//                         <td className="px-3 py-3">
+//                           <div className="flex items-center gap-2">
+//                             {userCenterType === "center" &&
+//                             isCenter &&
+//                             data.status === "Shipped" ? (
+//                               <input
+//                                 type="text"
+//                                 value={receivedQtyValue}
+//                                 onChange={(e) =>
+//                                   handleReceiptChange(
+//                                     item.product?._id,
+//                                     "receivedQuantity",
+//                                     e.target.value,
+//                                   )
+//                                 }
+//                                 placeholder={String(
+//                                   item.approvedQuantity || 0,
+//                                 )}
+//                                 className="w-24 rounded-md border border-slate-300 px-2.5 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+//                               />
+//                             ) : (
+//                               <span className="text-slate-700">
+//                                 {receivedQtyValue || 0}
+//                               </span>
+//                             )}
+
+//                             {item.product?.trackSerialNumber === "Yes" &&
+//                               item.receivedQuantity > 0 && (
+//                                 <button
+//                                   type="button"
+//                                   onClick={() =>
+//                                     handleOpenReceivedSerialModal(item)
+//                                   }
+//                                   title={`Received serial numbers (${
+//                                     item.transferredSerials?.length || 0
+//                                   })`}
+//                                   className="rounded-md border border-blue-200 bg-blue-50 px-2 py-1.5 text-blue-700 hover:bg-blue-100"
+//                                 >
+//                                   <FileText className="h-4 w-4" />
+//                                 </button>
+//                               )}
+//                           </div>
+//                         </td>
+
+//                         <td className="px-3 py-3">
+//                           {userCenterType === "center" &&
+//                           isCenter &&
+//                           data.status === "Shipped" ? (
+//                             <input
+//                               type="text"
+//                               value={receivedRemarkValue}
+//                               onChange={(e) =>
+//                                 handleReceiptChange(
+//                                   item.product?._id,
+//                                   "receivedRemark",
+//                                   e.target.value,
+//                                 )
+//                               }
+//                               className="w-full min-w-[160px] rounded-md border border-slate-300 px-2.5 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+//                             />
+//                           ) : (
+//                             <span className="text-slate-700">
+//                               {item.receivedRemark || ""}
+//                             </span>
+//                           )}
+//                         </td>
+//                       </tr>
+//                     );
+//                   })
+//                 ) : (
+//                   <tr>
+//                     <td
+//                       colSpan={shouldShowExtraColumns ? 10 : 8}
+//                       className="px-4 py-10 text-center text-sm text-slate-500"
+//                     >
+//                       No products found
+//                     </td>
+//                   </tr>
+//                 )}
+//               </tbody>
+//             </table>
+//           </div>
+//         </section>
+
+//         <ShipGoodsModal
+//           visible={shipmentModal}
+//           onClose={() => setShipmentModal(false)}
+//           onSubmit={currentShipmentAction}
+//           initialData={shipmentData}
+//         />
+
+//         <IncompleteRemarkModal
+//           visible={incompleteModal}
+//           onClose={() => setIncompleteModal(false)}
+//           onSubmit={handleMarkIncomplete}
+//           initialRemark={data.incompleteRemark}
+//         />
+
+//         <SerialNumbers
+//           visible={serialModalVisible}
+//           onClose={() => setSerialModalVisible(false)}
+//           product={selectedProduct}
+//           approvedQty={
+//             Number(
+//               approvedProducts.find(
+//                 (p) => p._id === selectedProduct?._id,
+//               )?.approvedQty,
+//             ) || 0
+//           }
+//           initialSerials={
+//             assignedSerials[selectedProduct?.product?._id] || []
+//           }
+//           onSerialNumbersUpdate={handleSerialNumbersUpdate}
+//           warehouseId={data?.warehouse?._id}
+//           resellerId={data?.stockSummary?.resellerId}
+//           resellerName={data?.stockSummary?.resellerName}
+//           data={data}
+//         />
+
+//         <ReceivedSerialNumbers
+//           visible={receivedSerialModal}
+//           onClose={() => setReceivedSerialModal(false)}
+//           product={selectedReceivedProduct}
+//         />
+
+//         <ChallanModal
+//           visible={challanModal}
+//           onClose={() => setChallanModal(false)}
+//           data={data}
+//         />
+
+//         <RejectionReasonModal
+//           visible={rejectionModal}
+//           onClose={() => setRejectionModal(false)}
+//           onSubmit={handleReject}
+//         />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default IndentDetailProfile;
+
+
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -4704,33 +6758,33 @@ const handlePrintIndent = () => {
   }
 
   const statusClasses = {
-    Draft: "bg-slate-100 text-slate-700 border-slate-200",
-    Submitted: "bg-blue-50 text-blue-700 border-blue-200",
-    Confirmed: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    Shipped: "bg-indigo-50 text-indigo-700 border-indigo-200",
-    Completed: "bg-green-50 text-green-700 border-green-200",
-    Incompleted: "bg-amber-50 text-amber-700 border-amber-200",
-    Rejected: "bg-red-50 text-red-700 border-red-200",
+    Draft: "bg-[#f1f3f5] text-[#555e68] border-[#d9dee4]",
+    Submitted: "bg-[#e8f3fb] text-[#1674a8] border-[#b9dced]",
+    Confirmed: "bg-[#eaf7ee] text-[#27844a] border-[#bfe4cb]",
+    Shipped: "bg-[#eef0ff] text-[#4d56a8] border-[#cdd1f4]",
+    Completed: "bg-[#eaf7ee] text-[#27844a] border-[#bfe4cb]",
+    Incompleted: "bg-[#fff6e5] text-[#9a6a12] border-[#ead49e]",
+    Rejected: "bg-[#fff0ee] text-[#b63329] border-[#efc4bf]",
   };
 
   const statusClass =
     statusClasses[data.status] ||
-    "bg-slate-100 text-slate-700 border-slate-200";
+    "bg-[#f1f3f5] text-[#555e68] border-[#d9dee4]";
 
   const buttonBase =
-    "inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50";
-  const primaryButton = `${buttonBase} bg-blue-600 text-white hover:bg-blue-700`;
-  const successButton = `${buttonBase} bg-emerald-600 text-white hover:bg-emerald-700`;
-  const dangerButton = `${buttonBase} bg-red-600 text-white hover:bg-red-700`;
-  const warningButton = `${buttonBase} bg-amber-500 text-white hover:bg-amber-600`;
-  const secondaryButton = `${buttonBase} border border-slate-300 bg-white text-slate-700 hover:bg-slate-50`;
+    "inline-flex items-center justify-center gap-2 rounded-[5px] px-4 py-2 text-sm font-semibold transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-50";
+  const primaryButton = `${buttonBase} bg-[#2759A2] text-white shadow-sm hover:bg-[#214b89]`;
+  const successButton = `${buttonBase} bg-[#2759A2] text-white shadow-sm hover:bg-[#214b89]`;
+  const dangerButton = `${buttonBase} bg-[#c9362b] text-white shadow-sm hover:bg-[#ad2e25]`;
+  const warningButton = `${buttonBase} bg-[#d89418] text-white shadow-sm hover:bg-[#bb7910]`;
+  const secondaryButton = `${buttonBase} border border-[#2759A2] bg-[#2759A2] text-white shadow-sm hover:bg-[#214b89]`;
   const tableLabel =
-    "whitespace-nowrap bg-slate-50 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500";
-  const tableValue = "px-4 py-3 text-sm text-slate-700";
+    "whitespace-nowrap border-r border-[#e1e5ea] bg-[#f1f3f5] px-4 py-3 text-[15px] font-bold text-[#252a31]";
+  const tableValue = "border-r border-[#e1e5ea] px-4 py-3 text-[15px] text-[#3f4650]";
 
   return (
-    <div className="min-h-full w-full bg-slate-50 px-3 py-5 sm:px-4 lg:px-6">
-      <div className="mx-auto w-full max-w-[1600px] space-y-5">
+    <div className="min-h-full w-full bg-[#f4f6f8] px-3 py-5 sm:px-4 lg:px-6">
+      <div className="mx-auto w-full max-w-[1320px] space-y-5">
         {alert.visible && (
           <div
             className={`flex items-start justify-between gap-4 rounded-lg border px-4 py-3 text-sm shadow-sm ${
@@ -4770,10 +6824,10 @@ const handlePrintIndent = () => {
               Back
             </button>
             <div>
-              <h1 className="text-xl font-semibold text-slate-900">
+              <h1 className="text-[25px] font-medium leading-tight text-[#303640]">
                 Indent Detail
               </h1>
-              <p className="mt-0.5 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-[#69727d]">
                 Stock request details and product processing
               </p>
             </div>
@@ -4781,20 +6835,20 @@ const handlePrintIndent = () => {
         </div>
 
         {/* Indent summary */}
-        <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div className="flex flex-col gap-3 border-b border-slate-200 px-4 py-4 lg:flex-row lg:items-center lg:justify-between">
+        <section className="overflow-hidden rounded-[3px] border border-[#dfe3e8] border-t-[4px] border-t-[#2759A2] bg-white shadow-[0_1px_5px_rgba(0,0,0,0.08)]">
+          <div className="flex flex-col gap-3 border-b border-[#e2e5e9] px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex flex-wrap items-center gap-3">
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                <p className="text-[13px] font-semibold text-[#555e68]">
                   Indent
                 </p>
-                <h2 className="text-lg font-semibold text-slate-900">
+                <h2 className="text-[20px] font-semibold text-[#252a31]">
                   {data.orderNumber || ""}
                 </h2>
               </div>
               {data.status && (
                 <span
-                  className={`rounded-full border px-3 py-1 text-xs font-semibold ${statusClass}`}
+                  className={`rounded-[5px] border px-3 py-1.5 text-[13px] font-semibold ${statusClass}`}
                 >
                   {data.status}
                 </span>
@@ -4828,7 +6882,7 @@ const handlePrintIndent = () => {
           <div className="overflow-x-auto">
             <table className="min-w-[1000px] w-full border-collapse">
               <tbody>
-                <tr className="border-b border-slate-200">
+                <tr className="border-b border-[#e2e5e9]">
                   <td className={tableLabel}>Center/Center Code</td>
                   <td className={tableValue}>{data.orderNumber || ""}</td>
                   <td className={tableLabel}>Shipment Date</td>
@@ -4841,7 +6895,7 @@ const handlePrintIndent = () => {
                   </td>
                 </tr>
 
-                <tr className="border-b border-slate-200">
+                <tr className="border-b border-[#e2e5e9]">
                   <td className={tableLabel}>Indent Date</td>
                   <td className={tableValue}>{data.date || ""}</td>
                   <td className={tableLabel}>Expected Delivery</td>
@@ -4854,7 +6908,7 @@ const handlePrintIndent = () => {
                   </td>
                 </tr>
 
-                <tr className="border-b border-slate-200">
+                <tr className="border-b border-[#e2e5e9]">
                   <td className={tableLabel}>Remark</td>
                   <td className={tableValue}>{data.remark || ""}</td>
                   <td className={tableLabel}>Shipment Detail</td>
@@ -4867,7 +6921,7 @@ const handlePrintIndent = () => {
                   </td>
                 </tr>
 
-                <tr className="border-b border-slate-200">
+                <tr className="border-b border-[#e2e5e9]">
                   <td className={tableLabel}>Created at</td>
                   <td className={tableValue}>
                     {formatDateTime(data.createdAt)}
@@ -4882,7 +6936,7 @@ const handlePrintIndent = () => {
                   </td>
                 </tr>
 
-                <tr className="border-b border-slate-200">
+                <tr className="border-b border-[#e2e5e9]">
                   <td className={tableLabel}>Created by</td>
                   <td className={tableValue}>
                     {data.createdBy?.fullName || ""}
@@ -4895,7 +6949,7 @@ const handlePrintIndent = () => {
                   </td>
                 </tr>
 
-                <tr className="border-b border-slate-200">
+                <tr className="border-b border-[#e2e5e9]">
                   <td className={tableLabel}>Approved at</td>
                   <td className={tableValue}>
                     {formatDateTime(data.approvalInfo?.approvedAt || "")}
@@ -4916,7 +6970,7 @@ const handlePrintIndent = () => {
                   </td>
                 </tr>
 
-                <tr className="border-b border-slate-200">
+                <tr className="border-b border-[#e2e5e9]">
                   <td className={tableLabel}>Approved by</td>
                   <td className={tableValue}>
                     {data.approvalInfo?.approvedBy?.fullName || ""}
@@ -4956,13 +7010,13 @@ const handlePrintIndent = () => {
         </section>
 
         {/* Product details */}
-        <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div className="flex flex-col gap-3 border-b border-slate-200 px-4 py-4 lg:flex-row lg:items-center lg:justify-between">
+        <section className="overflow-hidden rounded-[3px] border border-[#dfe3e8] border-t-[4px] border-t-[#2759A2] bg-white shadow-[0_1px_5px_rgba(0,0,0,0.08)]">
+          <div className="flex flex-col gap-3 border-b border-[#e2e5e9] px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h2 className="text-lg font-semibold text-slate-900">
+              <h2 className="text-[20px] font-semibold text-[#252a31]">
                 Product Details
               </h2>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-[#69727d]">
                 Requested, approved and received stock
               </p>
             </div>
@@ -5129,23 +7183,23 @@ const handlePrintIndent = () => {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="min-w-[1250px] w-full border-collapse text-sm">
+            <table className="min-w-[1250px] w-full border-collapse text-[14px]">
               <thead>
-                <tr className="bg-slate-900 text-left text-xs font-semibold uppercase tracking-wide text-white">
-                  <th className="px-3 py-3">Product</th>
-                  <th className="px-3 py-3">Center Stock</th>
-                  <th className="px-3 py-3">Requested Qty</th>
+                <tr className="bg-[#f1f3f5] text-left text-[14px] font-bold text-[#252a31]">
+                  <th className="border-r border-[#e1e5ea] px-3.5 py-3.5">Product</th>
+                  <th className="border-r border-[#e1e5ea] px-3.5 py-3.5">Center Stock</th>
+                  <th className="border-r border-[#e1e5ea] px-3.5 py-3.5">Requested Qty</th>
                   {shouldShowExtraColumns && (
-                    <th className="px-3 py-3">Stock Qty</th>
+                    <th className="border-r border-[#e1e5ea] px-3.5 py-3.5">Stock Qty</th>
                   )}
                   {shouldShowExtraColumns && (
-                    <th className="px-3 py-3">Reseller Qty</th>
+                    <th className="border-r border-[#e1e5ea] px-3.5 py-3.5">Reseller Qty</th>
                   )}
-                  <th className="px-3 py-3">Product Remark</th>
-                  <th className="px-3 py-3">Approved Qty</th>
-                  <th className="px-3 py-3">Approved Remark</th>
-                  <th className="px-3 py-3">Received Qty</th>
-                  <th className="px-3 py-3">Received Remark</th>
+                  <th className="border-r border-[#e1e5ea] px-3.5 py-3.5">Product Remark</th>
+                  <th className="border-r border-[#e1e5ea] px-3.5 py-3.5">Approved Qty</th>
+                  <th className="border-r border-[#e1e5ea] px-3.5 py-3.5">Approved Remark</th>
+                  <th className="border-r border-[#e1e5ea] px-3.5 py-3.5">Received Qty</th>
+                  <th className="border-r border-[#e1e5ea] px-3.5 py-3.5">Received Remark</th>
                 </tr>
               </thead>
 
@@ -5188,15 +7242,15 @@ const handlePrintIndent = () => {
                         key={item._id}
                         className={`border-b border-slate-200 transition ${
                           isQuantityMismatch
-                            ? "bg-red-50"
-                            : "hover:bg-slate-50"
+                            ? "bg-[#fff3f2]"
+                            : "hover:bg-[#f7f9fb]"
                         }`}
                       >
-                        <td className="px-3 py-3 font-medium text-slate-900">
+                        <td className="border-r border-[#e1e5ea] px-3.5 py-3.5 font-semibold text-[#252a31]">
                           {item.product?.productTitle || ""}
                         </td>
 
-                        <td className="px-3 py-3">
+                        <td className="border-r border-[#e1e5ea] px-3.5 py-3.5">
                           <button
                             type="button"
                             onClick={() =>
@@ -5206,33 +7260,33 @@ const handlePrintIndent = () => {
                               )
                             }
                             title="View all indents where this stock is used"
-                            className="font-medium text-blue-600 underline decoration-blue-300 underline-offset-2 hover:text-blue-800"
+                            className="font-semibold text-[#2759A2] underline decoration-[#9bb6d8] underline-offset-2 hover:text-[#214b89]"
                           >
                             {item.centerStockQuantity || 0}
                           </button>
                         </td>
 
-                        <td className="px-3 py-3 text-slate-700">
+                        <td className="border-r border-[#e1e5ea] px-3.5 py-3.5 text-[#3f4650]">
                           {item.quantity || 0}
                         </td>
 
                         {shouldShowExtraColumns && (
-                          <td className="px-3 py-3 text-slate-700">
+                          <td className="border-r border-[#e1e5ea] px-3.5 py-3.5 text-[#3f4650]">
                             {item.outletStock?.availableQuantity || 0}
                           </td>
                         )}
 
                         {shouldShowExtraColumns && (
-                          <td className="px-3 py-3 text-slate-700">
+                          <td className="border-r border-[#e1e5ea] px-3.5 py-3.5 text-[#3f4650]">
                             {item.resellerStock?.availableQuantity || 0}
                           </td>
                         )}
 
-                        <td className="max-w-[220px] px-3 py-3 text-slate-700">
+                        <td className="max-w-[220px] border-r border-[#e1e5ea] px-3.5 py-3.5 text-[#3f4650]">
                           {item.productRemark || ""}
                         </td>
 
-                        <td className="px-3 py-3">
+                        <td className="border-r border-[#e1e5ea] px-3.5 py-3.5">
                           <div className="flex items-center gap-2">
                             {isWarehouse ? (
                               <>
@@ -5266,7 +7320,7 @@ const handlePrintIndent = () => {
                                       handleOpenSerialModal(item)
                                     }
                                     title="Add Serial Numbers"
-                                    className="rounded-md border border-blue-200 bg-blue-50 px-2 py-1.5 text-blue-700 hover:bg-blue-100"
+                                    className="rounded-[4px] border border-[#c9d8ec] bg-[#eef4fb] px-2 py-1.5 text-[#2759A2] hover:bg-[#e2edf9]"
                                   >
                                     <FileText className="h-4 w-4" />
                                   </button>
@@ -5286,7 +7340,7 @@ const handlePrintIndent = () => {
                           )}
                         </td>
 
-                        <td className="px-3 py-3">
+                        <td className="border-r border-[#e1e5ea] px-3.5 py-3.5">
                           {isWarehouse ? (
                             <input
                               type="text"
@@ -5298,7 +7352,7 @@ const handlePrintIndent = () => {
                                   e.target.value,
                                 )
                               }
-                              className="w-full min-w-[160px] rounded-md border border-slate-300 px-2.5 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                              className="w-full min-w-[160px] rounded-[4px] border border-[#cfd5dc] bg-white px-2.5 py-2 text-sm outline-none focus:border-[#2759A2] focus:ring-2 focus:ring-[#2759A2]/15"
                             />
                           ) : (
                             <span className="text-slate-700">
@@ -5307,7 +7361,7 @@ const handlePrintIndent = () => {
                           )}
                         </td>
 
-                        <td className="px-3 py-3">
+                        <td className="border-r border-[#e1e5ea] px-3.5 py-3.5">
                           <div className="flex items-center gap-2">
                             {userCenterType === "center" &&
                             isCenter &&
@@ -5343,7 +7397,7 @@ const handlePrintIndent = () => {
                                   title={`Received serial numbers (${
                                     item.transferredSerials?.length || 0
                                   })`}
-                                  className="rounded-md border border-blue-200 bg-blue-50 px-2 py-1.5 text-blue-700 hover:bg-blue-100"
+                                  className="rounded-[4px] border border-[#c9d8ec] bg-[#eef4fb] px-2 py-1.5 text-[#2759A2] hover:bg-[#e2edf9]"
                                 >
                                   <FileText className="h-4 w-4" />
                                 </button>
@@ -5351,7 +7405,7 @@ const handlePrintIndent = () => {
                           </div>
                         </td>
 
-                        <td className="px-3 py-3">
+                        <td className="border-r border-[#e1e5ea] px-3.5 py-3.5">
                           {userCenterType === "center" &&
                           isCenter &&
                           data.status === "Shipped" ? (
@@ -5365,7 +7419,7 @@ const handlePrintIndent = () => {
                                   e.target.value,
                                 )
                               }
-                              className="w-full min-w-[160px] rounded-md border border-slate-300 px-2.5 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                              className="w-full min-w-[160px] rounded-[4px] border border-[#cfd5dc] bg-white px-2.5 py-2 text-sm outline-none focus:border-[#2759A2] focus:ring-2 focus:ring-[#2759A2]/15"
                             />
                           ) : (
                             <span className="text-slate-700">
@@ -5449,3 +7503,4 @@ const handlePrintIndent = () => {
 };
 
 export default IndentDetailProfile;
+

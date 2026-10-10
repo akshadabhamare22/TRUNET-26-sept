@@ -1,3 +1,295 @@
+// import React, {
+//   useEffect,
+//   useState,
+// } from "react";
+// import PropTypes from "prop-types";
+// import {
+//   Search,
+//   RotateCcw,
+//   X,
+// } from "lucide-react";
+
+// const SearchUserModel = ({
+//   visible,
+//   onClose,
+//   onSearch,
+//   centers,
+//   roles,
+//   status,
+// }) => {
+//   const [searchData, setSearchData] =
+//     useState({
+//       keyword: "",
+//       center: "",
+//       role: "",
+//       status: "",
+//     });
+
+//   // --------------------------------------------------
+//   // Reset when modal closes
+//   // --------------------------------------------------
+//   useEffect(() => {
+//     if (!visible) {
+//       setSearchData({
+//         keyword: "",
+//         center: "",
+//         role: "",
+//         status: "",
+//       });
+//     }
+//   }, [visible]);
+
+//   // --------------------------------------------------
+//   // Handle Change
+//   // --------------------------------------------------
+//   const handleChange = (e) => {
+//     const {
+//       name,
+//       value,
+//     } = e.target;
+
+//     setSearchData((prev) => ({
+//       ...prev,
+//       [name]: value,
+//     }));
+//   };
+
+//   // --------------------------------------------------
+//   // Search
+//   // --------------------------------------------------
+//   const handleSearch = () => {
+//     onSearch(searchData);
+//     onClose();
+//   };
+
+//   // --------------------------------------------------
+//   // Reset
+//   // --------------------------------------------------
+//   const handleReset = () => {
+//     const resetData = {
+//       keyword: "",
+//       center: "",
+//       role: "",
+//       status: "",
+//     };
+
+//     setSearchData(resetData);
+//     onSearch(resetData);
+//   };
+
+//   if (!visible) {
+//     return null;
+//   }
+
+//   return (
+//     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+//       <div className="w-full max-w-3xl overflow-hidden rounded-lg bg-white shadow-2xl">
+//         {/* ------------------------------------------------ */}
+//         {/* Header */}
+//         {/* ------------------------------------------------ */}
+//         <div className="flex items-center justify-between border-b px-6 py-4">
+//           <h2 className="text-lg font-semibold text-gray-800">
+//             Search
+//           </h2>
+
+//           <button
+//             type="button"
+//             onClick={onClose}
+//             className="rounded-md p-1 text-gray-500 transition hover:bg-gray-100 hover:text-gray-700"
+//             aria-label="Close"
+//           >
+//             <X size={20} />
+//           </button>
+//         </div>
+
+//         {/* ------------------------------------------------ */}
+//         {/* Body */}
+//         {/* ------------------------------------------------ */}
+//         <div className="px-6 py-5">
+//           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+//             {/* Keyword */}
+//             <div>
+//               <label
+//                 htmlFor="keyword"
+//                 className="mb-1.5 block text-sm font-medium text-gray-700"
+//               >
+//                 Keyword
+//               </label>
+
+//               <input
+//                 type="text"
+//                 id="keyword"
+//                 name="keyword"
+//                 value={
+//                   searchData.keyword
+//                 }
+//                 onChange={handleChange}
+//                 className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+//               />
+//             </div>
+
+//             {/* Center */}
+//             <div>
+//               <label
+//                 htmlFor="center"
+//                 className="mb-1.5 block text-sm font-medium text-gray-700"
+//               >
+//                 Center
+//               </label>
+
+//               <select
+//                 id="center"
+//                 name="center"
+//                 value={
+//                   searchData.center
+//                 }
+//                 onChange={handleChange}
+//                 className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+//               >
+//                 <option value="">
+//                   SELECT CENTER
+//                 </option>
+
+//                 {centers.map(
+//                   (center) => (
+//                     <option
+//                       key={center._id}
+//                       value={center._id}
+//                     >
+//                       {
+//                         center.centerName
+//                       }
+//                     </option>
+//                   ),
+//                 )}
+//               </select>
+//             </div>
+
+//             {/* Role */}
+//             <div>
+//               <label
+//                 htmlFor="role"
+//                 className="mb-1.5 block text-sm font-medium text-gray-700"
+//               >
+//                 Role
+//               </label>
+
+//               <select
+//                 id="role"
+//                 name="role"
+//                 value={
+//                   searchData.role
+//                 }
+//                 onChange={handleChange}
+//                 className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+//               >
+//                 <option value="">
+//                   SELECT ROLE
+//                 </option>
+
+//                 {roles.map(
+//                   (role) => (
+//                     <option
+//                       key={role._id}
+//                       value={role._id}
+//                     >
+//                       {
+//                         role.roleTitle
+//                       }
+//                     </option>
+//                   ),
+//                 )}
+//               </select>
+//             </div>
+
+//             {/* Status */}
+//             <div>
+//               <label
+//                 htmlFor="status"
+//                 className="mb-1.5 block text-sm font-medium text-gray-700"
+//               >
+//                 Status
+//               </label>
+
+//               <select
+//                 id="status"
+//                 name="status"
+//                 value={
+//                   searchData.status
+//                 }
+//                 onChange={handleChange}
+//                 className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+//               >
+//                 <option value="">
+//                   -SELECT-
+//                 </option>
+
+//                 <option value="Enable">
+//                   Enable
+//                 </option>
+
+//                 <option value="Disable">
+//                   Disable
+//                 </option>
+//               </select>
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* ------------------------------------------------ */}
+//         {/* Footer */}
+//         {/* ------------------------------------------------ */}
+//         <div className="flex items-center justify-end gap-2 border-t bg-gray-50 px-6 py-4">
+//           <button
+//             type="button"
+//             onClick={
+//               handleReset
+//             }
+//             className="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+//           >
+//             <RotateCcw size={16} />
+//             Close
+//           </button>
+
+//           <button
+//             type="button"
+//             onClick={
+//               handleSearch
+//             }
+//             className="inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
+//           >
+//             <Search size={16} />
+//             Search
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// SearchUserModel.propTypes = {
+//   visible:
+//     PropTypes.bool.isRequired,
+
+//   onClose:
+//     PropTypes.func.isRequired,
+
+//   onSearch:
+//     PropTypes.func.isRequired,
+
+//   centers:
+//     PropTypes.array.isRequired,
+
+//   roles:
+//     PropTypes.array.isRequired,
+
+//   status:
+//     PropTypes.array.isRequired,
+// };
+
+// export default SearchUserModel;
+
+
 import React, {
   useEffect,
   useState,
@@ -82,188 +374,471 @@ const SearchUserModel = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-      <div className="w-full max-w-3xl overflow-hidden rounded-lg bg-white shadow-2xl">
-        {/* ------------------------------------------------ */}
-        {/* Header */}
-        {/* ------------------------------------------------ */}
-        <div className="flex items-center justify-between border-b px-6 py-4">
-          <h2 className="text-lg font-semibold text-gray-800">
-            Search
-          </h2>
+    <>
+      {/* ------------------------------------------------ */}
+      {/* Top Down Modal Animation */}
+      {/* ------------------------------------------------ */}
+      <style>
+        {`
+          @keyframes searchUserModalDropDown {
+            0% {
+              opacity: 0;
+              transform: translateY(-80px) scale(0.98);
+            }
 
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-md p-1 text-gray-500 transition hover:bg-gray-100 hover:text-gray-700"
-            aria-label="Close"
+            60% {
+              opacity: 1;
+              transform: translateY(8px) scale(1);
+            }
+
+            100% {
+              opacity: 1;
+              transform: translateY(0) scale(1);
+            }
+          }
+
+          @keyframes searchUserBackdropFade {
+            from {
+              opacity: 0;
+            }
+
+            to {
+              opacity: 1;
+            }
+          }
+
+          .search-user-backdrop {
+            animation: searchUserBackdropFade 0.2s ease-out forwards;
+          }
+
+          .search-user-modal {
+            animation: searchUserModalDropDown 0.42s
+              cubic-bezier(0.22, 1, 0.36, 1) forwards;
+          }
+        `}
+      </style>
+
+      {/* ------------------------------------------------ */}
+      {/* Overlay */}
+      {/* ------------------------------------------------ */}
+      <div
+        className="
+          search-user-backdrop
+          fixed
+          inset-0
+          z-[9999]
+          flex
+          items-start
+          justify-center
+          overflow-y-auto
+          bg-black/50
+          px-4
+          pb-8
+          pt-[70px]
+          sm:pt-[90px]
+        "
+      >
+        {/* ------------------------------------------------ */}
+        {/* Modal */}
+        {/* ------------------------------------------------ */}
+        <div
+          className="
+            search-user-modal
+            w-full
+            max-w-[760px]
+            overflow-hidden
+            rounded-[4px]
+            border
+            border-[#dfe3e8]
+            bg-white
+            shadow-[0_12px_35px_rgba(0,0,0,0.25)]
+          "
+        >
+        
+
+          {/* ------------------------------------------------ */}
+          {/* Header */}
+          {/* ------------------------------------------------ */}
+          <div
+            className="
+              flex
+              h-[60px]
+              items-center
+              justify-between
+              border-b
+              border-[#e1e5e9]
+              bg-white
+              px-[18px]
+              sm:px-[20px]
+            "
           >
-            <X size={20} />
-          </button>
-        </div>
+            <h2
+              className="
+                m-0
+                text-[21px]
+                font-normal
+                leading-none
+                text-[#263238]
+              "
+            >
+              Search
+            </h2>
 
-        {/* ------------------------------------------------ */}
-        {/* Body */}
-        {/* ------------------------------------------------ */}
-        <div className="px-6 py-5">
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-            {/* Keyword */}
-            <div>
-              <label
-                htmlFor="keyword"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
-              >
-                Keyword
-              </label>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close"
+              className="
+                flex
+                h-[30px]
+                w-[30px]
+                items-center
+                justify-center
+                rounded-[3px]
+                text-[#8a8f94]
+                transition-all
+                duration-200
+                hover:bg-[#f1f3f5]
+                hover:text-[#333]
+                focus:outline-none
+              "
+            >
+              <X size={18} strokeWidth={1.7} />
+            </button>
+          </div>
 
-              <input
-                type="text"
-                id="keyword"
-                name="keyword"
-                value={
-                  searchData.keyword
-                }
-                onChange={handleChange}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-              />
-            </div>
+          {/* ------------------------------------------------ */}
+          {/* Body */}
+          {/* ------------------------------------------------ */}
+          <div
+            className="
+              px-[18px]
+              py-[22px]
+              sm:px-[20px]
+              sm:py-[24px]
+            "
+          >
+            <div
+              className="
+                grid
+                grid-cols-1
+                gap-x-[22px]
+                gap-y-[20px]
+                md:grid-cols-2
+              "
+            >
+              {/* ------------------------------------------------ */}
+              {/* Keyword */}
+              {/* ------------------------------------------------ */}
+              <div>
+                <label
+                  htmlFor="keyword"
+                  className="
+                    mb-[7px]
+                    block
+                    text-[15px]
+                    font-semibold
+                    text-[#172033]
+                  "
+                >
+                  Keyword
+                </label>
 
-            {/* Center */}
-            <div>
-              <label
-                htmlFor="center"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
-              >
-                Center
-              </label>
+                <input
+                  type="text"
+                  id="keyword"
+                  name="keyword"
+                  value={
+                    searchData.keyword
+                  }
+                  onChange={handleChange}
+                  className="
+                    h-[40px]
+                    w-full
+                    rounded-none
+                    border
+                    border-[#d8dadd]
+                    bg-white
+                    px-[11px]
+                    text-[14px]
+                    text-[#212529]
+                    outline-none
+                    transition-all
+                    duration-200
+                    placeholder:text-[#999]
+                    focus:border-[#2f64ad]
+                    focus:ring-0
+                  "
+                />
+              </div>
 
-              <select
-                id="center"
-                name="center"
-                value={
-                  searchData.center
-                }
-                onChange={handleChange}
-                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-              >
-                <option value="">
-                  SELECT CENTER
-                </option>
+              {/* ------------------------------------------------ */}
+              {/* Center */}
+              {/* ------------------------------------------------ */}
+              <div>
+                <label
+                  htmlFor="center"
+                  className="
+                    mb-[7px]
+                    block
+                    text-[15px]
+                    font-semibold
+                    text-[#172033]
+                  "
+                >
+                  Center
+                </label>
 
-                {centers.map(
-                  (center) => (
-                    <option
-                      key={center._id}
-                      value={center._id}
-                    >
-                      {
-                        center.centerName
-                      }
-                    </option>
-                  ),
-                )}
-              </select>
-            </div>
+                <select
+                  id="center"
+                  name="center"
+                  value={
+                    searchData.center
+                  }
+                  onChange={handleChange}
+                  className="
+                    h-[40px]
+                    w-full
+                    cursor-pointer
+                    rounded-none
+                    border
+                    border-[#d8dadd]
+                    bg-white
+                    px-[11px]
+                    text-[14px]
+                    text-[#212529]
+                    outline-none
+                    transition-all
+                    duration-200
+                    focus:border-[#2f64ad]
+                    focus:ring-0
+                  "
+                >
+                  <option value="">
+                    SELECT CENTER
+                  </option>
 
-            {/* Role */}
-            <div>
-              <label
-                htmlFor="role"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
-              >
-                Role
-              </label>
+                  {centers.map(
+                    (center) => (
+                      <option
+                        key={center._id}
+                        value={center._id}
+                      >
+                        {
+                          center.centerName
+                        }
+                      </option>
+                    ),
+                  )}
+                </select>
+              </div>
 
-              <select
-                id="role"
-                name="role"
-                value={
-                  searchData.role
-                }
-                onChange={handleChange}
-                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-              >
-                <option value="">
-                  SELECT ROLE
-                </option>
+              {/* ------------------------------------------------ */}
+              {/* Role */}
+              {/* ------------------------------------------------ */}
+              <div>
+                <label
+                  htmlFor="role"
+                  className="
+                    mb-[7px]
+                    block
+                    text-[15px]
+                    font-semibold
+                    text-[#172033]
+                  "
+                >
+                  Role
+                </label>
 
-                {roles.map(
-                  (role) => (
-                    <option
-                      key={role._id}
-                      value={role._id}
-                    >
-                      {
-                        role.roleTitle
-                      }
-                    </option>
-                  ),
-                )}
-              </select>
-            </div>
+                <select
+                  id="role"
+                  name="role"
+                  value={
+                    searchData.role
+                  }
+                  onChange={handleChange}
+                  className="
+                    h-[40px]
+                    w-full
+                    cursor-pointer
+                    rounded-none
+                    border
+                    border-[#d8dadd]
+                    bg-white
+                    px-[11px]
+                    text-[14px]
+                    text-[#212529]
+                    outline-none
+                    transition-all
+                    duration-200
+                    focus:border-[#2f64ad]
+                    focus:ring-0
+                  "
+                >
+                  <option value="">
+                    SELECT ROLE
+                  </option>
 
-            {/* Status */}
-            <div>
-              <label
-                htmlFor="status"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
-              >
-                Status
-              </label>
+                  {roles.map(
+                    (role) => (
+                      <option
+                        key={role._id}
+                        value={role._id}
+                      >
+                        {
+                          role.roleTitle
+                        }
+                      </option>
+                    ),
+                  )}
+                </select>
+              </div>
 
-              <select
-                id="status"
-                name="status"
-                value={
-                  searchData.status
-                }
-                onChange={handleChange}
-                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-              >
-                <option value="">
-                  -SELECT-
-                </option>
+              {/* ------------------------------------------------ */}
+              {/* Status */}
+              {/* ------------------------------------------------ */}
+              <div>
+                <label
+                  htmlFor="status"
+                  className="
+                    mb-[7px]
+                    block
+                    text-[15px]
+                    font-semibold
+                    text-[#172033]
+                  "
+                >
+                  Status
+                </label>
 
-                <option value="Enable">
-                  Enable
-                </option>
+                <select
+                  id="status"
+                  name="status"
+                  value={
+                    searchData.status
+                  }
+                  onChange={handleChange}
+                  className="
+                    h-[40px]
+                    w-full
+                    cursor-pointer
+                    rounded-none
+                    border
+                    border-[#d8dadd]
+                    bg-white
+                    px-[11px]
+                    text-[14px]
+                    text-[#212529]
+                    outline-none
+                    transition-all
+                    duration-200
+                    focus:border-[#2f64ad]
+                    focus:ring-0
+                  "
+                >
+                  <option value="">
+                    -SELECT-
+                  </option>
 
-                <option value="Disable">
-                  Disable
-                </option>
-              </select>
+                  <option value="Enable">
+                    Enable
+                  </option>
+
+                  <option value="Disable">
+                    Disable
+                  </option>
+                </select>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* ------------------------------------------------ */}
-        {/* Footer */}
-        {/* ------------------------------------------------ */}
-        <div className="flex items-center justify-end gap-2 border-t bg-gray-50 px-6 py-4">
-          <button
-            type="button"
-            onClick={
-              handleReset
-            }
-            className="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+          {/* ------------------------------------------------ */}
+          {/* Footer */}
+          {/* ------------------------------------------------ */}
+          <div
+            className="
+              flex
+              flex-col-reverse
+              gap-3
+              border-t
+              border-[#e1e5e9]
+              bg-[#fafafa]
+              px-[18px]
+              py-[15px]
+              sm:flex-row
+              sm:justify-end
+              sm:px-[20px]
+            "
           >
-            <RotateCcw size={16} />
-            Close
-          </button>
+            {/* Reset / Close */}
+            <button
+              type="button"
+              onClick={
+                handleReset
+              }
+              className="
+                inline-flex
+                h-[40px]
+                items-center
+                justify-center
+                gap-2
+                rounded-[4px]
+                border
+                border-[#2f64ad]
+                bg-[#2f64ad]
+                px-[17px]
+                text-[14px]
+                font-medium
+                text-white
+                transition-all
+                duration-200
+                hover:bg-[#245494]
+                focus:outline-none
+              "
+            >
+              <RotateCcw
+                size={15}
+                strokeWidth={2}
+              />
 
-          <button
-            type="button"
-            onClick={
-              handleSearch
-            }
-            className="inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
-          >
-            <Search size={16} />
-            Search
-          </button>
+              Close
+            </button>
+
+            {/* Search */}
+            <button
+              type="button"
+              onClick={
+                handleSearch
+              }
+              className="
+                inline-flex
+                h-[40px]
+                items-center
+                justify-center
+                gap-2
+                rounded-[4px]
+                bg-[#2f64ad]
+                px-[18px]
+                text-[14px]
+                font-medium
+                text-white
+                transition-all
+                duration-200
+                hover:bg-[#245494]
+                focus:outline-none
+              "
+            >
+              <Search
+                size={16}
+                strokeWidth={2}
+              />
+
+              Search
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

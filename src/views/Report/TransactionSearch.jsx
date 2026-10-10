@@ -1,25 +1,515 @@
+// import React, { useEffect, useState } from "react";
+// import PropTypes from "prop-types";
+// import Select from "react-select";
+// import { Search, X } from "lucide-react";
+// import axiosInstance from "../../axiosInstance";
+// const TransactionSearch = ({
+//   visible,
+//   onClose,
+//   onSearch,
+//   centers,
+//   products,
+//   customers,
+// }) => {
+//   const [searchData, setSearchData] = useState({
+//     product: "",
+//     center: "",
+//     usageType: "",
+//     customer: "",
+//     reseller: "",
+//     startDate: "",
+//     endDate: "",
+//   });
+
+//   const [resellers, setResellers] = useState([]);
+//   const [loadingResellers, setLoadingResellers] = useState(false);
+
+//   const [resellerCenters, setResellerCenters] = useState([]);
+//   const [loadingCenters, setLoadingCenters] = useState(false);
+
+//   // Fetch all resellers
+//   useEffect(() => {
+//     const fetchResellers = async () => {
+//       setLoadingResellers(true);
+
+//       try {
+//         const response = await axiosInstance.get("/resellers");
+
+//         if (response.data.success) {
+//           setResellers(response.data.data || []);
+//         } else {
+//           setResellers([]);
+//         }
+//       } catch (error) {
+//         console.error("Error fetching resellers:", error);
+//         setResellers([]);
+//       } finally {
+//         setLoadingResellers(false);
+//       }
+//     };
+
+//     fetchResellers();
+//   }, []);
+
+//   // Fetch centers based on selected reseller
+//   useEffect(() => {
+//     const fetchCentersByReseller = async () => {
+//       if (searchData.reseller) {
+//         setLoadingCenters(true);
+
+//         try {
+//           const response = await axiosInstance.get(
+//             `/centers/reseller/${searchData.reseller}`
+//           );
+
+//           if (response.data.success) {
+//             setResellerCenters(response.data.data);
+//           } else {
+//             setResellerCenters([]);
+//           }
+//         } catch (error) {
+//           console.error(
+//             "Error fetching centers for reseller:",
+//             error
+//           );
+//           setResellerCenters([]);
+//         } finally {
+//           setLoadingCenters(false);
+//         }
+//       } else {
+//         setResellerCenters([]);
+
+//         setSearchData((prev) => ({
+//           ...prev,
+//           center: "",
+//         }));
+//       }
+//     };
+
+//     fetchCentersByReseller();
+//   }, [searchData.reseller]);
+
+//   // Reset when modal closes
+//   useEffect(() => {
+//     if (!visible) {
+//       setSearchData({
+//         product: "",
+//         center: "",
+//         usageType: "",
+//         customer: "",
+//         reseller: "",
+//         startDate: "",
+//         endDate: "",
+//       });
+
+//       setResellerCenters([]);
+//     }
+//   }, [visible]);
+
+//   const handleChange = (e) => {
+//     const { name, value } = e.target;
+
+//     setSearchData((prev) => ({
+//       ...prev,
+//       [name]: value,
+//     }));
+//   };
+
+//   const handleSearch = () => {
+//     onSearch(searchData);
+//     onClose();
+//   };
+
+//   const handleReset = () => {
+//     const resetData = {
+//       product: "",
+//       center: "",
+//       usageType: "",
+//       customer: "",
+//       reseller: "",
+//       startDate: "",
+//       endDate: "",
+//     };
+
+//     setSearchData(resetData);
+//     setResellerCenters([]);
+
+//     onSearch(resetData);
+//     onClose();
+//   };
+
+//   if (!visible) return null;
+
+//   const resellerOptions = resellers.map((reseller) => ({
+//     value: reseller._id,
+//     label: reseller.businessName,
+//   }));
+
+//   const centerOptions = resellerCenters.map((center) => ({
+//     value: center._id,
+//     label: center.centerName,
+//   }));
+
+//   const productOptions = products.map((product) => ({
+//     value: product._id,
+//     label: product.productTitle,
+//   }));
+
+//   const selectedReseller =
+//     resellerOptions.find(
+//       (option) => option.value === searchData.reseller
+//     ) || null;
+
+//   const selectedCenter =
+//     centerOptions.find(
+//       (option) => option.value === searchData.center
+//     ) || null;
+
+//   const selectedProduct =
+//     productOptions.find(
+//       (option) => option.value === searchData.product
+//     ) || null;
+
+//   const selectStyles = {
+//     control: (base, state) => ({
+//       ...base,
+//       minHeight: "40px",
+//       borderRadius: "6px",
+//       borderColor: state.isFocused
+//         ? "#2563eb"
+//         : "#d1d5db",
+//       boxShadow: state.isFocused
+//         ? "0 0 0 1px #2563eb"
+//         : "none",
+//       "&:hover": {
+//         borderColor: "#9ca3af",
+//       },
+//     }),
+
+//     menu: (base) => ({
+//       ...base,
+//       zIndex: 9999,
+//     }),
+//   };
+
+//   return (
+//     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 px-4">
+//       <div className="w-full max-w-3xl overflow-hidden rounded-lg bg-white shadow-xl">
+//         {/* Header */}
+//         <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
+//           <h2 className="text-lg font-semibold text-gray-800">
+//             Search
+//           </h2>
+
+//           <button
+//             type="button"
+//             onClick={onClose}
+//             aria-label="Close"
+//             className="rounded-md p-1.5 text-gray-500 transition hover:bg-gray-100 hover:text-gray-700"
+//           >
+//             <X size={20} />
+//           </button>
+//         </div>
+
+//         {/* Body */}
+//         <div className="max-h-[75vh] overflow-y-auto px-6 py-5">
+//           {/* Reseller + Branch */}
+//           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+//             {/* Reseller */}
+//             <div>
+//               <label
+//                 htmlFor="reseller"
+//                 className="mb-1.5 block text-sm font-medium text-gray-700"
+//               >
+//                 Reseller
+//               </label>
+
+//               <Select
+//                 inputId="reseller"
+//                 name="reseller"
+//                 placeholder={
+//                   loadingResellers
+//                     ? "Loading resellers..."
+//                     : "Select Reseller..."
+//                 }
+//                 value={selectedReseller}
+//                 onChange={(selected) =>
+//                   setSearchData((prev) => ({
+//                     ...prev,
+//                     reseller: selected
+//                       ? selected.value
+//                       : "",
+//                     center: "",
+//                   }))
+//                 }
+//                 options={resellerOptions}
+//                 isClearable
+//                 isLoading={loadingResellers}
+//                 classNamePrefix="react-select"
+//                 styles={selectStyles}
+//               />
+//             </div>
+
+//             {/* Branch */}
+//             <div>
+//               <label
+//                 htmlFor="center"
+//                 className="mb-1.5 block text-sm font-medium text-gray-700"
+//               >
+//                 Branch
+//               </label>
+
+//               <Select
+//                 inputId="center"
+//                 name="center"
+//                 placeholder={
+//                   loadingCenters
+//                     ? "Loading branches..."
+//                     : searchData.reseller
+//                       ? "Select Branch..."
+//                       : "Select a reseller first"
+//                 }
+//                 value={selectedCenter}
+//                 onChange={(selected) =>
+//                   setSearchData((prev) => ({
+//                     ...prev,
+//                     center: selected
+//                       ? selected.value
+//                       : "",
+//                   }))
+//                 }
+//                 options={centerOptions}
+//                 isClearable
+//                 isDisabled={
+//                   !searchData.reseller ||
+//                   loadingCenters
+//                 }
+//                 isLoading={loadingCenters}
+//                 classNamePrefix="react-select"
+//                 styles={selectStyles}
+//               />
+
+//               {searchData.reseller &&
+//                 !loadingCenters &&
+//                 resellerCenters.length === 0 && (
+//                   <p className="mt-1.5 text-xs text-gray-500">
+//                     No branches found for this reseller
+//                   </p>
+//                 )}
+//             </div>
+//           </div>
+
+//           {/* Type + User */}
+//           <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
+//             {/* Type */}
+//             <div>
+//               <label
+//                 htmlFor="usageType"
+//                 className="mb-1.5 block text-sm font-medium text-gray-700"
+//               >
+//                 Type
+//               </label>
+
+//               <select
+//                 id="usageType"
+//                 name="usageType"
+//                 value={searchData.usageType}
+//                 onChange={handleChange}
+//                 className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-700 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+//               >
+//                 <option value="">-SELECT-</option>
+//                 <option value="Customer">Customer</option>
+//                 <option value="Building">Building</option>
+//                 <option value="Building to Building">
+//                   Building to Building
+//                 </option>
+//                 <option value="Control Room">
+//                   Control Room
+//                 </option>
+//                 <option value="Damage">Damage</option>
+//                 <option value="Stolen from Center">
+//                   Stolen from Center
+//                 </option>
+//                 <option value="Stolen from Field">
+//                   Stolen from Field
+//                 </option>
+//                 <option value="Other">Other</option>
+//               </select>
+//             </div>
+
+//             {/* User */}
+//             <div>
+//               <label
+//                 htmlFor="customer"
+//                 className="mb-1.5 block text-sm font-medium text-gray-700"
+//               >
+//                 User
+//               </label>
+
+//               <select
+//                 id="customer"
+//                 name="customer"
+//                 value={searchData.customer}
+//                 onChange={handleChange}
+//                 className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-700 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+//               >
+//                 <option value="">-SELECT-</option>
+
+//                 {customers.map((customer) => (
+//                   <option
+//                     key={customer._id}
+//                     value={customer._id}
+//                   >
+//                     {customer.username}-{customer.mobile}
+//                   </option>
+//                 ))}
+//               </select>
+//             </div>
+//           </div>
+
+//           {/* Product */}
+//           <div className="mt-5">
+//             <label
+//               htmlFor="product"
+//               className="mb-1.5 block text-sm font-medium text-gray-700"
+//             >
+//               Product
+//             </label>
+
+//             <Select
+//               inputId="product"
+//               name="product"
+//               placeholder="Search Product..."
+//               value={selectedProduct}
+//               onChange={(selected) =>
+//                 setSearchData((prev) => ({
+//                   ...prev,
+//                   product: selected
+//                     ? selected.value
+//                     : "",
+//                 }))
+//               }
+//               options={productOptions}
+//               isClearable
+//               classNamePrefix="react-select"
+//               styles={selectStyles}
+//             />
+//           </div>
+
+//           {/* Date Range */}
+//           <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
+//             {/* Start Date */}
+//             <div>
+//               <label
+//                 htmlFor="startDate"
+//                 className="mb-1.5 block text-sm font-medium text-gray-700"
+//               >
+//                 Start Date
+//               </label>
+
+//               <input
+//                 type="date"
+//                 id="startDate"
+//                 name="startDate"
+//                 value={searchData.startDate}
+//                 onChange={handleChange}
+//                 className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-700 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+//               />
+
+//               <p className="mt-1 text-xs text-gray-500">
+//                 Optional
+//               </p>
+//             </div>
+
+//             {/* End Date */}
+//             <div>
+//               <label
+//                 htmlFor="endDate"
+//                 className="mb-1.5 block text-sm font-medium text-gray-700"
+//               >
+//                 End Date
+//               </label>
+
+//               <input
+//                 type="date"
+//                 id="endDate"
+//                 name="endDate"
+//                 value={searchData.endDate}
+//                 onChange={handleChange}
+//                 className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-700 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+//               />
+
+//               <p className="mt-1 text-xs text-gray-500">
+//                 Optional
+//               </p>
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* Footer */}
+//         <div className="flex flex-col-reverse gap-2 border-t border-gray-200 bg-gray-50 px-6 py-4 sm:flex-row sm:justify-end">
+//           <button
+//             type="button"
+//             onClick={handleReset}
+//             className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+//           >
+//             Close
+//           </button>
+
+//           <button
+//             type="button"
+//             onClick={handleSearch}
+//             className="inline-flex items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
+//           >
+//             <Search size={16} />
+//             Search
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// TransactionSearch.propTypes = {
+//   visible: PropTypes.bool.isRequired,
+//   onClose: PropTypes.func.isRequired,
+//   onSearch: PropTypes.func.isRequired,
+//   centers: PropTypes.array.isRequired,
+//   products: PropTypes.array.isRequired,
+//   customers: PropTypes.array.isRequired,
+// };
+
+// export default TransactionSearch;
+
+
+
+
+
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Select from "react-select";
-import { Search, X } from "lucide-react";
+import { X } from "lucide-react";
 import axiosInstance from "../../axiosInstance";
+
+const INITIAL_SEARCH_DATA = {
+  product: "",
+  center: "",
+  usageType: "",
+  customer: "",
+  reseller: "",
+  startDate: "",
+  endDate: "",
+};
+
 const TransactionSearch = ({
   visible,
   onClose,
   onSearch,
-  centers,
-  products,
-  customers,
+  centers = [],
+  products = [],
+  customers = [],
 }) => {
-  const [searchData, setSearchData] = useState({
-    product: "",
-    center: "",
-    usageType: "",
-    customer: "",
-    reseller: "",
-    startDate: "",
-    endDate: "",
-  });
+  const [searchData, setSearchData] = useState(INITIAL_SEARCH_DATA);
 
   const [resellers, setResellers] = useState([]);
   const [loadingResellers, setLoadingResellers] = useState(false);
@@ -27,109 +517,112 @@ const TransactionSearch = ({
   const [resellerCenters, setResellerCenters] = useState([]);
   const [loadingCenters, setLoadingCenters] = useState(false);
 
-  // Fetch all resellers
+  // Fetch resellers
   useEffect(() => {
+    let cancelled = false;
+
     const fetchResellers = async () => {
       setLoadingResellers(true);
 
       try {
         const response = await axiosInstance.get("/resellers");
 
-        if (response.data.success) {
+        if (cancelled) return;
+
+        if (response.data?.success) {
           setResellers(response.data.data || []);
         } else {
           setResellers([]);
         }
       } catch (error) {
-        console.error("Error fetching resellers:", error);
-        setResellers([]);
+        if (!cancelled) {
+          console.error("Error fetching resellers:", error);
+          setResellers([]);
+        }
       } finally {
-        setLoadingResellers(false);
+        if (!cancelled) {
+          setLoadingResellers(false);
+        }
       }
     };
 
     fetchResellers();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  // Fetch centers based on selected reseller
+  // Fetch branches when a reseller is selected
   useEffect(() => {
+    let cancelled = false;
+
     const fetchCentersByReseller = async () => {
-      if (searchData.reseller) {
-        setLoadingCenters(true);
+      if (!searchData.reseller) {
+        setResellerCenters([]);
+        return;
+      }
 
-        try {
-          const response = await axiosInstance.get(
-            `/centers/reseller/${searchData.reseller}`
-          );
+      setLoadingCenters(true);
 
-          if (response.data.success) {
-            setResellerCenters(response.data.data);
-          } else {
-            setResellerCenters([]);
-          }
-        } catch (error) {
-          console.error(
-            "Error fetching centers for reseller:",
-            error
-          );
+      try {
+        const response = await axiosInstance.get(
+          `/centers/reseller/${searchData.reseller}`
+        );
+
+        if (cancelled) return;
+
+        if (response.data?.success) {
+          setResellerCenters(response.data.data || []);
+        } else {
           setResellerCenters([]);
-        } finally {
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error("Error fetching branches for reseller:", error);
+          setResellerCenters([]);
+        }
+      } finally {
+        if (!cancelled) {
           setLoadingCenters(false);
         }
-      } else {
-        setResellerCenters([]);
-
-        setSearchData((prev) => ({
-          ...prev,
-          center: "",
-        }));
       }
     };
 
     fetchCentersByReseller();
+
+    return () => {
+      cancelled = true;
+    };
   }, [searchData.reseller]);
 
-  // Reset when modal closes
+  // Reset fields when the modal closes
   useEffect(() => {
     if (!visible) {
-      setSearchData({
-        product: "",
-        center: "",
-        usageType: "",
-        customer: "",
-        reseller: "",
-        startDate: "",
-        endDate: "",
-      });
-
+      setSearchData({ ...INITIAL_SEARCH_DATA });
       setResellerCenters([]);
     }
   }, [visible]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  // Handle native input and select changes
+  const handleChange = (event) => {
+    const { name, value } = event.target;
 
-    setSearchData((prev) => ({
-      ...prev,
+    setSearchData((previous) => ({
+      ...previous,
       [name]: value,
     }));
   };
 
+  // Apply search filters
   const handleSearch = () => {
-    onSearch(searchData);
+    onSearch({ ...searchData });
     onClose();
   };
 
+  // Reset all filters
   const handleReset = () => {
-    const resetData = {
-      product: "",
-      center: "",
-      usageType: "",
-      customer: "",
-      reseller: "",
-      startDate: "",
-      endDate: "",
-    };
+    const resetData = { ...INITIAL_SEARCH_DATA };
 
     setSearchData(resetData);
     setResellerCenters([]);
@@ -137,6 +630,23 @@ const TransactionSearch = ({
     onSearch(resetData);
     onClose();
   };
+
+  // Close modal on Escape
+  useEffect(() => {
+    if (!visible) return undefined;
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [visible, onClose]);
 
   if (!visible) return null;
 
@@ -170,57 +680,143 @@ const TransactionSearch = ({
       (option) => option.value === searchData.product
     ) || null;
 
+  // React Select styling to match the screenshot
   const selectStyles = {
     control: (base, state) => ({
       ...base,
-      minHeight: "40px",
-      borderRadius: "6px",
-      borderColor: state.isFocused
-        ? "#2563eb"
-        : "#d1d5db",
+      minHeight: "38px",
+      height: "38px",
+      borderRadius: "4px",
+      borderColor: state.isFocused ? "#86b7fe" : "#ced4da",
       boxShadow: state.isFocused
-        ? "0 0 0 1px #2563eb"
+        ? "0 0 0 3px rgba(13, 110, 253, 0.15)"
         : "none",
+      backgroundColor: state.isDisabled ? "#f1f3f5" : "#ffffff",
+      cursor: state.isDisabled ? "not-allowed" : "default",
       "&:hover": {
-        borderColor: "#9ca3af",
+        borderColor: state.isFocused ? "#86b7fe" : "#b6bfc8",
       },
+    }),
+
+    valueContainer: (base) => ({
+      ...base,
+      padding: "0 10px",
+    }),
+
+    placeholder: (base) => ({
+      ...base,
+      color: "#777777",
+      fontSize: "14px",
+    }),
+
+    singleValue: (base) => ({
+      ...base,
+      color: "#374151",
+      fontSize: "14px",
+    }),
+
+    input: (base) => ({
+      ...base,
+      fontSize: "14px",
+    }),
+
+    indicatorsContainer: (base) => ({
+      ...base,
+      height: "36px",
+    }),
+
+    indicatorSeparator: (base) => ({
+      ...base,
+      backgroundColor: "#ced4da",
+    }),
+
+    dropdownIndicator: (base) => ({
+      ...base,
+      padding: "8px",
+      color: "#adb5bd",
+    }),
+
+    clearIndicator: (base) => ({
+      ...base,
+      padding: "6px",
     }),
 
     menu: (base) => ({
       ...base,
-      zIndex: 9999,
+      zIndex: 10000,
+      borderRadius: "4px",
+      fontSize: "14px",
+    }),
+
+    menuPortal: (base) => ({
+      ...base,
+      zIndex: 10000,
+    }),
+
+    option: (base, state) => ({
+      ...base,
+      fontSize: "14px",
+      backgroundColor: state.isSelected
+        ? "#0d6efd"
+        : state.isFocused
+          ? "#f1f5f9"
+          : "#ffffff",
+      color: state.isSelected ? "#ffffff" : "#374151",
+      cursor: "pointer",
     }),
   };
 
+  const labelClass =
+    "mb-2 block text-sm font-semibold leading-5 text-gray-700";
+
+  const inputClass =
+    "h-[38px] w-full rounded-[4px] border border-[#ced4da] " +
+    "bg-white px-3 text-sm text-gray-700 outline-none " +
+    "transition focus:border-[#86b7fe] " +
+    "focus:ring-[3px] focus:ring-blue-500/15";
+
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 px-4">
-      <div className="w-full max-w-3xl overflow-hidden rounded-lg bg-white shadow-xl">
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 px-4 py-4"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) {
+          onClose();
+        }
+      }}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="transaction-search-title"
+        className="flex max-h-[calc(100vh-32px)] w-full max-w-[800px] flex-col overflow-hidden rounded-[7px] bg-white shadow-xl"
+        onMouseDown={(event) => event.stopPropagation()}
+      >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
-          <h2 className="text-lg font-semibold text-gray-800">
+        <div className="flex h-[63px] shrink-0 items-center justify-between border-b border-[#dee2e6] px-4">
+          <h2
+            id="transaction-search-title"
+            className="text-xl font-normal leading-7 text-[#343a40]"
+          >
             Search
           </h2>
 
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close"
-            className="rounded-md p-1.5 text-gray-500 transition hover:bg-gray-100 hover:text-gray-700"
+            aria-label="Close search"
+            className="flex h-8 w-8 items-center justify-center rounded-md text-[#858b91] transition hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <X size={20} />
+            <X size={23} strokeWidth={2} />
           </button>
         </div>
 
         {/* Body */}
-        <div className="max-h-[75vh] overflow-y-auto px-6 py-5">
-          {/* Reseller + Branch */}
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-[17px]">
+          {/* Reseller and Branch */}
+          <div className="grid grid-cols-1 gap-x-5 gap-y-5 md:grid-cols-2">
             {/* Reseller */}
-            <div>
-              <label
-                htmlFor="reseller"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
-              >
+            <div className="min-w-0">
+              <label htmlFor="reseller" className={labelClass}>
                 Reseller
               </label>
 
@@ -234,11 +830,9 @@ const TransactionSearch = ({
                 }
                 value={selectedReseller}
                 onChange={(selected) =>
-                  setSearchData((prev) => ({
-                    ...prev,
-                    reseller: selected
-                      ? selected.value
-                      : "",
+                  setSearchData((previous) => ({
+                    ...previous,
+                    reseller: selected ? selected.value : "",
                     center: "",
                   }))
                 }
@@ -247,15 +841,16 @@ const TransactionSearch = ({
                 isLoading={loadingResellers}
                 classNamePrefix="react-select"
                 styles={selectStyles}
+                menuPortalTarget={
+                  typeof document !== "undefined" ? document.body : null
+                }
+                menuPosition="fixed"
               />
             </div>
 
             {/* Branch */}
-            <div>
-              <label
-                htmlFor="center"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
-              >
+            <div className="min-w-0">
+              <label htmlFor="center" className={labelClass}>
                 Branch
               </label>
 
@@ -271,42 +866,38 @@ const TransactionSearch = ({
                 }
                 value={selectedCenter}
                 onChange={(selected) =>
-                  setSearchData((prev) => ({
-                    ...prev,
-                    center: selected
-                      ? selected.value
-                      : "",
+                  setSearchData((previous) => ({
+                    ...previous,
+                    center: selected ? selected.value : "",
                   }))
                 }
                 options={centerOptions}
                 isClearable
-                isDisabled={
-                  !searchData.reseller ||
-                  loadingCenters
-                }
+                isDisabled={!searchData.reseller || loadingCenters}
                 isLoading={loadingCenters}
                 classNamePrefix="react-select"
                 styles={selectStyles}
+                menuPortalTarget={
+                  typeof document !== "undefined" ? document.body : null
+                }
+                menuPosition="fixed"
               />
 
               {searchData.reseller &&
                 !loadingCenters &&
                 resellerCenters.length === 0 && (
-                  <p className="mt-1.5 text-xs text-gray-500">
-                    No branches found for this reseller
+                  <p className="mt-1 text-xs text-gray-500">
+                    No branches found for this reseller.
                   </p>
                 )}
             </div>
           </div>
 
-          {/* Type + User */}
-          <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
+          {/* Type and User */}
+          <div className="mt-5 grid grid-cols-1 gap-x-5 gap-y-5 md:grid-cols-2">
             {/* Type */}
-            <div>
-              <label
-                htmlFor="usageType"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
-              >
+            <div className="min-w-0">
+              <label htmlFor="usageType" className={labelClass}>
                 Type
               </label>
 
@@ -315,7 +906,7 @@ const TransactionSearch = ({
                 name="usageType"
                 value={searchData.usageType}
                 onChange={handleChange}
-                className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-700 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className={inputClass}
               >
                 <option value="">-SELECT-</option>
                 <option value="Customer">Customer</option>
@@ -323,9 +914,7 @@ const TransactionSearch = ({
                 <option value="Building to Building">
                   Building to Building
                 </option>
-                <option value="Control Room">
-                  Control Room
-                </option>
+                <option value="Control Room">Control Room</option>
                 <option value="Damage">Damage</option>
                 <option value="Stolen from Center">
                   Stolen from Center
@@ -338,11 +927,8 @@ const TransactionSearch = ({
             </div>
 
             {/* User */}
-            <div>
-              <label
-                htmlFor="customer"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
-              >
+            <div className="min-w-0">
+              <label htmlFor="customer" className={labelClass}>
                 User
               </label>
 
@@ -351,15 +937,12 @@ const TransactionSearch = ({
                 name="customer"
                 value={searchData.customer}
                 onChange={handleChange}
-                className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-700 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className={inputClass}
               >
                 <option value="">-SELECT-</option>
 
                 {customers.map((customer) => (
-                  <option
-                    key={customer._id}
-                    value={customer._id}
-                  >
+                  <option key={customer._id} value={customer._id}>
                     {customer.username}-{customer.mobile}
                   </option>
                 ))}
@@ -368,11 +951,8 @@ const TransactionSearch = ({
           </div>
 
           {/* Product */}
-          <div className="mt-5">
-            <label
-              htmlFor="product"
-              className="mb-1.5 block text-sm font-medium text-gray-700"
-            >
+          <div className="mt-5 min-w-0">
+            <label htmlFor="product" className={labelClass}>
               Product
             </label>
 
@@ -382,28 +962,27 @@ const TransactionSearch = ({
               placeholder="Search Product..."
               value={selectedProduct}
               onChange={(selected) =>
-                setSearchData((prev) => ({
-                  ...prev,
-                  product: selected
-                    ? selected.value
-                    : "",
+                setSearchData((previous) => ({
+                  ...previous,
+                  product: selected ? selected.value : "",
                 }))
               }
               options={productOptions}
               isClearable
               classNamePrefix="react-select"
               styles={selectStyles}
+              menuPortalTarget={
+                typeof document !== "undefined" ? document.body : null
+              }
+              menuPosition="fixed"
             />
           </div>
 
-          {/* Date Range */}
-          <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
+          {/* Start Date and End Date */}
+          <div className="mt-5 grid grid-cols-1 gap-x-5 gap-y-5 md:grid-cols-2">
             {/* Start Date */}
-            <div>
-              <label
-                htmlFor="startDate"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
-              >
+            <div className="min-w-0">
+              <label htmlFor="startDate" className={labelClass}>
                 Start Date
               </label>
 
@@ -413,20 +992,17 @@ const TransactionSearch = ({
                 name="startDate"
                 value={searchData.startDate}
                 onChange={handleChange}
-                className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-700 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className={inputClass}
               />
 
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-sm leading-4 text-gray-500">
                 Optional
               </p>
             </div>
 
             {/* End Date */}
-            <div>
-              <label
-                htmlFor="endDate"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
-              >
+            <div className="min-w-0">
+              <label htmlFor="endDate" className={labelClass}>
                 End Date
               </label>
 
@@ -436,10 +1012,10 @@ const TransactionSearch = ({
                 name="endDate"
                 value={searchData.endDate}
                 onChange={handleChange}
-                className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-700 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className={inputClass}
               />
 
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-sm leading-4 text-gray-500">
                 Optional
               </p>
             </div>
@@ -447,11 +1023,11 @@ const TransactionSearch = ({
         </div>
 
         {/* Footer */}
-        <div className="flex flex-col-reverse gap-2 border-t border-gray-200 bg-gray-50 px-6 py-4 sm:flex-row sm:justify-end">
+        <div className="flex shrink-0 flex-col-reverse gap-3 border-t border-[#dee2e6] bg-white px-4 py-4 sm:flex-row sm:items-center sm:justify-end">
           <button
             type="button"
             onClick={handleReset}
-            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+            className="inline-flex h-[38px] items-center justify-center rounded-[5px] border border-[#6c757d] bg-[#6c757d] px-3 text-sm font-normal text-white transition hover:border-[#5c636a] hover:bg-[#5c636a] focus:outline-none focus:ring-2 focus:ring-gray-400/50"
           >
             Close
           </button>
@@ -459,9 +1035,8 @@ const TransactionSearch = ({
           <button
             type="button"
             onClick={handleSearch}
-            className="inline-flex items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
+            className="inline-flex h-[38px] items-center justify-center rounded-[5px] border border-[#2457a6] bg-[#2858a6] px-4 text-sm font-normal text-white transition hover:border-[#204b90] hover:bg-[#204b90] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
           >
-            <Search size={16} />
             Search
           </button>
         </div>
@@ -474,9 +1049,9 @@ TransactionSearch.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSearch: PropTypes.func.isRequired,
-  centers: PropTypes.array.isRequired,
-  products: PropTypes.array.isRequired,
-  customers: PropTypes.array.isRequired,
+  centers: PropTypes.array,
+  products: PropTypes.array,
+  customers: PropTypes.array,
 };
 
 export default TransactionSearch;
