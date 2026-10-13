@@ -6,7 +6,7 @@ const config = {
   // Vite proxy:
   // Browser -> localhost:5173/api
   // Vite -> http://103.175.190.244/api
-  baseURL: "/api",
+  baseURL: "/api/v1",
 };
 
 export default config;
