@@ -1559,7 +1559,7 @@ const AddUser = () => {
       }
 
       if (isEditing) {
-        await axiosInstance.put(
+        await axiosInstance.put(  
           `/auth/user/${id}`,
           submitData,
         );

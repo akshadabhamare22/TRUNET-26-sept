@@ -2123,54 +2123,21 @@ const UserList = () => {
                         </td>
 
                         {/* BRANCH */}
-                        <td
-                          className="
-                            border
-                            border-[#e5e7eb]
-                            px-[9px]
-                            py-[9px]
-                            text-[16px]
-                            leading-[22px]
-                            text-[#111111]
-                            break-words
-                          "
-                        >
-                          {item.accessibleCenters &&
-                          item
-                            .accessibleCenters
-                            .length >
-                            0 ? (
-                            <div className="break-words">
-                              {item.accessibleCenters.map(
-                                (
-                                  center,
-                                  centerIndex,
-                                ) => (
-                                  <span
-                                    key={
-                                      center._id
-                                    }
-                                  >
-                                    {
-                                      center.centerName
-                                    }
-
-                                    {centerIndex <
-                                      item
-                                        .accessibleCenters
-                                        .length -
-                                        1 &&
-                                      ", "}
-                                  </span>
-                                ),
-                              )}
-                            </div>
-                          ) : (
-                            item.center
-                              ?.centerName ||
-                            ""
-                          )}
-                        </td>
+                       {/* BRANCH */}
+<td
+  className="
+    border
+    border-[#e5e7eb]
+    px-[9px]
+    py-[9px]
+    text-[16px]
+    leading-[22px]
+    text-[#111111]
+    break-words
+  "
+>
+  {item.center?.centerName || "-"}
+</td>
 
                         {/* USERNAME */}
                         <td
