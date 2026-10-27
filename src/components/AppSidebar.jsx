@@ -86,12 +86,20 @@ const AppSidebar = () => {
         </div>
 
         {/* Navigation */}
-        <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
-          <AppSidebarNav
-            items={navItems}
-            unfoldable={unfoldable}
-          />
-        </div>
+       <div
+  className="
+    sidebar-scroll
+    min-h-0
+    flex-1
+    overflow-y-auto
+    overflow-x-hidden
+  "
+>
+  <AppSidebarNav
+    items={navItems}
+    unfoldable={unfoldable}
+  />
+</div>
       </aside>
 
       {/* Mobile Overlay */}

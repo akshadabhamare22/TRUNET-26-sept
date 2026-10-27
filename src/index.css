@@ -42,3 +42,18 @@ img {
 a {
     text-decoration: none;
 }
+
+
+/* Hide scrollbar but keep sidebar scrolling enabled */
+
+.sidebar-scroll {
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* Internet Explorer */
+}
+
+.sidebar-scroll::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Edge, Safari */
+}

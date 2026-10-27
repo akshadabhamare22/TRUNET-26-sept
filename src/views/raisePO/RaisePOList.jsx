@@ -2779,8 +2779,11 @@ const StockPurchase = () => {
                 type="button"
                 onClick={generateInvoice}
                 disabled={!selectedPO}
-                className="inline-flex h-[36px] items-center gap-1.5 rounded-[4px] border border-[#b7bcc2] bg-white px-3 text-[15px] font-medium text-[#777] shadow-none transition-colors hover:bg-[#f5f5f5] disabled:cursor-not-allowed disabled:opacity-60"
-              >
+className={`inline-flex h-[36px] items-center gap-1.5 rounded-[4px] border px-3 text-[15px] font-semibold shadow-none transition-colors focus:outline-none ${
+  selectedPO
+    ? 'border-[#2759a2] bg-[#2759a2] text-white hover:bg-[#1f4f91]'
+    : 'cursor-not-allowed border-[#b7bcc2] bg-white text-[#777] hover:bg-[#f5f5f5] disabled:opacity-60'
+}`}              >
                 <Printer size={17} strokeWidth={1.8} />
                 View PO
               </button>
@@ -2891,8 +2894,7 @@ const StockPurchase = () => {
                           name="selectedPO"
                           checked={selectedPO?._id === customer._id}
                           onChange={() => handleSelectPO(customer)}
-                          className="h-[18px] w-[18px] cursor-pointer rounded-[3px] border border-[#d2d8de] text-blue-600 focus:ring-1 focus:ring-blue-500"
-                        />
+className="h-[18px] w-[18px] cursor-pointer rounded-[3px] border border-[#d2d8de] accent-[#2759a2] focus:ring-1 focus:ring-[#2759a2]"                        />
                       </td>
 
                       {/* Branch */}

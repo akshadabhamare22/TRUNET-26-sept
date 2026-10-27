@@ -1134,7 +1134,8 @@ const AppHeaderDropdown = () => {
             </div>
 
             {/* Actions */}
-            <div className="m-1 flex flex-wrap justify-between gap-1 bg-white p-1">
+            {/* <div className="m-1 flex flex-wrap justify-between gap-1 bg-white p-1"> */}
+            <div className="m-1 flex flex-nowrap items-center gap-1 bg-white p-1">
               {/* Change Password */}
               <button
                 type="button"
