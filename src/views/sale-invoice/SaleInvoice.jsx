@@ -3273,7 +3273,7 @@
 //               '',
 //           },
 
-//           invoiceHtml,
+//           invoiceHtml: invoiceHTML,
 //         };
 
 //         let saveSuccess =
@@ -3458,7 +3458,7 @@
 //       onClick={() =>
 //         handleSort(sortKey)
 //       }
-//       className="cursor-pointer whitespace-nowrap border-b border-gray-200 bg-gray-50 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-700 transition hover:bg-gray-100"
+//       className="cursor-pointer whitespace-nowrap sticky top-0 z-10 border border-gray-200 bg-[#f3f4f4] px-2 py-3 text-left text-sm font-bold text-black transition hover:bg-gray-100"
 //     >
 //       <div className="flex items-center gap-1">
 //         {children}
@@ -3496,11 +3496,23 @@
 //         );
 
 //       return (
-//         <div className="overflow-x-auto rounded-lg border border-gray-200">
-//           <table className="min-w-[1200px] w-full border-collapse text-sm">
+//         <div className="h-[470px] overflow-y-auto overflow-x-hidden rounded-sm border border-gray-200">
+//           <table className="w-full min-w-0 table-fixed border-collapse text-sm">
+//             <colgroup>
+//               <col style={{ width: "5%" }} />
+//               <col style={{ width: "7%" }} />
+//               <col style={{ width: "15%" }} />
+//               <col style={{ width: "10%" }} />
+//               <col style={{ width: "8%" }} />
+//               <col style={{ width: "9%" }} />
+//               <col style={{ width: "8%" }} />
+//               <col style={{ width: "16%" }} />
+//               <col style={{ width: "12%" }} />
+//               <col style={{ width: "10%" }} />
+//             </colgroup>
 //             <thead>
 //               <tr>
-//                 <th className="border-b border-gray-200 bg-gray-50 px-4 py-3 text-left">
+//                 <th className="sticky top-0 z-10 border border-gray-200 bg-[#f3f4f4] px-2 py-3 text-left">
 //                   {searchActive &&
 //                   nonInvoicedItems.length >
 //                     0 ? (
@@ -3554,7 +3566,7 @@
 //                   Completed At
 //                 </SortableHeader>
 
-//                 <th className="border-b border-gray-200 bg-gray-50 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-700">
+//                 <th className="sticky top-0 z-10 border border-gray-200 bg-[#f3f4f4] px-2 py-3 text-left text-sm font-bold text-black">
 //                   Actions
 //                 </th>
 //               </tr>
@@ -3580,7 +3592,7 @@
 //                             : ''
 //                         }`}
 //                       >
-//                         <td className="px-4 py-3">
+//                         <td className="border-x border-gray-100 px-2 py-2.5">
 //                           {!isInvoiceRaised &&
 //                             (searchActive ? (
 //                               <input
@@ -3618,7 +3630,7 @@
 //                           )}
 //                         </td>
 
-//                         <td className="px-4 py-3">
+//                         <td className="border-x border-gray-100 px-2 py-2.5">
 //                           <button
 //                             type="button"
 //                             onClick={() =>
@@ -3645,7 +3657,7 @@
 //                           )}
 //                         </td>
 
-//                         <td className="px-4 py-3">
+//                         <td className="border-x border-gray-100 px-2 py-2.5">
 //                           <button
 //                             type="button"
 //                             onClick={() =>
@@ -3713,7 +3725,7 @@
 //                             : 'N/A'}
 //                         </td>
 
-//                         <td className="px-4 py-3">
+//                         <td className="border-x border-gray-100 px-1 py-2.5 whitespace-normal">
 //                           <button
 //                             type="button"
 //                             onClick={() =>
@@ -3721,7 +3733,7 @@
 //                                 item
 //                               )
 //                             }
-//                             className="inline-flex items-center gap-1.5 rounded-md border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 transition hover:bg-blue-100"
+//                             className="inline-flex max-w-full items-center justify-center gap-1 rounded-md border border-blue-200 bg-blue-50 px-2 py-1.5 text-[11px] font-medium text-blue-700 transition hover:bg-blue-100 whitespace-nowrap"
 //                           >
 //                             <FileText
 //                               size={14}
@@ -3757,31 +3769,31 @@
 
 //   const renderInvoiceTable =
 //     () => (
-//       <div className="overflow-x-auto rounded-lg border border-gray-200">
-//         <table className="min-w-[950px] w-full border-collapse text-sm">
+//       <div className="h-[470px] overflow-y-auto overflow-x-hidden rounded-sm border border-gray-200">
+//         <table className="w-full min-w-[950px] border-collapse text-sm">
 //           <thead>
 //             <tr>
-//               <th className="border-b border-gray-200 bg-gray-50 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-700">
+//               <th className="sticky top-0 z-10 border border-gray-200 bg-[#f3f4f4] px-2 py-3 text-left text-sm font-bold text-black">
 //                 Invoice Number
 //               </th>
 
-//               <th className="border-b border-gray-200 bg-gray-50 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-700">
+//               <th className="sticky top-0 z-10 border border-gray-200 bg-[#f3f4f4] px-2 py-3 text-left text-sm font-bold text-black">
 //                 Invoice Date
 //               </th>
 
-//               <th className="border-b border-gray-200 bg-gray-50 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-700">
+//               <th className="sticky top-0 z-10 border border-gray-200 bg-[#f3f4f4] px-2 py-3 text-left text-sm font-bold text-black">
 //                 Reseller
 //               </th>
 
-//               <th className="border-b border-gray-200 bg-gray-50 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-700">
+//               <th className="sticky top-0 z-10 border border-gray-200 bg-[#f3f4f4] px-2 py-3 text-left text-sm font-bold text-black">
 //                 Status
 //               </th>
 
-//               <th className="border-b border-gray-200 bg-gray-50 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-700">
+//               <th className="sticky top-0 z-10 border border-gray-200 bg-[#f3f4f4] px-2 py-3 text-left text-sm font-bold text-black">
 //                 Created At
 //               </th>
 
-//               <th className="border-b border-gray-200 bg-gray-50 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-700">
+//               <th className="sticky top-0 z-10 border border-gray-200 bg-[#f3f4f4] px-2 py-3 text-left text-sm font-bold text-black">
 //                 Actions
 //               </th>
 //             </tr>
@@ -3819,7 +3831,7 @@
 //                           : ''
 //                       }`}
 //                     >
-//                       <td className="px-4 py-3">
+//                       <td className="border-x border-gray-100 px-2 py-2.5">
 //                         <button
 //                           type="button"
 //                           onClick={() =>
@@ -3867,7 +3879,7 @@
 //                           'N/A'}
 //                       </td>
 
-//                       <td className="px-4 py-3">
+//                       <td className="border-x border-gray-100 px-2 py-2.5">
 //                         {isCancelled ? (
 //                           <span className="inline-flex rounded-full bg-red-100 px-2.5 py-1 text-xs font-semibold text-red-700">
 //                             Cancelled
@@ -3914,7 +3926,7 @@
 //                           : 'N/A'}
 //                       </td>
 
-//                       <td className="px-4 py-3">
+//                       <td className="border-x border-gray-100 px-2 py-2.5">
 //                         <div
 //                           ref={(element) => {
 //                             dropdownRefs.current[
@@ -4053,10 +4065,10 @@
 //   /* -------------------------------------------------------------------------- */
 
 //   return (
-//     <div className="min-h-full w-full p-4">
+//     <div className="min-h-full w-full bg-[#f3f4f6] p-4 sm:p-5">
 //       {/* Page Title */}
-//       <div className="mb-4">
-//         <h1 className="text-xl font-semibold text-gray-800">
+//       <div className="mb-7">
+//         <h1 className="text-[26px] font-normal leading-tight text-[#26364a]">
 //           Sale Invoices
 //         </h1>
 //       </div>
@@ -4152,9 +4164,9 @@
 //       />
 
 //       {/* Main Card */}
-//       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+//       <div className="overflow-hidden rounded-sm border-x border-b border-gray-200 border-t-4 border-t-[#2759a2] bg-white shadow-sm">
 //         {/* Card Header */}
-//         <div className="flex flex-col gap-3 border-b border-gray-200 bg-white px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
+//         <div className="flex flex-col gap-3 border-b border-gray-200 bg-white px-4 py-2 lg:flex-row lg:items-center lg:justify-between">
 //           {/* Tabs */}
 //           <div className="flex">
 //             <button
@@ -4164,11 +4176,11 @@
 //                   'stockRequests'
 //                 )
 //               }
-//               className={`border-b-2 border-t-4 px-5 py-2.5 text-sm font-medium transition ${
+//               className={`border-b border-t-4 px-4 py-3 text-sm font-medium transition ${
 //                 activeTab ===
 //                 'stockRequests'
-//                   ? 'border-t-blue-700 border-b-white text-gray-900'
-//                   : 'border-t-transparent border-b-transparent text-gray-600 hover:text-gray-900'
+//                   ? 'border-t-[#2759a2] border-b-white text-black'
+//                   : 'border-t-transparent border-b-transparent text-gray-700 hover:text-black'
 //               }`}
 //             >
 //               Challan Report
@@ -4181,11 +4193,11 @@
 //                   'invoices'
 //                 )
 //               }
-//               className={`border-b-2 border-t-4 px-5 py-2.5 text-sm font-medium transition ${
+//               className={`border-b border-t-4 px-4 py-3 text-sm font-medium transition ${
 //                 activeTab ===
 //                 'invoices'
-//                   ? 'border-t-blue-700 border-b-white text-gray-900'
-//                   : 'border-t-transparent border-b-transparent text-gray-600 hover:text-gray-900'
+//                   ? 'border-t-[#2759a2] border-b-white text-black'
+//                   : 'border-t-transparent border-b-transparent text-gray-700 hover:text-black'
 //               }`}
 //             >
 //               Invoices
@@ -4231,7 +4243,7 @@
 //                         true
 //                       )
 //                     }
-//                     className="inline-flex items-center gap-1.5 rounded-md bg-blue-100 px-3 py-2 text-xs font-medium text-white transition hover:bg-blue-700"
+//                     className="inline-flex items-center gap-1.5 rounded-md bg-[#2759a2] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#1f477f]"
 //                   >
 //                     <Search
 //                       size={15}
@@ -4267,7 +4279,7 @@
 //                         onClick={() =>
 //                           handleGenerateInvoice()
 //                         }
-//                         className="inline-flex items-center gap-1.5 rounded-md bg-blue-600 px-3 py-2 text-xs font-medium text-white transition hover:bg-blue-700"
+//                         className="inline-flex items-center gap-1.5 rounded-md bg-[#2759a2] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#1f477f]"
 //                       >
 //                         <FileText
 //                           size={15}
@@ -4311,7 +4323,7 @@
 //                         ? 'Disabled during advanced search'
 //                         : ''
 //                     }
-//                     className="h-9 w-full max-w-[350px] rounded-md border border-gray-300 px-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:bg-gray-100"
+//                     className="h-9 w-full max-w-[260px] rounded-sm border border-gray-300 px-3 text-sm outline-none focus:border-[#2759a2] focus:ring-1 focus:ring-[#2759a2]/20 disabled:bg-gray-100"
 //                   />
 //                 </div>
 //               </div>
@@ -4334,7 +4346,7 @@
 //                         true
 //                       )
 //                     }
-//                     className="inline-flex items-center gap-1.5 rounded-md bg-blue-600 px-3 py-2 text-xs font-medium text-white transition hover:bg-blue-700"
+//                     className="inline-flex items-center gap-1.5 rounded-md bg-[#2759a2] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#1f477f]"
 //                   >
 //                     <Search
 //                       size={15}
@@ -4464,6 +4476,8 @@
 
 // export default SaleInvoices;
 
+
+
 import React, {
   useEffect,
   useRef,
@@ -4500,10 +4514,456 @@ import InvoiceSearch from './InvoiceSearch';
 import CancelInvoiceModal from './CancelInvoiceModal';
 import InvoiceDetailsModal from './InvoiceDetailsModal';
 
-import { numToWords } from '../../utils/NumToWords';
 import html2pdf from 'html2pdf.js';
 import { exportToCSV } from '../../utils/ExportToCSV';
 import usePermission from '../../utils/usePermission';
+
+/* -------------------------------------------------------------------------- */
+/* INVOICE HTML BUILDER (single layout used for create + download)            */
+/* -------------------------------------------------------------------------- */
+/**
+ * Single source of truth for the Tax Invoice layout.
+ *
+ * Works with BOTH:
+ *  - data prepared at invoice-creation time (SaleInvoice.jsx), and
+ *  - a saved invoice record coming from the API (used for "Download PDF").
+ *
+ * mode:
+ *  - 'print' -> full standalone HTML page with a Print button (opens in new tab)
+ *  - 'pdf'   -> scoped HTML fragment for html2pdf (no Print button, no global styles)
+ */
+
+const PRODUCTS_PER_PAGE = 8;
+
+const num = (v) => {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : 0;
+};
+
+const money = (v) => num(v).toFixed(2);
+
+// "INR 1,062 Only" (paise shown only when present, e.g. INR 1,062.50 Only)
+const inrOnly = (v) => {
+  const n = num(v);
+  const hasPaise = Math.round(n * 100) % 100 !== 0;
+
+  return `INR ${n.toLocaleString('en-IN', {
+    minimumFractionDigits: hasPaise ? 2 : 0,
+    maximumFractionDigits: 2,
+  })} Only`;
+};
+
+const esc = (v) =>
+  String(v ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+const formatInvoiceDate = (value) => {
+  if (!value) return '';
+
+  // Already formatted (e.g. "01 Oct 26")
+  if (typeof value === 'string' && !/^\d{4}-\d{2}-\d{2}/.test(value)) {
+    return value;
+  }
+
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return String(value);
+
+  return d.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: '2-digit',
+  });
+};
+
+const formatShortDate = (value) => {
+  if (!value) return '';
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? '' : d.toLocaleDateString();
+};
+
+const buildHsnSummary = (products) => {
+  const map = new Map();
+
+  products.forEach((p) => {
+    const hsn = p.hsnCode;
+    const taxable = num(p.totalAmount);
+    const cgstAmount = taxable * 0.09;
+    const sgstAmount = taxable * 0.09;
+
+    if (map.has(hsn)) {
+      const e = map.get(hsn);
+      e.taxableValue += taxable;
+      e.cgstAmount += cgstAmount;
+      e.sgstAmount += sgstAmount;
+      e.totalTax += cgstAmount + sgstAmount;
+    } else {
+      map.set(hsn, {
+        hsnCode: hsn,
+        taxableValue: taxable,
+        cgstAmount,
+        sgstAmount,
+        totalTax: cgstAmount + sgstAmount,
+      });
+    }
+  });
+
+  return Array.from(map.values());
+};
+
+const STYLES = (scope) => `
+${scope} { font-family: Arial, sans-serif; color: #000; font-size: 13px; line-height: 1.4; }
+${scope} .title { text-align: center; font-weight: bold; font-size: 16px; margin: 6px 0; }
+${scope} .main-border { border: 1px solid #000; width: 100%; border-collapse: collapse; table-layout: fixed; }
+${scope} .main-border td, ${scope} .main-border th { border: 1px solid #000; padding: 6px; vertical-align: top; text-align: left; }
+${scope} .meta-table { width: 100%; border-collapse: collapse; }
+${scope} .meta-table td { border: 1px solid #000; padding: 6px; vertical-align: top; }
+${scope} .label { font-weight: bold; }
+${scope} .right { text-align: right !important; }
+${scope} .bold { font-weight: bold; }
+${scope} .footer-note { font-style: italic; text-align: right; margin-top: 4px; }
+${scope} .repair-note { color: #666; font-size: 0.9em; }
+${scope} .free-note { color: green; font-size: 0.9em; }
+${scope} .page-break { page-break-before: always; break-before: page; height: 0; }
+${scope} tr { page-break-inside: avoid; }
+`;
+
+const PRINT_ONLY_STYLES = `
+@page { size: A4; margin: 12mm; }
+body { margin: 0; padding: 0; }
+@media screen { body { margin: 20px 100px; } }
+.print-button {
+  display: block; margin: 20px auto; padding: 10px 15px;
+  background-color: #3c8dbc; color: #fff; border: none;
+  font-size: 16px; cursor: pointer; position: sticky; top: 20px; z-index: 1000;
+}
+@media print { .print-button, .no-print { display: none; } }
+`;
+
+const productRows = (product, productIndex) => {
+  const rows = [];
+  const unit = esc(product.unit || 'Nos');
+  const title = esc(product.productTitle);
+  const hsn = esc(product.hsnCode);
+
+  if (num(product.outletQty) > 0) {
+    rows.push(`
+<tr>
+  <td>${productIndex}</td>
+  <td>${title}</td>
+  <td>${hsn}</td>
+  <td class="right">${num(product.outletQty)}</td>
+  <td class="right">${money(product.outletRate)}</td>
+  <td>${unit}</td>
+  <td class="right">${money(product.outletAmount)}</td>
+</tr>`);
+  }
+
+  if (num(product.damageRepairQty) > 0) {
+    rows.push(`
+<tr>
+  <td></td>
+  <td>${title}
+    <span class="repair-note">(Damage Repair - Charged @₹${num(product.repairRate)}/unit)</span>
+  </td>
+  <td>${hsn}</td>
+  <td class="right">${num(product.damageRepairQty)}</td>
+  <td class="right">${money(product.repairRate)}</td>
+  <td>${unit}</td>
+  <td class="right">${money(product.damageRepairAmount)}</td>
+</tr>`);
+  }
+
+  if (num(product.centerReturnQty) > 0) {
+    rows.push(`
+<tr>
+  <td></td>
+  <td>${title}
+    <span class="free-note">(Center Return - Free)</span>
+  </td>
+  <td>${hsn}</td>
+  <td class="right">${num(product.centerReturnQty)}</td>
+  <td class="right">${money(product.centerReturnRate)}</td>
+  <td>${unit}</td>
+  <td class="right">${money(product.centerReturnAmount)}</td>
+</tr>`);
+  }
+
+  return rows.join('');
+};
+
+const buildInvoiceHtml = (invoice, { mode = 'pdf' } = {}) => {
+  const reseller = invoice.reseller || {};
+  const meta = invoice.metadata || invoice.metaData || {};
+  const products = Array.isArray(invoice.products) ? invoice.products : [];
+
+  const invoiceNumber = esc(invoice.invoiceNumber);
+  const invoiceDate = esc(formatInvoiceDate(invoice.invoiceDate));
+
+  const resellerName = esc(reseller.businessName || 'SSV Alpha Broadband LLP');
+  const resellerGst = esc(reseller.gstNumber || '27AEGFS1650E1Z6');
+  const resellerState = esc(reseller.state || 'Maharashtra');
+  const resellerAddress = esc(
+    reseller.address1 || 'A/3, Landmark Soc, Sector-14, Vashi'
+  );
+
+  const centersList = esc(
+    invoice.centersList ||
+      (Array.isArray(invoice.centers)
+        ? invoice.centers
+            .map((c) => (typeof c === 'object' ? c?.centerName : ''))
+            .filter(Boolean)
+            .join(', ')
+        : '') ||
+      'All Alpha Area'
+  );
+
+  const totalOutletAmount = num(invoice.totalOutletAmount);
+  const totalDamageRepairAmount = num(invoice.totalDamageRepairAmount);
+  const totalBeforeTax = num(invoice.totalBeforeTax);
+  const cgst = num(invoice.cgst);
+  const sgst = num(invoice.sgst);
+  const roundOff = num(invoice.roundOff);
+  const total = num(
+    invoice.total !== undefined ? invoice.total : invoice.totalAmount
+  );
+
+  const hsnSummary =
+    Array.isArray(invoice.hsnSummary) && invoice.hsnSummary.length
+      ? invoice.hsnSummary
+      : buildHsnSummary(products);
+
+  const pages = [];
+  for (let i = 0; i < products.length; i += PRODUCTS_PER_PAGE) {
+    pages.push(products.slice(i, i + PRODUCTS_PER_PAGE));
+  }
+  if (!pages.length) pages.push([]);
+
+  const scope = mode === 'pdf' ? '.invoice-doc' : 'body';
+
+  const infoBlock = `
+<table class="main-border">
+<tr>
+<td style="width:50%;">
+  <div style="border-bottom:1px solid #000; padding-bottom:6px; margin-bottom:6px;">
+    <div class="bold">SSV Telecom Private Limited FY 22-23</div>
+    A-1, Landmark CHS, Sector 14<br/>
+    Vashi, Navi Mumbai<br/>
+    27ABECS3422Q1ZX<br/>
+    GSTIN/UIN: 27ABECS3422Q1ZX
+  </div>
+
+  <span class="label">Consignee (Ship to)</span><br/>
+  ${resellerName}<br/>
+  ${centersList}<br/><br/>
+  GSTIN/UIN: ${resellerGst}<br/>
+  State Name : ${resellerState}, Code : 27
+  <div style="border-top:1px solid #bbb; margin:10px 0 8px 0; height:0; line-height:0; font-size:0;"></div>
+  <span class="label">Buyer (Bill to)</span><br/>
+  ${resellerName}<br/>
+  ${resellerAddress}<br/>
+  GSTIN/UIN: ${resellerGst}<br/>
+  State Name : ${resellerState}, Code : 27
+</td>
+
+<td style="width:50%; padding:0;">
+<table class="meta-table">
+<tr>
+  <td><span class="label">Invoice No.</span><br/>${invoiceNumber}</td>
+  <td><span class="label">Dated</span><br/>${invoiceDate}</td>
+</tr>
+<tr>
+  <td><span class="label">Delivery Note</span><br/>${esc(meta.deliveryNote)}</td>
+  <td><span class="label">Mode/Terms of Payment</span><br/>${esc(meta.modeOfPayment)}</td>
+</tr>
+<tr>
+  <td><span class="label">Reference No. &amp; Date</span><br/>${esc(meta.referenceNo)} ${formatShortDate(meta.referenceDate)}</td>
+  <td><span class="label">Other References</span><br/>${esc(meta.otherReferences)}</td>
+</tr>
+<tr>
+  <td><span class="label">Buyer's Order No.</span><br/>${esc(meta.buyerOrderNo)}</td>
+  <td><span class="label">Dated</span><br/>${formatShortDate(meta.buyerOrderDate)}</td>
+</tr>
+<tr>
+  <td><span class="label">Dispatch Doc No.</span><br/>${esc(meta.dispatchDocNo)}</td>
+  <td><span class="label">Delivery Note Date</span><br/>${formatShortDate(meta.deliveryNoteDate)}</td>
+</tr>
+<tr>
+  <td><span class="label">Dispatched through</span><br/>${esc(meta.dispatchedThrough)}</td>
+  <td><span class="label">Destination</span><br/><b>${esc(meta.destination || invoice.centersList || centersList)}</b></td>
+</tr>
+<tr>
+  <td colspan="2"><span class="label">Terms of Delivery</span><br/>${esc(meta.termsOfDelivery)}</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>`;
+
+  const totalsBlock = `
+<tr>
+  <td colspan="4" rowspan="7"></td>
+  <td colspan="2"><b>Subtotal (New Stock from Outlet)</b></td>
+  <td class="right">${money(totalOutletAmount)}</td>
+</tr>
+<tr>
+  <td colspan="2"><b>Subtotal (Damage Repair)</b></td>
+  <td class="right">${money(totalDamageRepairAmount)}</td>
+</tr>
+<tr>
+  <td colspan="2"><b>Total Before Tax</b></td>
+  <td class="right">${money(totalBeforeTax)}</td>
+</tr>
+<tr>
+  <td colspan="2"><b>Output CGST @9%</b></td>
+  <td class="right">${money(cgst)}</td>
+</tr>
+<tr>
+  <td colspan="2"><b>Output SGST @9%</b></td>
+  <td class="right">${money(sgst)}</td>
+</tr>
+<tr>
+  <td colspan="2"><b>Round Off</b></td>
+  <td class="right">${money(roundOff)}</td>
+</tr>
+<tr>
+  <td colspan="2"><b>Total</b></td>
+  <td class="right">${money(total)}</td>
+</tr>
+<tr>
+  <td colspan="7"><b>Amount Chargeable (in words):</b> <i>${esc(inrOnly(total))}</i></td>
+</tr>`;
+
+  const pageBlocks = pages
+    .map((pageProducts, pageIndex) => {
+      const isLast = pageIndex === pages.length - 1;
+
+      const rows = pageProducts
+        .map((product, index) =>
+          productRows(product, pageIndex * PRODUCTS_PER_PAGE + index + 1)
+        )
+        .join('');
+
+      return `
+${pageIndex > 0 ? '<div class="page-break"></div>' : ''}
+${infoBlock}
+
+<table class="main-border" style="margin-top:10px;">
+<thead>
+<tr>
+  <th style="width:7%;">Sl No.</th>
+  <th style="width:24%;">Description of Goods</th>
+  <th style="width:12%;">HSN/SAC</th>
+  <th style="width:11%;">Quantity</th>
+  <th style="width:21%;">Rate</th>
+  <th style="width:14%;">Per</th>
+  <th style="width:11%;">Amount</th>
+</tr>
+</thead>
+<tbody>
+${rows}
+${isLast ? totalsBlock : ''}
+</tbody>
+</table>
+${!isLast ? '<div class="footer-note">continued ...</div>' : ''}`;
+    })
+    .join('');
+
+  const hsnRows = hsnSummary
+    .map(
+      (h) => `
+<tr>
+  <td>${esc(h.hsnCode)}</td>
+  <td class="right">${money(h.taxableValue)}</td>
+  <td>9%</td>
+  <td class="right">${money(h.cgstAmount)}</td>
+  <td>9%</td>
+  <td class="right">${money(h.sgstAmount)}</td>
+  <td class="right">${money(h.totalTax)}</td>
+</tr>`
+    )
+    .join('');
+
+  const summaryPage = `
+<div style="display:flex; justify-content:space-between; margin-top:10px;">
+  <div>Invoice No. <strong>${invoiceNumber}</strong></div>
+  <div>Dated <strong>${invoiceDate}</strong></div>
+</div>
+
+<div class="page-break"></div>
+
+<div style="text-align:center;">
+<p>
+  <strong>SSV Telecom Private Limited</strong><br/>
+  A-1, Landmark CHS, Sector 14<br/>
+  Vashi , Navi Mumbai<br/>
+  27ABECS3422Q1ZX<br/>
+  GSTIN/UIN: 27ABECS3422Q1ZX
+  <br/><br/>
+  Party: <strong>${resellerName}</strong><br/>
+  ${resellerAddress}<br/>
+  GSTIN/UIN : ${resellerGst}<br/>
+  State Name : ${resellerState}, Code : 27
+</p>
+</div>
+
+<table class="main-border" style="margin-top:10px;">
+<thead>
+<tr>
+  <th>HSN/SAC</th>
+  <th>Taxable Value</th>
+  <th colspan="2">CGST</th>
+  <th colspan="2">SGST</th>
+  <th>Total Tax Amount</th>
+</tr>
+<tr>
+  <th></th><th></th>
+  <th>Rate</th><th>Amount</th>
+  <th>Rate</th><th>Amount</th>
+  <th></th>
+</tr>
+</thead>
+<tbody>
+${hsnRows}
+<tr class="bold">
+  <td><b>Total</b></td>
+  <td class="right">${money(totalBeforeTax)}</td>
+  <td></td>
+  <td class="right">${money(cgst)}</td>
+  <td></td>
+  <td class="right">${money(sgst)}</td>
+  <td class="right">${money(cgst + sgst)}</td>
+</tr>
+<tr>
+  <td colspan="7"><b>Taxable Amount (in words):</b> <i>${esc(inrOnly(cgst + sgst))}</i></td>
+</tr>
+</tbody>
+</table>`;
+
+  const body = `
+<div class="title">Tax Invoice</div>
+${pageBlocks}
+${summaryPage}`;
+
+  if (mode === 'pdf') {
+    return `
+<style>${STYLES('.invoice-doc')}</style>
+<div class="invoice-doc">${body}</div>`;
+  }
+
+  return `<html>
+<head>
+<title>Invoice - ${resellerName}</title>
+<style>${PRINT_ONLY_STYLES}${STYLES('body')}</style>
+</head>
+<body>
+${body}
+<button class="print-button no-print" onclick="window.print()">🖨️ Print</button>
+</body>
+</html>`;
+};
+
 
 const SaleInvoices = () => {
   const [customers, setCustomers] =
@@ -5191,9 +5651,21 @@ const SaleInvoices = () => {
     invoice
   ) => {
     try {
-      if (!invoice.invoiceHtml) {
+      // Always rebuild from the saved invoice data so EVERY invoice
+      // (old or new) downloads in the same standard format.
+      const hasInvoiceData =
+        Array.isArray(invoice.products) &&
+        invoice.products.length > 0;
+
+      const htmlToRender = hasInvoiceData
+        ? buildInvoiceHtml(invoice, {
+            mode: 'pdf',
+          })
+        : invoice.invoiceHtml;
+
+      if (!htmlToRender) {
         alert(
-          'Invoice HTML not available for download'
+          'Invoice data not available for download'
         );
         return;
       }
@@ -5214,25 +5686,18 @@ const SaleInvoices = () => {
       const tempDiv =
         document.createElement('div');
 
-      tempDiv.innerHTML =
-        invoice.invoiceHtml;
+      // A4 width minus the 12mm margins on both sides
+      tempDiv.style.width = '186mm';
+      tempDiv.style.background = '#fff';
 
-      const scripts =
-        tempDiv.getElementsByTagName(
-          'script'
-        );
+      tempDiv.innerHTML = htmlToRender;
 
-      for (
-        const script of scripts
-      ) {
-        if (
-          script.textContent.includes(
-            'window.print()'
-          )
-        ) {
-          script.remove();
-        }
-      }
+      // Never let scripts / the Print button end up inside the PDF
+      tempDiv
+        .querySelectorAll(
+          'script, .print-button, .no-print'
+        )
+        .forEach((el) => el.remove());
 
       const opt = {
         margin: [
@@ -5268,11 +5733,8 @@ const SaleInvoices = () => {
         },
 
         pagebreak: {
-          mode: [
-            'avoid-all',
-            'css',
-            'legacy',
-          ],
+          mode: ['css', 'legacy'],
+          avoid: ['tr'],
         },
       };
 
@@ -5299,10 +5761,16 @@ const SaleInvoices = () => {
         }`
       );
 
-      if (invoice.invoiceHtml) {
+      if (invoice.invoiceHtml || invoice.products?.length) {
         const blob =
           new Blob(
-            [invoice.invoiceHtml],
+            [
+              invoice.products?.length
+                ? buildInvoiceHtml(invoice, {
+                    mode: 'print',
+                  })
+                : invoice.invoiceHtml,
+            ],
             {
               type: 'text/html',
             }
@@ -6774,891 +7242,26 @@ const SaleInvoices = () => {
         /* INVOICE HTML                                                        */
         /* ------------------------------------------------------------------ */
 
-        const invoiceHTML = `
-<html>
-<head>
-<title>
-Invoice - ${
-          reseller?.businessName ||
-          'SSV Alpha Broadband LLP'
-        }
-</title>
-
-<style>
-@page {
-  size: A4;
-  margin: 12mm;
-}
-
-body {
-  font-family: Arial, sans-serif;
-  color: #000;
-  margin: 0;
-  padding: 0;
-}
-
-@media screen {
-  body {
-    margin-left: 100px;
-    margin-right: 100px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
-}
-
-@media print {
-  body {
-    margin: 0;
-    padding: 0;
-  }
-
-  @page {
-    margin: 12mm;
-  }
-}
-
-.title {
-  text-align: center;
-  font-weight: bold;
-  font-size: 16px;
-  margin: 6px 0;
-}
-
-.main-border {
-  border: 1px solid #000;
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.main-border td,
-.main-border th {
-  border: 1px solid #000;
-  padding: 5px;
-  vertical-align: top;
-}
-
-.meta-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.meta-table td {
-  border: 1px solid #000;
-  padding: 6px;
-  vertical-align: top;
-}
-
-.label {
-  font-weight: bold;
-}
-
-.right {
-  text-align: right;
-}
-
-.bold {
-  font-weight: bold;
-}
-
-.footer-note {
-  font-style: italic;
-  text-align: right;
-  margin-top: 4px;
-}
-
-.repair-note {
-  color: #666;
-  font-size: 0.9em;
-}
-
-.free-note {
-  color: green;
-  font-size: 0.9em;
-}
-
-.print-button {
-  display: block;
-  margin: 20px auto;
-  padding: 10px 15px;
-  background-color: #3c8dbc;
-  color: white;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  position: sticky;
-  top: 20px;
-  z-index: 1000;
-}
-
-@media print {
-  .page-break {
-    page-break-before: always;
-  }
-
-  .no-print {
-    display: none;
-  }
-
-  .print-button {
-    display: none;
-  }
-}
-</style>
-</head>
-
-<body>
-
-<div class="title">
-Tax Invoice
-</div>
-
-${pages
-  .map(
-    (products, pageIndex) => `
-<table class="main-border">
-
-<tr>
-
-<td style="width:50%;">
-
-<div style="border-bottom:1px solid #000; padding-bottom:6px; margin-bottom:6px;">
-
-<div class="bold">
-SSV Telecom Private Limited FY 22-23
-</div>
-
-A-1, Landmark CHS, Sector 14<br/>
-Vashi, Navi Mumbai<br/>
-27ABECS3422Q1ZX<br/>
-GSTIN/UIN: 27ABECS3422Q1ZX
-
-</div>
-
-<span class="label">
-Consignee (Ship to)
-</span>
-<br/>
-
-${
-  reseller?.businessName ||
-  'SSV Alpha Broadband LLP'
-}
-
-<br/>
-
-${centersList || 'All Alpha Area'}
-
-<br/><br/>
-
-GSTIN/UIN:
-${
-  reseller?.gstNumber ||
-  '27AEGFS1650E1Z6'
-}
-
-<br/>
-
-State Name :
-${
-  reseller?.state ||
-  'Maharashtra'
-},
-Code : 27
-
-<hr/>
-
-<span class="label">
-Buyer (Bill to)
-</span>
-<br/>
-
-${
-  reseller?.businessName ||
-  'SSV Alpha Broadband LLP'
-}
-
-<br/>
-
-${
-  reseller?.address1 ||
-  'A/3, Landmark Soc, Sector-14, Vashi'
-}
-
-<br/>
-
-GSTIN/UIN:
-${
-  reseller?.gstNumber ||
-  '27AEGFS1650E1Z6'
-}
-
-<br/>
-
-State Name :
-${
-  reseller?.state ||
-  'Maharashtra'
-},
-Code : 27
-
-</td>
-
-<td style="width:50%; padding:0;">
-
-<table class="meta-table">
-
-<tr>
-<td>
-<span class="label">Invoice No.</span>
-<br/>
-${invoiceNumber}
-</td>
-
-<td>
-<span class="label">Dated</span>
-<br/>
-${invoiceDate}
-</td>
-</tr>
-
-<tr>
-<td>
-<span class="label">Delivery Note</span>
-<br/>
-${metaData?.deliveryNote || ''}
-</td>
-
-<td>
-<span class="label">
-Mode/Terms of Payment
-</span>
-<br/>
-${metaData?.modeOfPayment || ''}
-</td>
-</tr>
-
-<tr>
-<td>
-<span class="label">
-Reference No. & Date
-</span>
-<br/>
-${metaData?.referenceNo || ''}
-${
-  metaData?.referenceDate
-    ? new Date(
-        metaData.referenceDate
-      ).toLocaleDateString()
-    : ''
-}
-</td>
-
-<td>
-<span class="label">
-Other References
-</span>
-<br/>
-${metaData?.otherReferences || ''}
-</td>
-</tr>
-
-<tr>
-<td>
-<span class="label">
-Buyer's Order No.
-</span>
-<br/>
-${metaData?.buyerOrderNo || ''}
-</td>
-
-<td>
-<span class="label">Dated</span>
-<br/>
-${
-  metaData?.buyerOrderDate
-    ? new Date(
-        metaData.buyerOrderDate
-      ).toLocaleDateString()
-    : ''
-}
-</td>
-</tr>
-
-<tr>
-<td>
-<span class="label">
-Dispatch Doc No.
-</span>
-<br/>
-${
-  metaData?.dispatchDocNo ||
-  '16.07-31.07.25'
-}
-</td>
-
-<td>
-<span class="label">
-Delivery Note Date
-</span>
-<br/>
-${
-  metaData?.deliveryNoteDate
-    ? new Date(
-        metaData.deliveryNoteDate
-      ).toLocaleDateString()
-    : ''
-}
-</td>
-</tr>
-
-<tr>
-<td>
-<span class="label">
-Dispatched through
-</span>
-<br/>
-${metaData?.dispatchedThrough || ''}
-</td>
-
-<td>
-<span class="label">
-Destination
-</span>
-<br/>
-<b>
-${
-  metaData?.destination ||
-  'All Alpha Area'
-}
-</b>
-</td>
-</tr>
-
-<tr>
-<td colspan="2">
-<span class="label">
-Terms of Delivery
-</span>
-<br/>
-${metaData?.termsOfDelivery || ''}
-</td>
-</tr>
-
-</table>
-
-</td>
-
-</tr>
-
-</table>
-
-<table
-  class="main-border"
-  style="margin-top:10px;"
->
-
-<thead>
-
-<tr>
-<th>Sl No.</th>
-<th>Description of Goods</th>
-<th>HSN/SAC</th>
-<th>Quantity</th>
-<th>Rate</th>
-<th>Per</th>
-<th>Amount</th>
-</tr>
-
-</thead>
-
-<tbody>
-
-${products
-  .map(
-    (product, index) => {
-      const productIndex =
-        pageIndex *
-          productsPerPage +
-        index +
-        1;
-
-      let rows = [];
-
-      if (
-        product.outletQty > 0
-      ) {
-        rows.push(`
-<tr>
-
-<td>
-${productIndex}
-</td>
-
-<td>
-${product.productTitle}
-</td>
-
-<td>
-${product.hsnCode}
-</td>
-
-<td class="right">
-${product.outletQty}
-</td>
-
-<td class="right">
-${product.outletRate.toFixed(2)}
-</td>
-
-<td>
-${product.unit}
-</td>
-
-<td class="right">
-${product.outletAmount.toFixed(2)}
-</td>
-
-</tr>
-`);
-      }
-
-      if (
-        product.damageRepairQty >
-        0
-      ) {
-        rows.push(`
-<tr>
-
-<td></td>
-
-<td>
-${product.productTitle}
-
-<span class="repair-note">
-(Damage Repair - Charged @₹${
-          product.repairRate
-        }/unit)
-</span>
-
-</td>
-
-<td>
-${product.hsnCode}
-</td>
-
-<td class="right">
-${product.damageRepairQty}
-</td>
-
-<td class="right">
-${product.repairRate.toFixed(2)}
-</td>
-
-<td>
-${product.unit}
-</td>
-
-<td class="right">
-${product.damageRepairAmount.toFixed(
-          2
-        )}
-</td>
-
-</tr>
-`);
-      }
-
-      if (
-        product.centerReturnQty >
-        0
-      ) {
-        rows.push(`
-<tr>
-
-<td></td>
-
-<td>
-${product.productTitle}
-
-<span class="free-note">
-(Center Return - Free)
-</span>
-
-</td>
-
-<td>
-${product.hsnCode}
-</td>
-
-<td class="right">
-${product.centerReturnQty}
-</td>
-
-<td class="right">
-${product.centerReturnRate.toFixed(
-          2
-        )}
-</td>
-
-<td>
-${product.unit}
-</td>
-
-<td class="right">
-${product.centerReturnAmount.toFixed(
-          2
-        )}
-</td>
-
-</tr>
-`);
-      }
-
-      return rows.join('');
-    }
-  )
-  .join('')}
-
-${
-  pageIndex ===
-  pages.length - 1
-    ? `
-
-<tr>
-<td colspan="4" rowspan="7"></td>
-
-<td colspan="2">
-<b>
-Subtotal (New Stock from Outlet)
-</b>
-</td>
-
-<td class="right">
-${totalOutletAmount.toFixed(2)}
-</td>
-</tr>
-
-<tr>
-<td colspan="2">
-<b>
-Subtotal (Damage Repair)
-</b>
-</td>
-
-<td class="right">
-${totalDamageRepairAmount.toFixed(
-          2
-        )}
-</td>
-</tr>
-
-<tr>
-<td colspan="2">
-<b>Total Before Tax</b>
-</td>
-
-<td class="right">
-${totalBeforeTax.toFixed(2)}
-</td>
-</tr>
-
-<tr>
-<td colspan="2">
-<b>Output CGST @9%</b>
-</td>
-
-<td class="right">
-${cgst.toFixed(2)}
-</td>
-</tr>
-
-<tr>
-<td colspan="2">
-<b>Output SGST @9%</b>
-</td>
-
-<td class="right">
-${sgst.toFixed(2)}
-</td>
-</tr>
-
-<tr>
-<td colspan="2">
-<b>Round Off</b>
-</td>
-
-<td class="right">
-${roundOff.toFixed(2)}
-</td>
-</tr>
-
-<tr>
-<td colspan="2">
-<b>Total</b>
-</td>
-
-<td class="right">
-${total.toFixed(2)}
-</td>
-</tr>
-
-<tr>
-<td colspan="7">
-<b>
-Amount Chargeable (in words):
-</b>
-
-<i>
-${numToWords(total)}
-</i>
-
-</td>
-</tr>
-
-`
-    : ''
-}
-
-</tbody>
-
-</table>
-
-${
-  pageIndex <
-  pages.length - 1
-    ? `
-<div class="footer-note">
-continued ...
-</div>
-
-<div class="page-break"></div>
-`
-    : ''
-}
-
-`
-  )
-  .join('')}
-
-<div class="page-break"></div>
-
-<div
-  style="
-    display:flex;
-    justify-content:space-between;
-    margin-top:10px;
-  "
->
-
-<div>
-Invoice No.
-<strong>
-${invoiceNumber}
-</strong>
-</div>
-
-<div>
-Dated
-<strong>
-${invoiceDate}
-</strong>
-</div>
-
-</div>
-
-<div style="text-align:center;">
-
-<p>
-
-<strong>
-SSV Telecom Private Limited
-</strong>
-
-<br/>
-
-A-1, Landmark CHS, Sector 14
-<br/>
-
-Vashi , Navi Mumbai
-<br/>
-
-27ABECS3422Q1ZX
-<br/>
-
-GSTIN/UIN: 27ABECS3422Q1ZX
-
-<br/><br/>
-
-Party:
-<strong>
-SSV Telecom Private Limited
-</strong>
-
-<br/>
-
-A/3, Landmark Soc, Sector-14 , Vashi
-<br/>
-
-Navi Mumbai
-<br/>
-
-GSTIN/UIN : 27AEGFS1650E1Z6
-<br/>
-
-State Name : Maharashtra, Code : 27
-
-</p>
-
-</div>
-
-<table
-  class="main-border"
-  style="margin-top:10px;"
->
-
-<thead>
-
-<tr>
-
-<th>HSN/SAC</th>
-
-<th>Taxable Value</th>
-
-<th colspan="2">
-CGST
-</th>
-
-<th colspan="2">
-SGST
-</th>
-
-<th>
-Total Tax Amount
-</th>
-
-</tr>
-
-<tr>
-
-<th></th>
-<th></th>
-
-<th>Rate</th>
-<th>Amount</th>
-
-<th>Rate</th>
-<th>Amount</th>
-
-<th></th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-${hsnSummary
-  .map(
-    (hsn) => `
-<tr>
-
-<td>
-${hsn.hsnCode}
-</td>
-
-<td class="right">
-${hsn.taxableValue.toFixed(2)}
-</td>
-
-<td>
-9%
-</td>
-
-<td class="right">
-${hsn.cgstAmount.toFixed(2)}
-</td>
-
-<td>
-9%
-</td>
-
-<td class="right">
-${hsn.sgstAmount.toFixed(2)}
-</td>
-
-<td class="right">
-${hsn.totalTax.toFixed(2)}
-</td>
-
-</tr>
-`
-  )
-  .join('')}
-
-<tr class="bold">
-
-<td>
-<b>Total</b>
-</td>
-
-<td class="right">
-${totalBeforeTax.toFixed(2)}
-</td>
-
-<td></td>
-
-<td class="right">
-${cgst.toFixed(2)}
-</td>
-
-<td></td>
-
-<td class="right">
-${sgst.toFixed(2)}
-</td>
-
-<td class="right">
-${(cgst + sgst).toFixed(2)}
-</td>
-
-</tr>
-
-<tr>
-
-<td colspan="7">
-
-<b>
-Taxable Amount (in words):
-</b>
-
-<i>
-${numToWords(
-  parseFloat(
-    (
-      cgst + sgst
-    ).toFixed(2)
-  )
-)}
-</i>
-
-</td>
-
-</tr>
-
-</tbody>
-
-</table>
-
-<button
-  class="print-button no-print"
-  onclick="window.print()"
->
-🖨️ Print
-</button>
-
-</body>
-</html>
-`;
+        const invoiceHTML = buildInvoiceHtml(
+          {
+            invoiceNumber,
+            invoiceDate,
+            reseller,
+            centersList,
+            metadata: metaData,
+            products: nonZeroProducts,
+            totalOutletAmount,
+            totalDamageRepairAmount,
+            totalCenterReturnAmount,
+            totalBeforeTax,
+            cgst,
+            sgst,
+            roundOff,
+            total,
+            hsnSummary,
+          },
+          { mode: 'print' }
+        );
 
         const invoiceData = {
           resellerId:

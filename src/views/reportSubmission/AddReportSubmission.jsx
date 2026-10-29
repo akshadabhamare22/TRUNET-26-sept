@@ -1186,64 +1186,142 @@ const AddReportSubmission = () => {
      FETCH PRODUCTS
   ========================================================= */
 
-  const fetchProducts = async () => {
-    try {
-      const res =
-        await axiosInstance.get(
-          '/stocktransfer/summary/original-outlet'
-        );
+  // const fetchProducts = async () => {
+  //   try {
+  //     const res =
+  //       await axiosInstance.get(
+  //         '/stocktransfer/summary/original-outlet'
+  //       );
 
-      if (res.data.success) {
-        const productSummary =
-          res.data.data?.summary || [];
+  //     if (res.data.success) {
+  //       const productSummary =
+  //         res.data.data?.summary || [];
 
-        setProducts(
-          productSummary
-        );
+  //       setProducts(
+  //         productSummary
+  //       );
 
-        if (!id) {
-          const initialSelectedRows =
-            {};
+  //       if (!id) {
+  //         const initialSelectedRows =
+  //           {};
 
-          productSummary.forEach(
-            (product) => {
-              initialSelectedRows[
-                product.productId
-              ] = {
-                productQty:
-                  product.currentStock
-                    ?.warehouse
-                    ?.available ||
-                  product.currentStock
-                    ?.center
-                    ?.available ||
-                  0,
+  //         productSummary.forEach(
+  //           (product) => {
+  //             initialSelectedRows[
+  //               product.productId
+  //             ] = {
+  //               productQty:
+  //                 product.currentStock
+  //                   ?.warehouse
+  //                   ?.available ||
+  //                 product.currentStock
+  //                   ?.center
+  //                   ?.available ||
+  //                 0,
 
-                damageQty:
-                  product.currentStock
-                    ?.distributedCenters
-                    ?.damaged ||
-                  0,
+  //               damageQty:
+  //                 product.currentStock
+  //                   ?.distributedCenters
+  //                   ?.damaged ||
+  //                 0,
 
-                comment: '',
-              };
-            }
-          );
+  //               comment: '',
+  //             };
+  //           }
+  //         );
 
-          setSelectedRows(
-            initialSelectedRows
-          );
-        }
-      }
-    } catch (error) {
-      console.error(
-        'Error fetching products:',
-        error
+  //         setSelectedRows(
+  //           initialSelectedRows
+  //         );
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error(
+  //       'Error fetching products:',
+  //       error
+  //     );
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
+  
+const fetchProducts = async () => {
+  try {
+    const res = await axiosInstance.get(
+      '/stocktransfer/summary/original-outlet'
+    );
+
+    if (res.data.success) {
+      const productSummary = Array.isArray(
+        res.data.data?.summary
+      )
+        ? res.data.data.summary
+        : [];
+
+      // Normalize API fields for the existing UI
+      const normalizedProducts = productSummary.map(
+        (item) => ({
+          ...item,
+          productId:
+            item.productId || item.product?._id,
+          productName:
+            item.productName ||
+            item.product?.productTitle ||
+            '',
+          productCode:
+            item.productCode ||
+            item.product?.productCode ||
+            '',
+        })
       );
-    } finally {
-      setLoading(false);
+
+      setProducts(normalizedProducts);
+
+      if (!id) {
+        const initialSelectedRows = {};
+
+        normalizedProducts.forEach((product) => {
+          const productId = product.productId;
+
+          if (!productId) return;
+
+          initialSelectedRows[productId] = {
+            productQty:
+              Number(
+                product.currentStock?.warehouse?.available ??
+                product.currentStock?.center?.available ??
+                0
+              ),
+            damageQty: Number(
+              product.currentStock?.distributedCenters?.damaged ??
+              0
+            ),
+            comment: '',
+          };
+        });
+
+        setSelectedRows(initialSelectedRows);
+      }
+    } else {
+      setProducts([]);
+      console.error(
+        'Product summary API failed:',
+        res.data.message
+      );
     }
-  };
+  } catch (error) {
+    setProducts([]);
+
+    console.error(
+      'Error fetching products:',
+      error.response?.data || error.message
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   /* =========================================================
      PRODUCT ROW INPUT

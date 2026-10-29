@@ -3355,11 +3355,36 @@ const ResellerStock = () => {
   // ============================================================
   // SEARCH
   // ============================================================
+  // const handleSearch = (searchData) => {
+  //   setActiveSearch(searchData)
+  //   setCurrentPage(1)
+  //   fetchData(searchData, 1)
+  // }
+
+
   const handleSearch = (searchData) => {
-    setActiveSearch(searchData)
-    setCurrentPage(1)
-    fetchData(searchData, 1)
-  }
+  console.log("Search filters selected:", searchData);
+
+  setActiveSearch({
+    reseller: searchData.reseller || "",
+    product: searchData.product || "",
+    center: searchData.center || "",
+    startDate: searchData.startDate || "",
+    endDate: searchData.endDate || "",
+    status: "Completed",
+  });
+
+  setCurrentPage(1);
+  setSearchModalVisible(false);
+
+  fetchData(
+    {
+      ...searchData,
+      status: "Completed",
+    },
+    1
+  );
+};
 
   // ============================================================
   // RESET SEARCH
