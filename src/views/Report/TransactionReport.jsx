@@ -5666,179 +5666,317 @@ const TransactionReport = () => {
 
   }, [location.search]);
 
-  const fetchData = async (searchParams = {}, page = 1, lookups = {}) => {
+  // const fetchData = async (searchParams = {}, page = 1, lookups = {}) => {
 
-    try {
+  //   try {
 
-      setLoading(true);
+  //     setLoading(true);
 
-      setError(null);
+  //     setError(null);
 
-      const params = new URLSearchParams();
-      const productList = lookups.products ?? products;
-      const centerList = lookups.centers ?? centers;
+  //     const params = new URLSearchParams();
+  //     const productList = lookups.products ?? products;
+  //     const centerList = lookups.centers ?? centers;
 
-      // Current modal selections take priority; stale URL parameters are not reused.
-      const productId = resolveEntityId(
-        searchParams.product,
-        productList,
-        getProductIdentifier,
-        getName
-      );
-      const centerId = resolveEntityId(
-        searchParams.center,
-        centerList,
-        getCenterIdentifier,
-        getCenterName
-      );
-      const usageType = searchParams.usageType || "";
+  //     // Current modal selections take priority; stale URL parameters are not reused.
+  //     const productId = resolveEntityId(
+  //       searchParams.product,
+  //       productList,
+  //       getProductIdentifier,
+  //       getName
+  //     );
+  //     const centerId = resolveEntityId(
+  //       searchParams.center,
+  //       centerList,
+  //       getCenterIdentifier,
+  //       getCenterName
+  //     );
+  //     const usageType = searchParams.usageType || "";
 
-      if (productId) params.append("product", productId);
-      if (centerId) params.append("center", centerId);
-      if (usageType) params.append("usageType", usageType);
+  //     if (productId) params.append("product", productId);
+  //     if (centerId) params.append("center", centerId);
+  //     if (usageType) params.append("usageType", usageType);
 
-      // TransactionSearch provides reseller and customer IDs.
-      // Send the reseller under the commonly used API query key.
-      const resellerId = searchParams.resellerId || searchParams.reseller || "";
-      const customerId = searchParams.customer || searchParams.user || searchParams.createdBy || "";
+  //     // TransactionSearch provides reseller and customer IDs.
+  //     // Send the reseller under the commonly used API query key.
+  //     const resellerId = searchParams.resellerId || searchParams.reseller || "";
+  //     const customerId = searchParams.customer || searchParams.user || searchParams.createdBy || "";
 
-      if (resellerId) {
-        params.append("resellerId", resellerId);
-        params.append("reseller", resellerId);
-      }
-      if (customerId) {
-        // Keep both aliases until the backend's expected user filter key is confirmed.
-        params.append("customer", customerId);
-        params.append("createdBy", customerId);
-      }
+  //     if (resellerId) {
+  //       params.append("resellerId", resellerId);
+  //       params.append("reseller", resellerId);
+  //     }
+  //     if (customerId) {
+  //       // Keep both aliases until the backend's expected user filter key is confirmed.
+  //       params.append("customer", customerId);
+  //       params.append("createdBy", customerId);
+  //     }
 
-      if (searchParams.status) params.append("status", searchParams.status);
-      if (searchParams.startDate) params.append("startDate", searchParams.startDate);
-      if (searchParams.endDate) params.append("endDate", searchParams.endDate);
+  //     if (searchParams.status) params.append("status", searchParams.status);
+  //     if (searchParams.startDate) params.append("startDate", searchParams.startDate);
+  //     if (searchParams.endDate) params.append("endDate", searchParams.endDate);
 
-      params.append("page", page);
+  //     params.append("page", page);
 
-      params.append("_ts", Date.now().toString());
+  //     params.append("_ts", Date.now().toString());
 
-      const url = `/availableStock/transactions?${params.toString()}`;
+  //     const url = `/availableStock/transactions?${params.toString()}`;
 
-      const response = await axiosInstance.get(url, {
+  //     const response = await axiosInstance.get(url, {
 
-        headers: {
+  //       headers: {
 
-          "Cache-Control": "no-cache",
+  //         "Cache-Control": "no-cache",
 
-          Pragma: "no-cache",
+  //         Pragma: "no-cache",
 
-        },
+  //       },
 
-      });
+  //     });
 
-      const responseBody = response.data || {};
+  //     const responseBody = response.data || {};
 
-      const responsePayload = responseBody.data;
+  //     const responsePayload = responseBody.data;
 
-      const rows = Array.isArray(responsePayload)
+  //     const rows = Array.isArray(responsePayload)
 
-        ? responsePayload
+  //       ? responsePayload
 
-        : Array.isArray(responsePayload?.transactions)
+  //       : Array.isArray(responsePayload?.transactions)
 
-          ? responsePayload.transactions
+  //         ? responsePayload.transactions
 
-          : Array.isArray(responseBody.transactions)
+  //         : Array.isArray(responseBody.transactions)
 
-            ? responseBody.transactions
+  //           ? responseBody.transactions
 
-            : null;
+  //           : null;
 
-      if (responseBody.success !== false && rows !== null) {
+  //     if (responseBody.success !== false && rows !== null) {
 
-        setData(rows);
+  //       setData(rows);
 
-        setCurrentPage(
+  //       setCurrentPage(
 
-          responseBody.pagination?.currentPage ??
+  //         responseBody.pagination?.currentPage ??
 
-            responseBody.pagination?.page ??
+  //           responseBody.pagination?.page ??
 
-            responsePayload?.pagination?.currentPage ??
+  //           responsePayload?.pagination?.currentPage ??
 
-            responsePayload?.pagination?.page ??
+  //           responsePayload?.pagination?.page ??
 
-            page
+  //           page
 
-        );
+  //       );
 
-        setTotalPages(
+  //       setTotalPages(
 
-          responseBody.pagination?.totalPages ??
+  //         responseBody.pagination?.totalPages ??
 
-            responsePayload?.pagination?.totalPages ??
+  //           responsePayload?.pagination?.totalPages ??
 
-            1
+  //           1
 
-        );
+  //       );
 
-      } else {
+  //     } else {
 
-        const errorMessage =
+  //       const errorMessage =
 
-          responseBody.message ||
+  //         responseBody.message ||
 
-          responseBody.error ||
+  //         responseBody.error ||
 
-          "The transaction API did not return a data array.";
+  //         "The transaction API did not return a data array.";
 
-        setData([]);
+  //       setData([]);
 
-        setError(errorMessage);
+  //       setError(errorMessage);
 
-        console.error("Unexpected transaction API response:", responseBody);
+  //       console.error("Unexpected transaction API response:", responseBody);
 
-      }
+  //     }
 
-    } catch (err) {
+  //   } catch (err) {
 
-      if (err.response) {
+  //     if (err.response) {
 
-        setError(
+  //       setError(
 
-          err.response.data?.message ||
+  //         err.response.data?.message ||
 
-            err.response.data?.error ||
+  //           err.response.data?.error ||
 
-            `Error ${err.response.status}: ${err.response.statusText}`
+  //           `Error ${err.response.status}: ${err.response.statusText}`
 
-        );
+  //       );
 
-      } else if (err.request) {
+  //     } else if (err.request) {
 
-        setError(
+  //       setError(
 
-          "No response received from server. Please check your network connection."
+  //         "No response received from server. Please check your network connection."
 
-        );
+  //       );
 
-      } else {
+  //     } else {
 
-        setError(err.message || "An error occurred while fetching data");
+  //       setError(err.message || "An error occurred while fetching data");
 
-      }
+  //     }
 
-      console.error("Error fetching transactions:", err);
+  //     console.error("Error fetching transactions:", err);
 
-    } finally {
+  //   } finally {
 
-      setLoading(false);
+  //     setLoading(false);
 
-    }
+  //   }
 
-  };
+  // };
 
   // fetchCenters / fetchProducts now also RETURN the list so it can be
 
   // used immediately (state is not updated yet inside the same effect run).
+
+
+  const fetchData = async (searchParams = {}, page = 1, lookups = {}) => {
+  try {
+    setLoading(true);
+    setError(null);
+
+    const params = new URLSearchParams();
+
+    const productList = lookups.products ?? products;
+    const centerList = lookups.centers ?? centers;
+
+    // Resolve product and center names to IDs
+    const productId = resolveEntityId(
+      searchParams.product,
+      productList,
+      getProductIdentifier,
+      getName
+    );
+
+    const centerId = resolveEntityId(
+      searchParams.center,
+      centerList,
+      getCenterIdentifier,
+      getCenterName
+    );
+
+    const usageType = searchParams.usageType || "";
+
+    if (productId) params.append("product", productId);
+    if (centerId) params.append("center", centerId);
+    if (usageType) params.append("usageType", usageType);
+
+    // Reseller filter
+    const resellerId =
+      searchParams.resellerId || searchParams.reseller || "";
+
+    if (resellerId) {
+      params.append("resellerId", resellerId);
+      params.append("reseller", resellerId);
+    }
+
+    // Customer / user filter
+    const customerId =
+      searchParams.customer ||
+      searchParams.user ||
+      searchParams.createdBy ||
+      "";
+
+    if (customerId) {
+      params.append("customer", customerId);
+      params.append("createdBy", customerId);
+    }
+
+    // Other filters
+    if (searchParams.status) {
+      params.append("status", searchParams.status);
+    }
+
+    if (searchParams.startDate) {
+      params.append("startDate", searchParams.startDate);
+    }
+
+    if (searchParams.endDate) {
+      params.append("endDate", searchParams.endDate);
+    }
+
+    // Pagination and cache-busting
+    params.append("page", String(page));
+    params.append("_ts", Date.now().toString());
+
+    const url = `/availableStock/transactions?${params.toString()}`;
+
+    console.log("Transaction API URL:", url);
+
+    // Do not add Cache-Control or Pragma request headers.
+    // axiosInstance already attaches the Authorization token.
+    const response = await axiosInstance.get(url);
+
+    const responseBody = response.data || {};
+    const responsePayload = responseBody.data;
+
+    const rows = Array.isArray(responsePayload)
+      ? responsePayload
+      : Array.isArray(responsePayload?.transactions)
+        ? responsePayload.transactions
+        : Array.isArray(responseBody.transactions)
+          ? responseBody.transactions
+          : null;
+
+    if (responseBody.success !== false && rows !== null) {
+      setData(rows);
+
+      setCurrentPage(
+        responseBody.pagination?.currentPage ??
+          responseBody.pagination?.page ??
+          responsePayload?.pagination?.currentPage ??
+          responsePayload?.pagination?.page ??
+          page
+      );
+
+      setTotalPages(
+        responseBody.pagination?.totalPages ??
+          responsePayload?.pagination?.totalPages ??
+          1
+      );
+    } else {
+      const errorMessage =
+        responseBody.message ||
+        responseBody.error ||
+        "The transaction API did not return a data array.";
+
+      setData([]);
+      setError(errorMessage);
+
+      console.error("Unexpected transaction API response:", responseBody);
+    }
+  } catch (err) {
+    console.error("Error fetching transactions:", err);
+
+    if (err.response) {
+      setError(
+        err.response.data?.message ||
+          err.response.data?.error ||
+          `Error ${err.response.status}: ${err.response.statusText}`
+      );
+    } else if (err.request) {
+      setError(
+        "No response received from server. Please check your network connection."
+      );
+    } else {
+      setError(err.message || "An error occurred while fetching data");
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const fetchCenters = async () => {
 
