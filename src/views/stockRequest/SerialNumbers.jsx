@@ -120,98 +120,174 @@ const SerialNumbers = ({
      Fetch Available Serial Numbers
   ------------------------------------------------------- */
 
-  const fetchAvailableSerials =
-    async () => {
-      try {
-        setLoading(true);
-        setError(null);
+  // const fetchAvailableSerials =
+  //   async () => {
+  //     try {
+  //       setLoading(true);
+  //       setError(null);
 
-        const productId =
-          product.product._id;
+  //       const productId =
+  //         product.product._id;
 
-        if (!warehouseId) {
-          throw new Error(
-            "Warehouse/Outlet ID is required"
-          );
-        }
+  //       if (!warehouseId) {
+  //         throw new Error(
+  //           "Warehouse/Outlet ID is required"
+  //         );
+  //       }
 
-        if (!productId) {
-          throw new Error(
-            "Product ID is required"
-          );
-        }
+  //       if (!productId) {
+  //         throw new Error(
+  //           "Product ID is required"
+  //         );
+  //       }
 
-        let url = `/stockpurchase/serial-numbers/product/${warehouseId}/${productId}`;
+  //       let url = `/stockpurchase/serial-numbers/product/${warehouseId}/${productId}`;
 
-        const params =
-          new URLSearchParams();
+  //       const params =
+  //         new URLSearchParams();
 
-        if (resellerId) {
-          params.append(
-            "resellerId",
-            resellerId
-          );
-        }
+  //       if (resellerId) {
+  //         params.append(
+  //           "resellerId",
+  //           resellerId
+  //         );
+  //       }
 
-        const queryString =
-          params.toString();
+  //       const queryString =
+  //         params.toString();
 
-        if (queryString) {
-          url += `?${queryString}`;
-        }
+  //       if (queryString) {
+  //         url += `?${queryString}`;
+  //       }
 
-        console.log(
-          "Fetching serials from:",
-          url
-        );
+  //       console.log(
+  //         "Fetching serials from:",
+  //         url
+  //       );
 
-        const response =
-          await axiosInstance.get(url);
+  //       const response =
+  //         await axiosInstance.get(url);
 
-        if (response.data.success) {
-          const serials =
-            response.data.data
-              .availableSerials || [];
+  //       if (response.data.success) {
+  //         const serials =
+  //           response.data.data
+  //             .availableSerials || [];
 
-          setAvailableSerials(serials);
+  //         setAvailableSerials(serials);
 
-          const resellerCount =
-            serials.filter(
-              (serial) =>
-                serial.source ===
-                "reseller"
-            ).length;
+  //         const resellerCount =
+  //           serials.filter(
+  //             (serial) =>
+  //               serial.source ===
+  //               "reseller"
+  //           ).length;
 
-          const outletCount =
-            serials.filter(
-              (serial) =>
-                serial.source === "outlet"
-            ).length;
+  //         const outletCount =
+  //           serials.filter(
+  //             (serial) =>
+  //               serial.source === "outlet"
+  //           ).length;
 
-          console.log(
-            `Available: ${resellerCount} from reseller, ${outletCount} from outlet`
-          );
-        } else {
-          throw new Error(
-            response.data.message ||
-              "Failed to fetch serial numbers"
-          );
-        }
-      } catch (err) {
-        console.error(
-          "Error fetching serial numbers:",
-          err
-        );
+  //         console.log(
+  //           `Available: ${resellerCount} from reseller, ${outletCount} from outlet`
+  //         );
+  //       } else {
+  //         throw new Error(
+  //           response.data.message ||
+  //             "Failed to fetch serial numbers"
+  //         );
+  //       }
+  //     } catch (err) {
+  //       console.error(
+  //         "Error fetching serial numbers:",
+  //         err
+  //       );
 
-        setError(
-          err.response?.data?.message ||
-            err.message ||
-            "Failed to fetch serial numbers"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+  //       setError(
+  //         err.response?.data?.message ||
+  //           err.message ||
+  //           "Failed to fetch serial numbers"
+  //       );
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+
+  const fetchAvailableSerials = async () => {
+  try {
+    setLoading(true);
+    setError(null);
+
+    const productId = product?.product?._id;
+
+    if (!warehouseId) {
+      throw new Error("Warehouse/Outlet ID is required");
+    }
+
+    if (!productId) {
+      throw new Error("Product ID is required");
+    }
+
+    let url = `/stockpurchase/serial-numbers/product/${warehouseId}/${productId}`;
+
+    const params = new URLSearchParams();
+
+    if (resellerId) {
+      params.append("resellerId", resellerId);
+    }
+
+    if (params.toString()) {
+      url += `?${params.toString()}`;
+    }
+
+    console.log("Fetching serials:", url);
+
+    const response = await axiosInstance.get(url);
+
+    console.log("Serial API Response:", response.data);
+
+    // Support both direct array and wrapped API response
+    let serials = [];
+
+    if (Array.isArray(response.data)) {
+      serials = response.data;
+    } else if (Array.isArray(response.data?.data?.availableSerials)) {
+      serials = response.data.data.availableSerials;
+    } else if (Array.isArray(response.data?.availableSerials)) {
+      serials = response.data.availableSerials;
+    } else {
+      throw new Error(
+        response.data?.message || "Invalid serial number response"
+      );
+    }
+
+    // Keep only available serial numbers
+    const normalizedSerials = serials
+      .filter((serial) => serial.status === "available")
+      .map((serial) => ({
+        ...serial,
+        source: serial.source || serial.sourceType || "purchase",
+      }));
+
+    setAvailableSerials(normalizedSerials);
+
+    console.log("Available serial numbers:", normalizedSerials);
+
+  } catch (err) {
+    console.error("Error fetching serial numbers:", err);
+
+    setAvailableSerials([]);
+
+    setError(
+      err.response?.data?.message ||
+      err.message ||
+      "Failed to fetch serial numbers"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   /* -------------------------------------------------------
      Select Serial
@@ -410,14 +486,30 @@ const SerialNumbers = ({
      Helpers
   ------------------------------------------------------- */
 
-  const getSourceDisplayName = (
-    source
-  ) => {
-    return source === "outlet"
-      ? "SSV TELECOM"
-      : "Reseller";
-  };
+  // const getSourceDisplayName = (
+  //   source
+  // ) => {
+  //   return source === "outlet"
+  //     ? "SSV TELECOM"
+  //     : "Reseller";
+  // };
 
+
+  const getSourceDisplayName = (source) => {
+  switch (source) {
+    case "reseller":
+      return "Reseller";
+
+    case "outlet":
+      return "SSV TELECOM";
+
+    case "purchase":
+      return "Purchase";
+
+    default:
+      return source || "-";
+  }
+};
   const getSourceBadgeClasses = (
     source
   ) => {

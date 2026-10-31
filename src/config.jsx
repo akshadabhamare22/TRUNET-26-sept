@@ -27,7 +27,8 @@
 import axios from "axios";
 
 const config = {
-  baseURL: "http://103.175.190.244:5020/api/v1",
+ baseURL: "http://103.175.190.244:5020/api/v1",
+  //baseURL: "http://localhost:5173/api/v1",
 };
 
 export default config;

@@ -79,6 +79,7 @@ export default defineConfig({
         proxy: {
             "/api": {
                 target: "http://103.175.190.244:5020",
+                //target: "http://localhost:5020",
                 changeOrigin: true,
                 secure: false,
             },
