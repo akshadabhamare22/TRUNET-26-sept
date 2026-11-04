@@ -251,59 +251,157 @@ const AddStockUsage = () => {
     }));
   };
   
-  const fetchStockUsage = async (usageId) => {
-    try {
-      const res = await axiosInstance.get(`/stockusage/${usageId}`);
-      const data = res.data.data;
-      const apiDate = data.date ? data.date.split('T')[0] : '';
+  // const fetchStockUsage = async (usageId) => {
+  //   try {
+  //     const res = await axiosInstance.get(`/stockusage/${usageId}`);
+  //     const data = res.data.data;
+  //     const apiDate = data.date ? data.date.split('T')[0] : '';
       
-      const fromBuilding = data.fromBuilding?._id || data.fromBuilding || '';
-      const toBuilding = data.toBuilding?._id || data.toBuilding || '';
-      const toCenter = data.toCenter?._id || data.toCenter || '';
+  //     const fromBuilding = data.fromBuilding?._id || data.fromBuilding || '';
+  //     const toBuilding = data.toBuilding?._id || data.toBuilding || '';
+  //     const toCenter = data.toCenter?._id || data.toCenter || '';
       
-      setFormData(prev => ({
-        ...prev,
-        ...data,
-        date: apiDate,
-        customer: data.customer?._id || data.customer || '',
-        fromBuilding: fromBuilding,
-        toBuilding: toBuilding,
-        controlRoom: data.controlRoom?._id || data.controlRoom || '',
-        toCenter: toCenter
-      }));
+  //     setFormData(prev => ({
+  //       ...prev,
+  //       ...data,
+  //       date: apiDate,
+  //       customer: data.customer?._id || data.customer || '',
+  //       fromBuilding: fromBuilding,
+  //       toBuilding: toBuilding,
+  //       controlRoom: data.controlRoom?._id || data.controlRoom || '',
+  //       toCenter: toCenter
+  //     }));
     
-      if (data.items && data.items.length > 0) {
-        const existingSelectedRows = {};
-        const existingAssignedSerials = {};
-        const order = [];
+  //     if (data.items && data.items.length > 0) {
+  //       const existingSelectedRows = {};
+  //       const existingAssignedSerials = {};
+  //       const order = [];
         
-        data.items.forEach((item, index) => {
-          const productId = item.product?.productId || item.product;
-          existingSelectedRows[productId] = {
-            quantity: item.quantity.toString(),
-            productRemark: item.productRemark || '',
-            productInStock: Number(item.oldStock ?? item.product?.availableQuantity ?? item.product?.stock?.availableQuantity ?? 0)
-          };
+  //       data.items.forEach((item, index) => {
+  //         const productId = item.product?.productId || item.product;
+  //         existingSelectedRows[productId] = {
+  //           quantity: item.quantity.toString(),
+  //           productRemark: item.productRemark || '',
+  //           productInStock: Number(item.oldStock ?? item.product?.availableQuantity ?? item.product?.stock?.availableQuantity ?? 0)
+  //         };
           
-          if (item.serialNumbers && item.serialNumbers.length > 0) {
-            existingAssignedSerials[productId] = item.serialNumbers;
-          }
+  //         if (item.serialNumbers && item.serialNumbers.length > 0) {
+  //           existingAssignedSerials[productId] = item.serialNumbers;
+  //         }
           
-          order.push({ productId, order: index });
-        });
+  //         order.push({ productId, order: index });
+  //       });
         
-        setSelectedRows(existingSelectedRows);
-        setAssignedSerials(existingAssignedSerials);
-        setSelectionOrder(order);
-        selectionCounter.current = data.items.length;
-      }
+  //       setSelectedRows(existingSelectedRows);
+  //       setAssignedSerials(existingAssignedSerials);
+  //       setSelectionOrder(order);
+  //       selectionCounter.current = data.items.length;
+  //     }
       
-    } catch (error) {
-      console.error('Error fetching stock usage:', error);
-      showAlert('Failed to fetch stock usage data', 'danger');
-    }
-  };
+  //   } catch (error) {
+  //     console.error('Error fetching stock usage:', error);
+  //     showAlert('Failed to fetch stock usage data', 'danger');
+  //   }
+  // };
 
+
+  const fetchStockUsage = async (usageId) => {
+  try {
+    const res = await axiosInstance.get(`/stockusage/${usageId}`);
+    const data = res.data.data;
+
+    console.log("Stock Usage Edit API Data:", data);
+
+    const apiDate = data.date
+      ? data.date.split("T")[0]
+      : "";
+
+    const fromBuilding =
+      data.fromBuilding?._id ||
+      data.fromBuilding ||
+      "";
+
+    const toBuilding =
+      data.toBuilding?._id ||
+      data.toBuilding ||
+      "";
+
+    const toCenter =
+      data.toCenter?._id ||
+      data.toCenter ||
+      "";
+
+    setFormData((prev) => ({
+      ...prev,
+      ...data,
+      date: apiDate,
+      customer: data.customer?._id || data.customer || "",
+      fromBuilding,
+      toBuilding,
+      controlRoom:
+        data.controlRoom?._id ||
+        data.controlRoom ||
+        data.fromControlRoom?._id ||
+        data.fromControlRoom ||
+        "",
+      toCenter,
+    }));
+
+    const existingSelectedRows = {};
+    const existingAssignedSerials = {};
+    const order = [];
+
+    if (Array.isArray(data.items)) {
+      data.items.forEach((item, index) => {
+        // IMPORTANT: Normalize product ID from populated or unpopulated data.
+        const productId =
+          item.product?._id ||
+          item.product?.productId?._id ||
+          item.product?.productId ||
+          item.productId?._id ||
+          item.productId ||
+          item.product;
+
+        if (!productId) {
+          console.warn("Unable to resolve product ID from stock usage item:", item);
+          return;
+        }
+
+        const normalizedProductId = String(productId);
+
+        existingSelectedRows[normalizedProductId] = {
+          quantity: String(item.quantity ?? item.usageQty ?? ""),
+          productRemark: item.productRemark || "",
+          productInStock: Number(
+            item.oldStock ??
+            item.product?.availableQuantity ??
+            item.product?.stock?.availableQuantity ??
+            0
+          ),
+        };
+
+        if (Array.isArray(item.serialNumbers) && item.serialNumbers.length > 0) {
+          existingAssignedSerials[normalizedProductId] = item.serialNumbers;
+        }
+
+        order.push({
+          productId: normalizedProductId,
+          order: index,
+        });
+      });
+    }
+
+    setSelectedRows(existingSelectedRows);
+    setAssignedSerials(existingAssignedSerials);
+    setSelectionOrder(order);
+    selectionCounter.current = order.length;
+
+    console.log("Edit selected rows:", existingSelectedRows);
+  } catch (error) {
+    console.error("Error fetching stock usage:", error);
+    showAlert("Failed to fetch stock usage data", "danger");
+  }
+};
   const fetchCustomers = async () => {
     try {
       const res = await axiosInstance.get('/customers/all');
