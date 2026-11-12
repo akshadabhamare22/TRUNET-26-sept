@@ -222,60 +222,279 @@
 
 // export default IndentCard
 
+// import React, { useEffect, useState } from 'react'
+// import { Link } from 'react-router-dom'
+// import { Users, ShoppingCart, ArrowRight } from 'lucide-react'
+
+// import axiosInstance from '../../axiosInstance'
+// import { Panel, Donut } from './Dashboardshared'
+
+// const Stat = ({
+//   to,
+//   label,
+//   value,
+//   sub,
+//   icon: Icon,
+//   from,
+//   toColor,
+//   children,
+// }) => (
+//   <Link
+//     to={to}
+//     className="group relative flex min-h-[200px] flex-col justify-between overflow-hidden rounded-2xl p-6 text-white no-underline shadow-[0_14px_30px_-14px_rgba(15,23,42,0.45)] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2759A2]"
+//     style={{ backgroundImage: `linear-gradient(135deg, ${from}, ${toColor})` }}
+//   >
+//     {/* Soft highlight */}
+//     <div
+//       aria-hidden
+//       className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_100%_0%,rgba(255,255,255,0.28),transparent_55%)]"
+//     />
+
+//     {/* Rings radiating from the icon (behind it, away from the text) */}
+//     <div
+//       aria-hidden
+//       className="pointer-events-none absolute -right-14 -top-14 h-56 w-56 rounded-full border border-white/15"
+//     />
+//     <div
+//       aria-hidden
+//       className="pointer-events-none absolute -right-6 -top-6 h-40 w-40 rounded-full border border-white/20"
+//     />
+
+//     <div className="relative flex items-start justify-between gap-4">
+//       <div className="min-w-0">
+//         <div className="text-sm font-medium text-white/85">{label}</div>
+//         <div className="mt-1 text-5xl font-bold leading-none tracking-tight">
+//           {value}
+//         </div>
+//         {sub && <div className="mt-2 text-xs text-white/75">{sub}</div>}
+//       </div>
+
+//       <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-1xl bg-white/20 shadow-inner ring-1 ring-white/30 backdrop-blur-sm">
+//         <Icon size={26} strokeWidth={2} />
+//       </div>
+//     </div>
+
+//     <div className="relative mt-6">{children}</div>
+//   </Link>
+// )
+
+// const IndentCard = () => {
+//   const [centerCount, setCenterCount] = useState(0)
+//   const [indentSummary, setIndentSummary] = useState({
+//     totalRequests: 0,
+//     completed: 0,
+//     incomplete: 0,
+//   })
+//   const [loading, setLoading] = useState(true)
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         const centerRes = await axiosInstance.get('/centers')
+
+//         if (centerRes.data.success) {
+//           setCenterCount(centerRes.data.pagination.totalItems)
+//         }
+
+//         const indentRes = await axiosInstance.get(
+//           '/stockrequest/indent-count',
+//         )
+
+//         if (indentRes.data.success) {
+//           setIndentSummary({
+//             totalRequests: indentRes.data.totalRequests || 0,
+//             completed: indentRes.data.completed || 0,
+//             incomplete: indentRes.data.incomplete || 0,
+//           })
+//         }
+//       } catch (error) {
+//         console.error('Error fetching dashboard data:', error)
+//       } finally {
+//         setLoading(false)
+//       }
+//     }
+
+//     fetchData()
+//   }, [])
+
+//   return (
+//     <div>
+//       <h1 className="mb-4 text-2xl font-semibold tracking-tight text-slate-800">
+//         Dashboard
+//       </h1>
+
+//       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+//         <Stat
+//           to="/center-list"
+//           label="Centers"
+//           value={loading ? 'Loading...' : centerCount}
+//           icon={Users}
+//           from="#0c2345"
+//           toColor="#4ea2e3"
+//         >
+//           <span className="inline-flex items-center gap-2 rounded-lg bg-white/15 px-3.5 py-2 text-sm font-medium ring-1 ring-white/25 transition-colors group-hover:bg-white/25">
+//             View all centers
+//             <ArrowRight
+//               size={16}
+//               className="transition-transform group-hover:translate-x-1"
+//             />
+//           </span>
+//         </Stat>
+
+//         <Stat
+//           to="/order/index/indent"
+//           label="Total Indent"
+//           value={
+//             loading
+//               ? 'Loading...'
+//               : `${indentSummary.totalRequests}/${indentSummary.completed}`
+//           }
+//           sub={loading ? '' : 'requests / completed'}
+//           icon={ShoppingCart}
+//           from="#18422b"
+//           toColor="#2acf56"
+//         >
+//           {(() => {
+//             const { totalRequests, completed, incomplete } = indentSummary
+//             const pct = totalRequests
+//               ? Math.round((completed / totalRequests) * 100)
+//               : 0
+//             return (
+//               <div>
+//                 <div className="mb-2 flex items-center justify-between text-xs text-white/90">
+//                   <span className="font-medium">
+//                     {loading ? '' : `${completed} completed`}
+//                   </span>
+//                   <span>{loading ? '' : `${incomplete} incomplete`}</span>
+//                 </div>
+//                 <div
+//                   className="h-2.5 overflow-hidden rounded-full bg-white/25"
+//                   role="progressbar"
+//                   aria-valuenow={pct}
+//                   aria-valuemin={0}
+//                   aria-valuemax={100}
+//                 >
+//                   <div
+//                     className="h-full rounded-full bg-white transition-all duration-700"
+//                     style={{ width: `${loading ? 0 : pct}%` }}
+//                   />
+//                 </div>
+//                 <div className="mt-2 text-xs font-semibold">
+//                   {loading ? '' : `${pct}% completed`}
+//                 </div>
+//               </div>
+//             )
+//           })()}
+//         </Stat>
+
+//         <Panel
+//           title="Indent Status"
+//           className="md:col-span-2 lg:col-span-1"
+//         >
+//           {loading ? (
+//             <p className="px-5 py-8 text-sm text-slate-500">Loading...</p>
+//           ) : (
+//             <div className="flex items-center gap-5 px-5 pb-4 pt-2">
+//               <div className="w-[150px] shrink-0">
+//                 <Donut
+//                   labels={['Completed', 'Incomplete']}
+//                   values={[indentSummary.completed, indentSummary.incomplete]}
+//                   colors={['#00A65A', '#F5A524']}
+//                   centerValue={String(indentSummary.totalRequests)}
+//                   centerSub="Total"
+//                   height={150}
+//                   legend="none"
+//                 />
+//               </div>
+
+//               <ul className="m-0 flex-1 list-none space-y-3 p-0">
+//                 {[
+//                   ['Completed', indentSummary.completed, '#03c16c'],
+//                   ['Incomplete', indentSummary.incomplete, '#F5A524'],
+//                 ].map(([name, count, color]) => (
+//                   <li
+//                     key={name}
+//                     className="flex items-center justify-between rounded-md bg-slate-50 px-3 py-2 text-sm"
+//                   >
+//                     <span className="flex items-center gap-2 text-slate-600">
+//                       <span
+//                         className="h-2.5 w-2.5 rounded-full"
+//                         style={{ backgroundColor: color }}
+//                       />
+//                       {name}
+//                     </span>
+//                     <span className="font-semibold text-slate-800">{count}</span>
+//                   </li>
+//                 ))}
+//               </ul>
+//             </div>
+//           )}
+//         </Panel>
+//       </div>
+//     </div>
+//   )
+// }
+
+// export default IndentCard
+
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Users, ShoppingCart, ArrowRight } from 'lucide-react'
+import { Users, ShoppingCart, ArrowRight, PieChart } from 'lucide-react'
 
 import axiosInstance from '../../axiosInstance'
-import { Panel, Donut } from './Dashboardshared'
+import { Donut } from './Dashboardshared'
 
-const Stat = ({
-  to,
+/* Gradient KPI card: label + big value + footer, icon top-right,
+   translucent circles bottom-right / top-right */
+const GradientCard = ({
+  as: Tag = 'div',
   label,
   value,
-  sub,
   icon: Icon,
   from,
   toColor,
+  shadow,
+  className = '',
   children,
+  ...rest
 }) => (
-  <Link
-    to={to}
-    className="group relative flex min-h-[200px] flex-col justify-between overflow-hidden rounded-2xl p-6 text-white no-underline shadow-[0_14px_30px_-14px_rgba(15,23,42,0.45)] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2759A2]"
-    style={{ backgroundImage: `linear-gradient(135deg, ${from}, ${toColor})` }}
+  <Tag
+    {...rest}
+    className={`group relative flex min-h-[190px] flex-col justify-between overflow-hidden rounded-xl p-6 text-white no-underline transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400 ${className}`}
+    style={{
+      backgroundImage: `linear-gradient(135deg, ${from}, ${toColor})`,
+      boxShadow: `0 14px 28px -14px ${shadow}`,
+    }}
   >
-    {/* Soft highlight */}
+    {/* Decorative translucent circles */}
     <div
       aria-hidden
-      className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_100%_0%,rgba(255,255,255,0.28),transparent_55%)]"
+      className="pointer-events-none absolute -right-10 -top-12 h-40 w-40 rounded-full bg-white/15"
+    />
+    <div
+      aria-hidden
+      className="pointer-events-none absolute -bottom-16 -right-6 h-44 w-44 rounded-full bg-white/15"
+    />
+    <div
+      aria-hidden
+      className="pointer-events-none absolute -bottom-6 right-24 h-20 w-20 rounded-full bg-white/10"
     />
 
-    {/* Rings radiating from the icon (behind it, away from the text) */}
-    <div
-      aria-hidden
-      className="pointer-events-none absolute -right-14 -top-14 h-56 w-56 rounded-full border border-white/15"
-    />
-    <div
-      aria-hidden
-      className="pointer-events-none absolute -right-6 -top-6 h-40 w-40 rounded-full border border-white/20"
-    />
-
-    <div className="relative flex items-start justify-between gap-4">
+    <div className="relative flex items-start justify-between">
       <div className="min-w-0">
-        <div className="text-sm font-medium text-white/85">{label}</div>
-        <div className="mt-1 text-5xl font-bold leading-none tracking-tight">
-          {value}
-        </div>
-        {sub && <div className="mt-2 text-xs text-white/75">{sub}</div>}
+        <div className="text-sm font-medium text-white/90">{label}</div>
+        {value !== undefined && (
+          <div className="mt-3 text-4xl font-bold leading-none tracking-tight">
+            {value}
+          </div>
+        )}
       </div>
 
-      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-1xl bg-white/20 shadow-inner ring-1 ring-white/30 backdrop-blur-sm">
-        <Icon size={26} strokeWidth={2} />
-      </div>
+      <Icon size={30} strokeWidth={2} className="text-white/85" />
     </div>
 
-    <div className="relative mt-6">{children}</div>
-  </Link>
+    <div className="relative mt-5">{children}</div>
+  </Tag>
 )
 
 const IndentCard = () => {
@@ -317,6 +536,18 @@ const IndentCard = () => {
     fetchData()
   }, [])
 
+  const { totalRequests, completed, incomplete } = indentSummary
+  const pct = totalRequests
+    ? Math.round((completed / totalRequests) * 100)
+    : 0
+  const pending = Math.max(totalRequests - completed - incomplete, 0)
+
+  const statusRows = [
+    ['Completed', completed, '#FFFFFF'],
+    ['Incomplete', incomplete, '#FDE68A'],
+    ['Pending', pending, 'rgba(255,255,255,0.4)'],
+  ]
+
   return (
     <div>
       <h1 className="mb-4 text-2xl font-semibold tracking-tight text-slate-800">
@@ -324,112 +555,108 @@ const IndentCard = () => {
       </h1>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Stat
+        {/* Centers - blue */}
+        <GradientCard
+          as={Link}
           to="/center-list"
           label="Centers"
           value={loading ? 'Loading...' : centerCount}
           icon={Users}
-          from="#0c2345"
-          toColor="#4ea2e3"
+          from="#0B2A6F"
+          toColor="#3B9BFF"
+          shadow="rgba(11,42,111,0.75)"
         >
-          <span className="inline-flex items-center gap-2 rounded-lg bg-white/15 px-3.5 py-2 text-sm font-medium ring-1 ring-white/25 transition-colors group-hover:bg-white/25">
+          <span className="inline-flex items-center gap-2 text-sm font-medium text-white/95">
             View all centers
             <ArrowRight
               size={16}
               className="transition-transform group-hover:translate-x-1"
             />
           </span>
-        </Stat>
+        </GradientCard>
 
-        <Stat
+        {/* Total Indent - coral */}
+        <GradientCard
+          as={Link}
           to="/order/index/indent"
           label="Total Indent"
-          value={
-            loading
-              ? 'Loading...'
-              : `${indentSummary.totalRequests}/${indentSummary.completed}`
-          }
-          sub={loading ? '' : 'requests / completed'}
+          value={loading ? 'Loading...' : `${totalRequests}/${completed}`}
           icon={ShoppingCart}
-          from="#18422b"
-          toColor="#2acf56"
+          from="#920431"
+          toColor="#fc7f5c"
+          shadow="rgba(150, 21, 61, 0.7)"
         >
-          {(() => {
-            const { totalRequests, completed, incomplete } = indentSummary
-            const pct = totalRequests
-              ? Math.round((completed / totalRequests) * 100)
-              : 0
-            return (
-              <div>
-                <div className="mb-2 flex items-center justify-between text-xs text-white/90">
-                  <span className="font-medium">
-                    {loading ? '' : `${completed} completed`}
-                  </span>
-                  <span>{loading ? '' : `${incomplete} incomplete`}</span>
-                </div>
-                <div
-                  className="h-2.5 overflow-hidden rounded-full bg-white/25"
-                  role="progressbar"
-                  aria-valuenow={pct}
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                >
-                  <div
-                    className="h-full rounded-full bg-white transition-all duration-700"
-                    style={{ width: `${loading ? 0 : pct}%` }}
-                  />
-                </div>
-                <div className="mt-2 text-xs font-semibold">
-                  {loading ? '' : `${pct}% completed`}
-                </div>
-              </div>
-            )
-          })()}
-        </Stat>
+          <div className="mb-2 flex items-center justify-between text-xs text-white/95">
+            <span>{loading ? '' : `${completed} completed`}</span>
+            <span>{loading ? '' : `${incomplete} incomplete`}</span>
+          </div>
 
-        <Panel
-          title="Indent Status"
+          <div
+            className="h-2 overflow-hidden rounded-full bg-white/30"
+            role="progressbar"
+            aria-valuenow={pct}
+            aria-valuemin={0}
+            aria-valuemax={100}
+          >
+            <div
+              className="h-full rounded-full bg-white transition-all duration-700"
+              style={{ width: `${loading ? 0 : pct}%` }}
+            />
+          </div>
+
+          <div className="mt-2 text-xs font-medium">
+            {loading ? '' : `${pct}% completed`}
+          </div>
+        </GradientCard>
+
+        {/* Indent Status - teal */}
+        <GradientCard
+          label="Indent Status"
+          icon={PieChart}
+          from="#072f2e"
+          toColor="#27C7A8"
+          shadow="rgba(7, 52, 51, 0.75)"
           className="md:col-span-2 lg:col-span-1"
         >
           {loading ? (
-            <p className="px-5 py-8 text-sm text-slate-500">Loading...</p>
+            <p className="text-sm text-white/90">Loading...</p>
           ) : (
-            <div className="flex items-center gap-5 px-5 pb-4 pt-2">
-              <div className="w-[150px] shrink-0">
+            <div className="flex items-center gap-5">
+              <div className="w-[120px] shrink-0">
                 <Donut
-                  labels={['Completed', 'Incomplete']}
-                  values={[indentSummary.completed, indentSummary.incomplete]}
-                  colors={['#00A65A', '#F5A524']}
-                  centerValue={String(indentSummary.totalRequests)}
+                  labels={statusRows.map(([n]) => n)}
+                  values={statusRows.map(([, v]) => v)}
+                  colors={statusRows.map(([, , c]) => c)}
+                  centerValue={String(totalRequests)}
                   centerSub="Total"
-                  height={150}
+                  height={120}
                   legend="none"
+                  borderColor="transparent"
+                  centerColor="#ffffff"
+                  centerSubColor="rgba(255,255,255,0.85)"
                 />
               </div>
 
-              <ul className="m-0 flex-1 list-none space-y-3 p-0">
-                {[
-                  ['Completed', indentSummary.completed, '#03c16c'],
-                  ['Incomplete', indentSummary.incomplete, '#F5A524'],
-                ].map(([name, count, color]) => (
+              <ul className="m-0 flex-1 list-none space-y-1.5 p-0">
+                {statusRows.map(([name, count, color]) => (
                   <li
                     key={name}
-                    className="flex items-center justify-between rounded-md bg-slate-50 px-3 py-2 text-sm"
+                    className="flex items-center justify-between text-sm"
                   >
-                    <span className="flex items-center gap-2 text-slate-600">
+                    <span className="flex items-center gap-2 text-white/95">
                       <span
                         className="h-2.5 w-2.5 rounded-full"
                         style={{ backgroundColor: color }}
                       />
                       {name}
                     </span>
-                    <span className="font-semibold text-slate-800">{count}</span>
+                    <span className="font-semibold">{count}</span>
                   </li>
                 ))}
               </ul>
             </div>
           )}
-        </Panel>
+        </GradientCard>
       </div>
     </div>
   )
