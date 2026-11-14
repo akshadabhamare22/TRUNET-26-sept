@@ -64,12 +64,21 @@ const AppHeader = () => {
   }
 
   // Desktop sidebar collapse / expand
-  const handleMenuClick = () => {
+
+const handleMenuClick = () => {
+  if (!sidebarShow) {
+    dispatch({
+      type: 'set',
+      sidebarShow: true,
+    });
+  } else {
     dispatch({
       type: 'set',
       sidebarUnfoldable: !unfoldable,
-    })
+    });
   }
+};
+
 
   const handleUsernameClick = (customerId) => {
     navigate(`/customer-profile/${customerId}`)

@@ -113,7 +113,7 @@ export const AppSidebarNav = ({
             items-center
             gap-3
             px-4
-            text-[14px]
+            text-[16px]
             font-normal
             text-white/85
             transition-colors
@@ -149,7 +149,7 @@ export const AppSidebarNav = ({
             items-center
             gap-3
             px-4
-            text-[14px]
+            text-[16px]
             font-normal
             transition-colors
             duration-150
@@ -185,7 +185,7 @@ export const AppSidebarNav = ({
           items-center
           gap-3
           px-4
-          text-[14px]
+          text-[16px]
           font-normal
           text-white/85
 
@@ -257,7 +257,7 @@ export const AppSidebarNav = ({
               items-center
               gap-3
               px-4
-              text-[14px]
+              text-[16px]
               font-semibold
               text-white/85
               transition-colors

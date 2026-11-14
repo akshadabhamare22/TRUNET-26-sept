@@ -108,39 +108,87 @@ const AddStockTransfer = () => {
     }
   };
 
-  const fetchProducts = async (branchId) => {
-    if (!branchId) {
-      setProducts([]);
-      setLoading(false);
-      return;
-    }
+  // const fetchProducts = async (branchId) => {
+  //   if (!branchId) {
+  //     setProducts([]);
+  //     setLoading(false);
+  //     return;
+  //   }
 
-    setLoading(true);
-    try {
+  //   setLoading(true);
+  //   try {
+  //     const res = await axiosInstance.get(
+  //       '/stockpurchase/products/with-stock',
+  //       { params: { outlet: branchId } }
+  //     );
+
+  //     if (res.data.success) {
+  //       setProducts(
+  //         Array.isArray(res.data.data)
+  //           ? res.data.data
+  //           : Array.isArray(res.data.data?.products)
+  //             ? res.data.data.products
+  //             : []
+  //       );
+  //     } else {
+  //       setProducts([]);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching products for selected branch:', error);
+  //     setProducts([]);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
+  const fetchProducts = async (branchId) => {
+  if (!branchId) {
+    setProducts([]);
+    setLoading(false);
+    return;
+  }
+
+  setLoading(true);
+  try {
+    const pageSize = 100; // server max
+    let allProducts = [];
+    let currentPage = 1;
+    let hasNextPage = true;
+
+    while (hasNextPage && currentPage <= 100) {
       const res = await axiosInstance.get(
         '/stockpurchase/products/with-stock',
-        { params: { outlet: branchId } }
+        { params: { outlet: branchId, page: currentPage, limit: pageSize } }
       );
 
-      if (res.data.success) {
-        setProducts(
-          Array.isArray(res.data.data)
-            ? res.data.data
-            : Array.isArray(res.data.data?.products)
-              ? res.data.data.products
-              : []
-        );
-      } else {
-        setProducts([]);
-      }
-    } catch (error) {
-      console.error('Error fetching products for selected branch:', error);
-      setProducts([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+      if (!res.data.success) break;
 
+      const pageData = Array.isArray(res.data.data)
+        ? res.data.data
+        : Array.isArray(res.data.data?.products)
+          ? res.data.data.products
+          : [];
+
+      allProducts = allProducts.concat(pageData);
+
+      const pagination = res.data.pagination;
+      hasNextPage =
+        pagination && typeof pagination.hasNextPage === 'boolean'
+          ? pagination.hasNextPage
+          : pageData.length === pageSize;
+
+      currentPage += 1;
+    }
+
+    setProducts(allProducts);
+  } catch (error) {
+    console.error('Error fetching products for selected branch:', error);
+    setProducts([]);
+  } finally {
+    setLoading(false);
+  }
+};
   const fetchStockRequest = async (requestId) => {
     try {
       const res = await axiosInstance.get(`/stocktransfer/${requestId}`);

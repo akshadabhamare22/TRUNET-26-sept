@@ -651,42 +651,60 @@ const PurchaseDetail = () => {
   // --------------------------------------------------
   // Frontend Search
   // --------------------------------------------------
-  const filteredFlattenedData = getFlattenedData().filter(
-    (item) => {
-      if (
-        activeSearch.product ||
-        activeSearch.center ||
-        activeSearch.startDate ||
-        activeSearch.endDate
-      ) {
-        return true;
-      }
+  // const filteredFlattenedData = getFlattenedData().filter(
+  //   (item) => {
+  //     if (
+  //       activeSearch.product ||
+  //       activeSearch.center ||
+  //       activeSearch.startDate ||
+  //       activeSearch.endDate
+  //     ) {
+  //       return true;
+  //     }
 
-      return Object.values(item).some((value) => {
-        if (
-          typeof value === "object" &&
-          value !== null
-        ) {
-          return Object.values(value).some(
-            (nestedValue) =>
-              nestedValue &&
-              nestedValue
-                .toString()
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase())
-          );
-        }
+  //     return Object.values(item).some((value) => {
+  //       if (
+  //         typeof value === "object" &&
+  //         value !== null
+  //       ) {
+  //         return Object.values(value).some(
+  //           (nestedValue) =>
+  //             nestedValue &&
+  //             nestedValue
+  //               .toString()
+  //               .toLowerCase()
+  //               .includes(searchTerm.toLowerCase())
+  //         );
+  //       }
 
-        return (
-          value &&
-          value
-            .toString()
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase())
-        );
-      });
+  //       return (
+  //         value &&
+  //         value
+  //           .toString()
+  //           .toLowerCase()
+  //           .includes(searchTerm.toLowerCase())
+  //       );
+  //     });
+  //   }
+  // );
+
+  const filteredFlattenedData = getFlattenedData().filter((item) => {
+  const term = searchTerm.trim().toLowerCase();
+  if (!term) return true;
+
+  // Flatten the row into a searchable string (handles nested objects like
+  // outlet, vendor, productDetail.product).
+  const flatten = (value) => {
+    if (value === null || value === undefined) return "";
+    if (Array.isArray(value)) return value.map(flatten).join(" ");
+    if (typeof value === "object") {
+      return Object.values(value).map(flatten).join(" ");
     }
-  );
+    return String(value);
+  };
+
+  return flatten(item).toLowerCase().includes(term);
+});
 
   const totals = calculateTotals();
 

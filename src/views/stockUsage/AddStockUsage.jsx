@@ -459,20 +459,61 @@ const AddStockUsage = () => {
     }
   };
 
-  const fetchProducts = async () => {
-    try {
-      const res = await axiosInstance.get('/stockpurchase/products/with-stock');
-      if (res.data.success) {
-        setProducts(Array.isArray(res.data.data) ? res.data.data : Array.isArray(res.data.data?.products) ? res.data.data.products : []);
-      }
-    } catch (error) {
-      console.error('Error fetching products:', error);
-      showAlert('Failed to fetch products', 'danger');
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const fetchProducts = async () => {
+  //   try {
+  //     const res = await axiosInstance.get('/stockpurchase/products/with-stock');
+  //     if (res.data.success) {
+  //       setProducts(Array.isArray(res.data.data) ? res.data.data : Array.isArray(res.data.data?.products) ? res.data.data.products : []);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching products:', error);
+  //     showAlert('Failed to fetch products', 'danger');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
+
+  const fetchProducts = async () => {
+  try {
+    const pageSize = 100; // server max
+    let allProducts = [];
+    let currentPage = 1;
+    let hasNextPage = true;
+
+    while (hasNextPage && currentPage <= 100) {
+      const res = await axiosInstance.get(
+        '/stockpurchase/products/with-stock',
+        { params: { page: currentPage, limit: pageSize } }
+      );
+
+      if (!res.data.success) break;
+
+      const pageData = Array.isArray(res.data.data)
+        ? res.data.data
+        : Array.isArray(res.data.data?.products)
+          ? res.data.data.products
+          : [];
+
+      allProducts = allProducts.concat(pageData);
+
+      const pagination = res.data.pagination;
+      hasNextPage =
+        pagination && typeof pagination.hasNextPage === 'boolean'
+          ? pagination.hasNextPage
+          : pageData.length === pageSize;
+
+      currentPage += 1;
+    }
+
+    setProducts(allProducts);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    showAlert('Failed to fetch products', 'danger');
+  } finally {
+    setLoading(false);
+  }
+};
   const handleRowSelect = (productId, productStock) => {
     setSelectedRows((prev) => {
       const updated = { ...prev };

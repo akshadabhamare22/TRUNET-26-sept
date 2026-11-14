@@ -892,37 +892,53 @@ const IndentDetail = () => {
   // (the table search box now also works when opened from summary)
   // ------------------------------------------------------------
 
+  // const filteredFlattenedData = getFlattenedData().filter((item) => {
+  //   if (
+  //     activeSearch.center ||
+  //     activeSearch.product ||
+  //     activeSearch.startDate ||
+  //     activeSearch.endDate
+  //   ) {
+  //     return true
+  //   }
+
+  //   return Object.values(item).some((value) => {
+  //     if (typeof value === 'object' && value !== null) {
+  //       return Object.values(value).some(
+  //         (nestedValue) =>
+  //           nestedValue &&
+  //           nestedValue
+  //             .toString()
+  //             .toLowerCase()
+  //             .includes(searchTerm.toLowerCase()),
+  //       )
+  //     }
+
+  //     return (
+  //       value &&
+  //       value
+  //         .toString()
+  //         .toLowerCase()
+  //         .includes(searchTerm.toLowerCase())
+  //     )
+  //   })
+  // })
+
   const filteredFlattenedData = getFlattenedData().filter((item) => {
-    if (
-      activeSearch.center ||
-      activeSearch.product ||
-      activeSearch.startDate ||
-      activeSearch.endDate
-    ) {
-      return true
+  const term = searchTerm.trim().toLowerCase();
+  if (!term) return true;
+
+  const flatten = (value) => {
+    if (value === null || value === undefined) return "";
+    if (Array.isArray(value)) return value.map(flatten).join(" ");
+    if (typeof value === "object") {
+      return Object.values(value).map(flatten).join(" ");
     }
+    return String(value);
+  };
 
-    return Object.values(item).some((value) => {
-      if (typeof value === 'object' && value !== null) {
-        return Object.values(value).some(
-          (nestedValue) =>
-            nestedValue &&
-            nestedValue
-              .toString()
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase()),
-        )
-      }
-
-      return (
-        value &&
-        value
-          .toString()
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase())
-      )
-    })
-  })
+  return flatten(item).toLowerCase().includes(term);
+});
 
   // ------------------------------------------------------------
   // LOADING

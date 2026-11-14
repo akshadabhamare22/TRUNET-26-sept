@@ -27,12 +27,10 @@ const AddReportSubmission = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const [formData, setFormData] = useState({
-    date: new Date()
-      .toISOString()
-      .split('T')[0],
-    remark: '',
-  });
+const [formData, setFormData] = useState({
+  date: new Date().toISOString().slice(0, 7),
+  remark: '',
+});
 
   const [errors, setErrors] =
     useState({});
@@ -109,17 +107,16 @@ const AddReportSubmission = () => {
 
       const data = res.data.data;
 
-      setFormData({
-        date: data.date
-          ? new Date(data.date)
-              .toISOString()
-              .split('T')[0]
-          : new Date()
-              .toISOString()
-              .split('T')[0],
+setFormData({
+  date:
+    data.reportYear && data.reportMonth
+      ? `${data.reportYear}-${String(data.reportMonth).padStart(2, '0')}`
+      : data.date
+        ? new Date(data.date).toISOString().slice(0, 7)
+        : new Date().toISOString().slice(0, 7),
 
-        remark: data.remark || '',
-      });
+  remark: data.remark || '',
+});
 
       setOtherCenter(
         data.stockClosingForOtherCenter ||
@@ -408,8 +405,12 @@ const fetchProducts = async () => {
       return;
     }
 
-    const submissionData = {
-      date: formData.date,
+const [selectedYear, selectedMonth] = formData.date.split('-');
+
+const submissionData = {
+  date: `${formData.date}-01`,
+  reportMonth: Number(selectedMonth),
+  reportYear: Number(selectedYear),
 
       stockClosingForOtherCenter:
         otherCenter,
@@ -676,42 +677,36 @@ const fetchProducts = async () => {
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:gap-6">
               {/* DATE */}
 
-              <div>
-                <label
-                  htmlFor="date"
-                  className="mb-1.5 block text-sm font-semibold text-gray-700"
-                >
-                  Date{' '}
-                  <span className="text-red-500">
-                    *
-                  </span>
-                </label>
+              {/* MONTH & YEAR */}
 
-                <input
-                  type="date"
-                  id="date"
-                  name="date"
-                  value={
-                    formData.date
-                  }
-                  onChange={
-                    handleChange
-                  }
-                  className={`w-full rounded-lg border px-3 py-2 text-sm outline-none transition focus:ring-2 ${
-                    errors.date
-                      ? 'border-red-400 focus:border-red-500 focus:ring-red-100'
-                      : formData.date
-                        ? 'border-green-300 focus:border-blue-500 focus:ring-blue-100'
-                        : 'border-gray-300 focus:border-blue-500 focus:ring-blue-100'
-                  }`}
-                />
+<div>
+  <label
+    htmlFor="date"
+    className="mb-1.5 block text-sm font-semibold text-gray-700"
+  >
+    Month & Year
+    <span className="text-red-500"> *</span>
+  </label>
 
-                {errors.date && (
-                  <p className="mt-1 text-xs text-red-600">
-                    {errors.date}
-                  </p>
-                )}
-              </div>
+  <input
+    type="month"
+    id="date"
+    name="date"
+    value={formData.date}
+    onChange={handleChange}
+    className={`w-full rounded-lg border px-3 py-2 text-sm outline-none transition focus:ring-2 ${
+      errors.date
+        ? 'border-red-400 focus:border-red-500 focus:ring-red-100'
+        : 'border-gray-300 focus:border-blue-500 focus:ring-blue-100'
+    }`}
+  />
+
+  {errors.date && (
+    <p className="mt-1 text-xs text-red-600">
+      {errors.date}
+    </p>
+  )}
+</div>
 
               {/* OTHER CENTER */}
 

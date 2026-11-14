@@ -82,46 +82,98 @@ const ReturnStock = () => {
     fetchProducts();
   }, []);
 
+  // const fetchProducts = async () => {
+  //   try {
+  //     const res =
+  //       await axiosInstance.get(
+  //         '/stockpurchase/products/with-stock'
+  //       );
+
+  //     if (res.data?.success) {
+  //       // API response: { success: true, data: [ { productTitle, availableQuantity, stock: { availableQuantity } } ] }
+  //       const responseData = res.data.data;
+  //       const productList = Array.isArray(responseData)
+  //         ? responseData
+  //         : Array.isArray(responseData?.products)
+  //           ? responseData.products
+  //           : [];
+
+  //       setProducts(
+  //         productList.map((product) => ({
+  //           ...product,
+  //           // Prefer the API's top-level availableQuantity; fall back to stock.availableQuantity.
+  //           // `currentStock` is not returned by this endpoint.
+  //           availableQuantity: Number(
+  //             product?.availableQuantity ??
+  //             product?.stock?.availableQuantity ??
+  //             0
+  //           ),
+  //         }))
+  //       );
+  //     } else {
+  //       setProducts([]);
+  //     }
+  //   } catch (error) {
+  //     console.error(
+  //       'Error fetching products:',
+  //       error
+  //     );
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
   const fetchProducts = async () => {
-    try {
-      const res =
-        await axiosInstance.get(
-          '/stockpurchase/products/with-stock'
-        );
+  try {
+    const pageSize = 100; // server max
+    let allProducts = [];
+    let currentPage = 1;
+    let hasNextPage = true;
 
-      if (res.data?.success) {
-        // API response: { success: true, data: [ { productTitle, availableQuantity, stock: { availableQuantity } } ] }
-        const responseData = res.data.data;
-        const productList = Array.isArray(responseData)
-          ? responseData
-          : Array.isArray(responseData?.products)
-            ? responseData.products
-            : [];
-
-        setProducts(
-          productList.map((product) => ({
-            ...product,
-            // Prefer the API's top-level availableQuantity; fall back to stock.availableQuantity.
-            // `currentStock` is not returned by this endpoint.
-            availableQuantity: Number(
-              product?.availableQuantity ??
-              product?.stock?.availableQuantity ??
-              0
-            ),
-          }))
-        );
-      } else {
-        setProducts([]);
-      }
-    } catch (error) {
-      console.error(
-        'Error fetching products:',
-        error
+    while (hasNextPage && currentPage <= 100) {
+      const res = await axiosInstance.get(
+        '/stockpurchase/products/with-stock',
+        { params: { page: currentPage, limit: pageSize } }
       );
-    } finally {
-      setLoading(false);
+
+      if (!res.data?.success) break;
+
+      const responseData = res.data.data;
+      const productList = Array.isArray(responseData)
+        ? responseData
+        : Array.isArray(responseData?.products)
+          ? responseData.products
+          : [];
+
+      allProducts = allProducts.concat(productList);
+
+      const pagination = res.data.pagination;
+      hasNextPage =
+        pagination && typeof pagination.hasNextPage === 'boolean'
+          ? pagination.hasNextPage
+          : productList.length === pageSize;
+
+      currentPage += 1;
     }
-  };
+
+    setProducts(
+      allProducts.map((product) => ({
+        ...product,
+        availableQuantity: Number(
+          product?.availableQuantity ??
+          product?.stock?.availableQuantity ??
+          0
+        ),
+      }))
+    );
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    setProducts([]);
+  } finally {
+    setLoading(false);
+  }
+};
 
   /* =========================================================
      SERIAL NUMBER UPDATE
