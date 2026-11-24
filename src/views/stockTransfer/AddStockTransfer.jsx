@@ -95,18 +95,18 @@ const AddStockTransfer = () => {
     }
   };
 
-  const fetchCenters = async () => {
-    try {
-      const res = await axiosInstance.get('/centers/resellers/center');
-      if (res.data.success) {
-        setCenters(res.data.data);
-      }
-    } catch (error) {
-      console.error('Error fetching centers:', error);
-    } finally {
-      setCenterLoading(false);
-    }
-  };
+  // const fetchCenters = async () => {
+  //   try {
+  //     const res = await axiosInstance.get('/centers/resellers/center');
+  //     if (res.data.success) {
+  //       setCenters(res.data.data);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching centers:', error);
+  //   } finally {
+  //     setCenterLoading(false);
+  //   }
+  // };
 
   // const fetchProducts = async (branchId) => {
   //   if (!branchId) {
@@ -141,7 +141,44 @@ const AddStockTransfer = () => {
   //   }
   // };
 
+const fetchCenters = async () => {
+  try {
+    setCenterLoading(true);
 
+    const res = await axiosInstance.get('/centers/resellers/center');
+
+    if (res.data.success) {
+      const allCenters = Array.isArray(res.data.data)
+        ? res.data.data
+        : [];
+
+      // Only Center records. Exclude Outlet.
+      const onlyCenters = allCenters.filter(
+        (center) =>
+          center.centerType?.trim().toLowerCase() === 'center'
+      );
+
+      setCenters(onlyCenters);
+
+      console.log('Total records received:', allCenters.length);
+      console.log('Only Centers displayed:', onlyCenters.length);
+      console.log(
+        'Excluded Outlets:',
+        allCenters.filter(
+          (center) =>
+            center.centerType?.trim().toLowerCase() !== 'center'
+        )
+      );
+    } else {
+      setCenters([]);
+    }
+  } catch (error) {
+    console.error('Error fetching centers:', error);
+    setCenters([]);
+  } finally {
+    setCenterLoading(false);
+  }
+};
   const fetchProducts = async (branchId) => {
   if (!branchId) {
     setProducts([]);

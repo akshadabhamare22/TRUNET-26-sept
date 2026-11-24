@@ -286,6 +286,7 @@ const fetchProducts = async () => {
               0
             ),
             comment: '',
+            
           };
         });
 

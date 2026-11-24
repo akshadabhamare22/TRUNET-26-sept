@@ -520,6 +520,8 @@ ChallanModal.propTypes = {
       fullName: PropTypes.string,
       email: PropTypes.string,
     }),
+
+
   }),
 };
 
